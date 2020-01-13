@@ -1,0 +1,27 @@
+	<%= form_tag('/load_chart', :method => :get, :id =>'filter', :remote => true) do %>
+		<table class="table">
+			<thead>
+				<tr>
+					<th><span id='asterisk'>*</span> Year</th>
+					<th><span id='asterisk'>*</span> Chart Type</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+						<td>
+<%#= select_tag :year, options_for_select( [["2013", 2013], ["2014", 2014], ["2015", 2015], ["2016", 2016] ], :selected => params[:year] ), :class => 'form-control input-sm filter' %>
+<%= collection_select(:year, :year, @years, :year, :year, {:selected => '2014'}, :class => 'form-control input-sm filter') %>
+						</td>
+						
+						<td><%= select_tag :chart_type, options_for_select( [ ["Bar Chart", 1], ["Stacked-Bar Chart", 2], ["Line Chart", 3], ["Area Chart", 4], ["Pie Chart", 5] ]), :class => 'form-control input-sm filter' %>
+						</td>
+						<td>
+							<%= submit_tag "Filter", :id=>"filter", :class=>"btn btn-sm btn-primary"%>
+						</td>
+							
+					
+				</tr>
+			</tbody>
+		</table>
+		<% end %>

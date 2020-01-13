@@ -1,0 +1,11 @@
+$('#manager-inside-render').html('<%= j render 'modal_form' %>');
+
+		$('#start-date').datepicker();
+		$('#end-date').datepicker();
+		console.log("grey");
+		$('.form-button input').on('click', function(){
+			$('#inside-manager').modal('hide');
+		});
+
+			
+

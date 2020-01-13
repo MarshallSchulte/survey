@@ -1,0 +1,84 @@
+<div class="row-fluid" id="internal-navbar" data-spy="affix" data-offset-top="60" data-offset-bottom="60">
+	
+	<div class="container-fluid">
+		<a href="/">
+			<div class="col-md-1" id="logo-holder">
+				<img src="/assets/panlogo.png" id="logo">
+			</div>
+		</a>
+		<div class="col-md-2 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    Customers
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= new_customer_path %>">Add a Customer</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= customers_path %>">All Customers</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+		  </ul>
+		</div>
+		<div class="col-md-2 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    Vendors
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= new_vendor_path %>">Add a Vendor</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= vendors_path %>">All Vendors</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+		  </ul>
+		</div>
+		<div class="col-md-2 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    Campaigns
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= new_campaign_path %>">Add a Campaign</a></li> 
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= campaigns_path %>">Import Campaign Template</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+		  </ul>
+		</div>
+		<div class="col-md-2 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    Metrics
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= new_metric_path %>">Add a Metric</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= metrics_path %>">All Metrics</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+		  </ul>
+		</div>
+		
+		<div class="col-md-2 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    KPIs
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= new_kpi_path %>">Add a KPI</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= kpis_path %>">All KPIs</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+		  </ul>
+		</div>
+		<div class="col-md-2 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    <%= current_user.name %>
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Configure User</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= logout_path %>">Logout</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+		  </ul>
+		</div>
+
+	</div>
+</div>

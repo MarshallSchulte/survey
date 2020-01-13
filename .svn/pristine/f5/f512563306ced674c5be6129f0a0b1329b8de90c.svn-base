@@ -1,0 +1,321 @@
+require 'csv'
+
+class Campaign < ActiveRecord::Base
+  belongs_to :user, class_name: 'User', primary_key: :id, foreign_key: :manager_id
+  has_one :user #, class_name: 'User', primary_key: :id, foreign_key: :specialist_id
+  has_and_belongs_to_many :reviewers, join_table: :campaigns_reviewers
+  has_and_belongs_to_many :questions, join_table: :campaigns_questions
+  has_many :responses, through: :questions
+  accepts_nested_attributes_for :questions, allow_destroy: true
+  accepts_nested_attributes_for :reviewers, allow_destroy: true
+  accepts_nested_attributes_for :responses
+  belongs_to :customer
+  belongs_to :vendor
+  #accepts_nested_attributes_for :campaigns_questions
+  
+  
+  def get_performance_review_by_quarter_data(year)
+    _q1_data = Campaign.find_by_sql("SELECT count(1) AS total, status, updated_at FROM campaigns  WHERE updated_at >= '#{year}-01-01' AND updated_at < '#{year}-04-01' AND status IS NOT NULL AND template IS NOT TRUE GROUP BY status")
+    _q2_data = Campaign.find_by_sql("SELECT count(1) AS total, status, updated_at FROM campaigns  WHERE updated_at >= '#{year}-04-01' AND updated_at < '#{year}-07-01' AND status IS NOT NULL AND template IS NOT TRUE GROUP BY status")
+    _q3_data = Campaign.find_by_sql("SELECT count(1) AS total, status, updated_at FROM campaigns  WHERE updated_at >= '#{year}-07-01' AND updated_at < '#{year}-10-01' AND status IS NOT NULL AND template IS NOT TRUE GROUP BY status")
+    _q4_data = Campaign.find_by_sql("SELECT count(1) AS total, status, updated_at FROM campaigns  WHERE updated_at >= '#{year}-10-31' AND updated_at < '#{year}-12-31' AND status IS NOT NULL AND template IS NOT TRUE GROUP BY status")
+    logger.debug "_q1_data is #{_q1_data} "
+    _all_data = Hash.new
+    _all_data = {
+            ### STATUS ###  Q1 Q2  Q3 Q4
+            "Complete"   => [0, 0, 0, 0],
+            "Draft"      => [0, 0, 0, 0],
+            "InProcess"  => [0, 0, 0, 0],
+            "Submitted"  => [0, 0, 0, 0],
+    }
+    # Quarter 1
+    _q1_data.each do  |status_grp|
+          logger.debug " status_grp.status is #{status_grp.status} AND status_grp.total is #{status_grp.total}" 
+          case status_grp.status
+          when "Complete";               _all_data["Complete"][0]   = status_grp.total
+          when "Draft";            _all_data["Draft"][0]      = _all_data["Draft"][0] + status_grp.total
+          when "Submitted For Review";   _all_data["Draft"][0]      = _all_data["Draft"][0] + status_grp.total
+          when "In Process";             _all_data["InProcess"][0]  = status_grp.total
+          else
+          end
+    end
+    # Quarter 2
+    _q2_data.each do  |status_grp| 
+          case status_grp.status
+          when "Complete";                          _all_data["Complete"][1]   = status_grp.total
+           when "Draft";            _all_data["Draft"][0]      = _all_data["Draft"][0] + status_grp.total
+          when "Submitted For Review";   _all_data["Draft"][0]      = _all_data["Draft"][0] + status_grp.total
+          when "In Process";                        _all_data["InProcess"][1]  = status_grp.total
+          else
+          end
+    end
+    # Quarter 3
+    _q3_data.each do  |status_grp| 
+          case status_grp.status
+          when "Complete";                          _all_data["Complete"][2]   = status_grp.total
+           when "Draft";            _all_data["Draft"][0]      = _all_data["Draft"][0] + status_grp.total
+          when "Submitted For Review";   _all_data["Draft"][0]      = _all_data["Draft"][0] + status_grp.total
+          when "In Process";                        _all_data["InProcess"][2]  = status_grp.total
+          else
+          end
+    end
+    # Quarter 4
+    _q4_data.each do  |status_grp| 
+          case status_grp.status
+          when "Complete";                          _all_data["Complete"][3]   = status_grp.total
+           when "Draft";            _all_data["Draft"][0]      = _all_data["Draft"][0] + status_grp.total
+          when "Submitted For Review";   _all_data["Draft"][0]      = _all_data["Draft"][0] + status_grp.total
+          when "In Process";                        _all_data["InProcess"][3]  = status_grp.total
+          else
+          end
+    end
+    logger.debug "_all_data outside is : #{_all_data.inspect}" 
+    
+   return _all_data    
+  
+  end
+  
+  
+  def get_performance_review_status_by_specialist(year)
+    _sp_status_data = Campaign.find_by_sql(" SELECT count(1) AS total, status, specialist_id, updated_at 
+                                      FROM campaigns  
+                                      WHERE updated_at >= '#{year}-01-01' AND updated_at <= '#{year}-12-31'
+                                      AND status IS NOT NULL
+                                      AND template IS NOT TRUE  
+                                      GROUP BY specialist_id, status")
+    logger.debug "_sp_status_data is #{_sp_status_data} "
+    data_for_chart = Hash.new
+    data_for_chart.store("Complete", Hash.new)
+    data_for_chart.store("Draft", Hash.new)
+    data_for_chart.store("InProcess", Hash.new)
+    logger.debug "data_for_chart is #{data_for_chart}"
+    logger.debug "data_for_chart['Complete'] is #{data_for_chart['Complete']}"
+    _sp_status_data.each do  |sp|
+      logger.debug "sp on iteration : #{sp.inspect}" 
+          case sp.status
+          when "Complete"
+               data_for_chart["Complete"] = data_for_chart["Complete"].merge({User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name => sp.total})
+          when "Draft"
+              data_for_chart["Draft"] = data_for_chart["Draft"].merge({User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name => sp.total})
+          when "Submitted For Review"
+              #This logic needs to be fixed . It messes up when clubbing Draft and Submitted Together.
+              #data_for_chart["Draft"] = data_for_chart["Draft"].merge({User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name => sp.total})
+          when "In Process"
+              data_for_chart["InProcess"] = data_for_chart["InProcess"].merge({User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name => sp.total})
+          else
+          end
+    end
+    
+    logger.debug "data_for_chart outside is : #{data_for_chart.inspect}" 
+    
+   return data_for_chart  
+  end
+  
+  def get_performance_review_tiers_by_specialist(year)
+    _sp_tiers_data = Campaign.find_by_sql(" SELECT count(1) AS total, status, tier, specialist_id, updated_at 
+                                      FROM campaigns  
+                                      WHERE updated_at >= '#{year}-01-01' AND updated_at <= '#{year}-12-31'
+                                      AND status IS NOT NULL
+                                      AND template IS NOT TRUE 
+                                      AND tier IS NOT NULL  
+                                      GROUP BY specialist_id, tier")
+    logger.debug "_sp_tiers_data is #{_sp_tiers_data} "
+    data_for_chart = Hash.new
+    data_for_chart.store("T1", Hash.new)
+    data_for_chart.store("T2", Hash.new)
+    data_for_chart.store("T3", Hash.new)
+    data_for_chart.store("T4", Hash.new)
+    data_for_chart.store("T5", Hash.new)
+    logger.debug "data_for_chart is #{data_for_chart}"
+    logger.debug "data_for_chart['Complete'] is #{data_for_chart['Complete']}"
+    _sp_tiers_data.each do  |sp|
+      logger.debug "sp on iteration : #{sp.inspect}" 
+          case sp.tier
+          when 1
+              data_for_chart["T1"] = data_for_chart["T1"].merge({User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name => sp.total})
+          when 2
+              data_for_chart["T2"] = data_for_chart["T2"].merge({User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name => sp.total})
+          when 3
+              data_for_chart["T3"] = data_for_chart["T3"].merge({User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name => sp.total})
+          when 4
+              data_for_chart["T4"] = data_for_chart["T4"].merge({User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name => sp.total})
+          when 5
+              data_for_chart["T5"] = data_for_chart["T5"].merge({User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name => sp.total})
+          else
+          end
+    end
+    
+    logger.debug "data_for_chart outside is : #{data_for_chart.inspect}" 
+    
+   return data_for_chart  
+  end
+  
+  
+  
+  def get_funnel_chart_data(year)
+    funnel_chart_data = Hash.new
+    all_campaigns = Campaign.find_by_sql("SELECT count(1) AS total, updated_at FROM campaigns  WHERE updated_at >= '#{year}-01-01' AND updated_at <= '#{year}-12-31' AND status IS NOT NULL AND template IS NOT TRUE")
+    inprocess_campaigns = Campaign.find_by_sql("SELECT count(1) AS total, updated_at FROM campaigns  WHERE updated_at >= '#{year}-01-01' AND updated_at <= '#{year}-12-31' AND status = 'In Process' AND template IS NOT TRUE")
+    complete_campaigns =  Campaign.find_by_sql("SELECT count(1) AS total, updated_at FROM campaigns  WHERE updated_at >= '#{year}-01-01' AND updated_at <= '#{year}-12-31' AND status = 'Complete' AND template IS NOT TRUE")
+    complete_with_rr_campaigns = Campaign.find_by_sql("SELECT count(1) AS total, updated_at FROM campaigns  WHERE updated_at >= '#{year}-01-01' AND updated_at <= '#{year}-12-31' AND status = 'Complete' AND rr IS TRUE AND template IS NOT TRUE")
+    
+    logger.debug "all_campaigns is #{all_campaigns[0].total}"
+    logger.debug "inprocess_campaigns is #{inprocess_campaigns[0].total}"
+    logger.debug "complete_campaigns is #{complete_campaigns[0].total}"
+    logger.debug "complete_with_rr_campaigns is #{complete_with_rr_campaigns[0].total}"
+    
+    funnel_chart_data.store("all", all_campaigns[0].total)
+    funnel_chart_data.store("inprocess", inprocess_campaigns[0].total)
+    funnel_chart_data.store("complete", complete_campaigns[0].total)
+    funnel_chart_data.store("complete_rr", complete_with_rr_campaigns[0].total)
+    
+    logger.debug "funnel_chart_data is #{funnel_chart_data.inspect}"
+    
+    return funnel_chart_data
+  end
+  
+  
+  
+  
+  
+  def self.validate_header(header)
+    logger.debug "Campaign.validate_header - header received is #{header}"
+    if header[0] != "category_id" then
+      logger.error "Campaign.validate_header - first column is #{header[0]}"
+      return false
+      
+    else
+      logger.debug "Campaign.validate_header - Valid XLS file. Moving forward..."
+      return true
+    end
+  end
+  
+  def self.import(file)
+    spreadsheet = open_spreadsheet(file)
+    header = spreadsheet.row(1)
+    if validate_header(header) then
+      @questions = Array.new
+      # Now starting to iterate through each row. 
+      (2..spreadsheet.last_row).each do |i|
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+      logger.debug "Campaign.import - row is #{row}"
+        # STEP 1 - Now check if metric/category exists. If yes, then ignore, else create a new cateogry
+        metric = Metric.find_by_metric_name(row['category_id'])
+        if metric.blank? then
+          metric = Metric.new
+          metric.metric_name = row['category_id']
+          logger.debug "Campaign.import - new metric initialized will save this new metric with the name #{metric.metric_name}"
+        else
+          logger.debug "Campaign.import - Found the metric for #{row['category_id']}, not adding a new metric for this category" 
+        end
+        if !metric.weight.blank? 
+          if metric.weight != row['cateogry_weight'] then
+            metric.weight = row['cateogry_weight']  
+          end
+        end 
+        metric.save
+        logger.debug "Campaign.import - Successfully saved metric #{metric.metric_name}"
+        # STEP 2 - Now check if kpi/question exists if not create a new question. associate this kpi with
+        kpi = Kpi.where("metric_id = ? AND kpi = ?", metric.id, row['question_title']).first
+        if kpi.blank? then
+          kpi = Kpi.new
+          kpi.metric_id         = metric.id
+          kpi.kpi               = row['question_title']
+          kpi.kpi_measurement   = row['question']
+        else
+          logger.debug "Campaign.import - kpi #{row['question_title']} was already there for metric #{metric.id}... moving to the questions table."  
+        end 
+        kpi.save!
+        question = Question.where("metric_id = ? AND kpi_id = ?", metric.id, kpi.id).first
+        if question.blank? then
+          question = Question.new
+          question.metric_id  = metric.id
+          question.kpi_id     = kpi.id
+        else  
+          logger.debug "Campaign.import - question for kpi #{kpi.id} is already present in the database"
+        end
+        question.weight = row['question_weight']
+        if !row['opt1'].blank? then
+          question.opt1 = row['opt1']  
+        end
+        
+        if !row['opt2'].blank? then
+          question.opt2 = row['opt2']  
+        end
+        if !row['opt3'].blank? then
+          question.opt3 = row['opt3']  
+        end
+        if !row['opt4'].blank? then
+          question.opt4 = row['opt4']  
+        end
+        if !row['opt5'].blank? then
+          question.opt5 = row['opt5']  
+        end
+        if !row['opt6'].blank? then
+          question.opt6 = row['opt6']  
+        end
+        if !row['opt7'].blank? then
+          question.opt7 = row['opt7']  
+        end
+        
+        if !row['rt_supplier'].blank? then
+          if row['rt_supplier'] >= 1.0 then
+            question.rt_supplier = true
+          else
+            question.rt_supplier = false  
+          end
+          
+          logger.debug "Campaign.import - rt_supplier in row is #{row['rt_supplier']} after insert #{question.rt_supplier}"
+        end
+        if !row['rt_business_unit'].blank? then
+          question.rt_business_unit = row['rt_business_unit']
+        end
+        if !row['rt_strategic_sourcing'].blank? then
+          question.rt_strategic_sourcing = row['rt_strategic_sourcing']
+        end
+        if !row['rt_supplier_diversity'].blank? then
+          question.rt_supplier_diversity = row['rt_supplier_diversity']
+        end
+        if !row['rt_governance'].blank? then
+          question.rt_governance = row['rt_governance']
+        end
+        if !row['srm'].blank? then
+          question.srm = row['srm']
+        end
+        
+        # the metric createdin the prev. step. then associate this metric with the campaign. 
+        # STEP 3 - Associate the question to the campaign. 
+        @questions.push(question) 
+        
+      end
+      # STEP 4 - Create a shell campaign. with a name template_#{total number of campaigns + 1}
+      no_of_campaigns = Campaign.all.count
+      
+      new_campaign_template = Campaign.new
+      new_campaign_id = no_of_campaigns.to_i + 1
+      new_campaign_template.name = "template_#{new_campaign_id}"
+      logger.debug "Campaign.import - new campaign name is #{new_campaign_template.name}"
+      new_campaign_template.customer_id   = 1
+      new_campaign_template.template      = 1
+      new_campaign_template.start_date    = "2015-01-30"
+      new_campaign_template.end_date    = "2015-03-30"
+      new_campaign_template.questions = @questions
+      new_campaign_template.save!
+    else
+      logger.error "Campaign.import invalid xls file. Exitting without creating a campaign template"
+      return  
+    end
+    
+    
+end
+
+def self.open_spreadsheet(file)
+  case File.extname(file.original_filename)
+  when ".csv" then Csv.new(file.path, nil, :ignore)
+  when ".xls" then Roo::Excel.new(file.path, nil, :ignore)
+  when ".xlsx" then Roo::Excelx.new(file.path, nil, :ignore)
+  else raise "Unknown file type: #{file.original_filename}"
+  end
+end
+  
+end

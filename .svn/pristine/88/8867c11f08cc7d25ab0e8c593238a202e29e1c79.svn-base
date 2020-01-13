@@ -1,0 +1,6 @@
+user_table.destroy();
+$('#users-table').html('<%= j render(:partial => "static/user_admin_list") %>');
+		var user_table = $('#users-table').DataTable( {
+		    "retrieve": true,
+		    "paging": true
+		} );

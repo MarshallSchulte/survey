@@ -1,0 +1,25 @@
+	<table id="users-table" class="display">
+	  <thead>
+	  <tr>
+		<th>First Name</th>
+		<th>Last Name</th>
+		<th>Email</th>
+		<th>Role</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @users.each do |user| %>
+		  <tr>
+		  	<td><%= user.first_name %></td>
+		  	<td><%= user.last_name %></td>
+		  	<td><%= user.email %></td>
+		  	<td>
+		  		<%= user.roles.first.name if !user.roles.blank?%>
+		  	</td>
+		  </tr>
+		<% end %>
+	   </tbody> 
+	</table>
+	<%= link_to "Invite a User", '/invite_user', "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %>
+	
+

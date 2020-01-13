@@ -1,0 +1,4 @@
+$('#new-admin-inside-render').html('<%= j render "vendors/new" %>');
+$(form).submit(function(){
+	$('#vendor-select').html(data);
+});

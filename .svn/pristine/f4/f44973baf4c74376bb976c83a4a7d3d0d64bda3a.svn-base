@@ -1,0 +1,28 @@
+  <fieldset class="form-inline row">
+    <div class="form-group col-sm-2 col-md-4">
+    	<%= label_tag :first, "First Name" %><br/>
+    	<%= f.text_field :first_name, :disabled => true %>
+  	</div>
+  	
+  	<div class="form-group col-sm-2 col-md-4">
+  		<%= label_tag :last, "Last Name", :size => 3 %><br/>
+    	<%= f.text_field :last_name, :disabled => true %>
+  	</div>
+  	
+  	<div class="form-group col-sm-3 col-md-4">
+  		<%= label_tag :email, "Email" %> <br/>
+    	<%= f.text_field :email, :disabled => true %>
+  	</div>
+  	
+  	<div class="col-sm-1">
+  	</div>
+ </fieldset>
+ </br>
+ </br>
+    <div class="form-group row">
+    	<%= label_tag :invite, "Send?" %><br />
+    	<%= f.check_box :survey_sent %>
+  	</div>
+  		
+
+  

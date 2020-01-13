@@ -1,0 +1,6 @@
+campaign_table.destroy();
+$('#specialist-campaigns-table').html('<%= j render(:partial => "static/specialist_campaign_list") %>');
+var campaign_table = $('#specialist-campaigns-table').DataTable( {
+		    "retrieve": true,
+		    "paging": true
+} );

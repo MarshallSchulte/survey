@@ -1,0 +1,67 @@
+<div class="modal fade" id="inside-admin" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" data-dismiss="modal" type="button">×</button>
+  	<div id="new-admin-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#first-admin-page" aria-controls="first-admin-page" role="tab" data-toggle="tab">Customers</a></li>
+    <li role="presentation"><a href="#second-admin-page" aria-controls="second-admin-page" role="tab" data-toggle="tab">Vendors</a></li>
+  	<li role="presentation"><a href="#third-admin-page" aria-controls="third-admin-page" role="tab" data-toggle="tab">Metrics and KPIs</a></li>
+  	<li role="presentation"><a href="#fourth-admin-page" aria-controls="fourth-admin-page" role="tab" data-toggle="tab">Users</a></li>
+</ul>
+<h4 id="landing-page-header"><%= current_user.name %> - Administrator</h4> 
+<div class="tab-content"> 
+  <div role="tabpanel" class="tab-pane active" id="first-admin-page">
+  	<h4 class="cv-header">Customers</h4>
+	<%= render 'static/customer_admin_list' %>
+  </div>
+  
+  <div role="tabpanel" class="tab-pane" id="second-admin-page">
+	<h4 class="cv-header">Vendors</h4>
+	 <%= render 'static/vendor_admin_list' %>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="third-admin-page">
+	<h4 class="cv-header">Metrics and KPIs</h4>
+	 <%= render 'static/metric_admin_list' %>
+	 <%= link_to "Add a metric", new_metric_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %>
+	 <%= link_to "Add a KPI", new_kpi_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="fourth-admin-page">
+	<h4 class="cv-header">Users</h4>
+	 <%= render 'static/user_admin_list' %>
+	  	
+	</div>
+	
+</div>
+
+<script>
+
+var customer_table = $('#customers-table').DataTable( {
+    "retrieve": true,
+    "paging": true
+} );
+var vendor_table = $('#vendors-table').DataTable( {
+    "retrieve": true,
+    "paging": true
+} );
+var mk_table = $('#mk-table').DataTable( {
+    "retrieve": true,
+    "paging": true
+} );
+var user_table = $('#users-table').DataTable( {
+    "retrieve": true,
+    "paging": true
+} );
+$('.close').click(function(){
+	$('#inside-admin').modal('hide');
+});
+
+</script>

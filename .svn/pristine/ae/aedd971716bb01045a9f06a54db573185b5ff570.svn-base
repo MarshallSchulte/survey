@@ -1,0 +1,24 @@
+	<table id="users-table" class="display">
+	  <thead>
+	  <tr>
+		<th>First Name</th>
+		<th>Last Name</th>
+		<th>Email</th>
+		<th>Senior Specialist?</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @specialists_for_this_customer.each do |sp| %>
+		  <tr>
+		  	<td><%= best_in_place sp, :first_name %></td>
+		  	<td><%= best_in_place sp, :last_name %></td>
+		  	<td><%= sp.email %></td>
+		  	<td>
+		  	 <%= best_in_place sp, :senior_specialist, as: :checkbox, html_attrs: [type: :checkbox], :collection => [raw("<i class='glyphicon glyphicon-unchecked'></i>"), raw("<i class='glyphicon glyphicon-check'></i>")] %>
+		  	</td>
+		  </tr>
+		<% end %>
+	   </tbody> 
+	</table>
+	<br />
+

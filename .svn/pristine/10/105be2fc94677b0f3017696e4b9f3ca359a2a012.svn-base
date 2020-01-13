@@ -1,0 +1,4 @@
+$("#manager-inside-render").html('<%= j render 'static/results'%>');
+var results_table = $("#campaign-results-table").DataTable({
+	"iDisplayLength" : 50
+});

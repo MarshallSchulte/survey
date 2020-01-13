@@ -1,0 +1,100 @@
+<% if can? :manage, Ctype %>
+<div class="modal fade" id="inside-admin" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" data-dismiss="modal" type="button">×</button>
+  	<div id="new-admin-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#first-admin-page" aria-controls="first-admin-page" role="tab" data-toggle="tab">Template</a></li>
+    <li role="presentation"><a href="#second-admin-page" aria-controls="second-admin-page" role="tab" data-toggle="tab">Customers</a></li>
+  	<li role="presentation"><a href="#third-admin-page" aria-controls="third-admin-page" role="tab" data-toggle="tab">Vendors</a></li>
+  	<li role="presentation"><a href="#fourth-admin-page" aria-controls="fourth-admin-page" role="tab" data-toggle="tab">Metrics and KPIs</a></li>
+  	<li role="presentation"><a href="#fifth-admin-page" aria-controls="fifth-admin-page" role="tab" data-toggle="tab">Users</a></li>
+</ul>
+
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="first-admin-page">
+  	<h4 class="cv-header">Templates</h4>
+  	<%= link_to "Add a Template", new_campaign_path, class: "edit-btn" %>
+	<%= render 'static/admin_template_list' %>
+  </div>
+  <div role="tabpanel" class="tab-pane" id="second-admin-page">
+  	<h4 class="cv-header">Customers</h4>
+  	<%= link_to "Add a Customer", new_customer_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true, class: "edit-btn" %>
+	<%= render 'static/customer_admin_list' %>
+  </div>
+  
+  <div role="tabpanel" class="tab-pane" id="third-admin-page">
+	<h4 class="cv-header">Vendors</h4>
+	 <%= link_to "Add a Vendor", new_vendor_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true, class: "edit-btn" %>
+	 <%= render 'static/vendor_admin_list' %>
+  </div>
+  <div role="tabpanel" class="tab-pane" id="fourth-admin-page">
+	<h4 class="cv-header">Metrics and KPIs</h4>
+	<%= link_to "Add a Metric", new_metric_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true, class: "edit-btn" %>
+	 <%= link_to "Add a KPI", new_kpi_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true, class: "edit-btn" %>
+	 <%= render 'static/metric_admin_list' %>
+  </div>
+  <div role="tabpanel" class="tab-pane" id="fifth-admin-page">
+	 <h4 class="cv-header">Users</h4>
+	 <%= render 'static/user_admin_list' %>
+  </div>
+	
+</div>
+<% else %>
+	<h1 style="border-color: red; border-style: dashed; border-width: 5px 0 5px 0; padding: 50px; color:red; text-align:center;font-weight:bold; background-color:rgb(255, 195, 195); margin-top: 10%;">You are not authorized to view this page!</h1>
+<% end %>
+<script>
+var template_table = $("#specialist-campaigns-table").DataTable( {
+			"retrieve": true,
+    		"paging": true,
+    		"oLanguage": {
+		         "sSearch": "General Search:</br>"
+		      	},
+		      	"dom": 'flptip'
+} );
+var customer_table = $('#customers-table').DataTable( {
+    "retrieve": true,
+    "paging": true,
+    "oLanguage": {
+         "sSearch": "General Search:</br>"
+     },
+     "dom": 'flptip'
+} );
+var vendor_table = $('#vendors-table').DataTable( {
+    "retrieve": true,
+    "paging": true,
+    "oLanguage": {
+         "sSearch": "General Search:</br>"
+     },
+     "dom": 'flptip'
+} );
+var mk_table = $('#mk-table').DataTable( {
+    "retrieve": true,
+    "paging": true,
+    "oLanguage": {
+         "sSearch": "General Search:</br>"
+     },
+     "dom": 'flptip'
+} );
+var user_table = $('#users-table').DataTable( {
+    "retrieve": true,
+    "paging": true,
+    "oLanguage": {
+         "sSearch": "General Search:</br>"
+     },
+     "dom": 'flptip'
+} );
+$('.close').click(function(){
+	$('#inside-admin').modal('hide');
+});
+
+</script>

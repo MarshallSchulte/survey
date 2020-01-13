@@ -1,0 +1,12 @@
+
+if ($('#new-campaign-inside-render').length){
+	$("#campaign_vendor_id").append('<option selected="selected" value="<%=Vendor.last.id %>"><%= Vendor.last.name %></option>');
+}else{
+	vendor_table.destroy();
+	$("#vendors-table").html('<%= j render(:partial => "static/vendor_admin_list") %>');
+	$("#vendor-specialist-table").html('<%= j render(:partial => "static/specialist_vendor_table") %>');
+	var vendor_table = $('#vendors-table').DataTable( {
+    "retrieve": true,
+    "paging": true
+} );
+}

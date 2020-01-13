@@ -1,0 +1,2 @@
+console.log("AAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+$('#manager-table').html('<%= j render(:partial => "static/campaign_list") %>');

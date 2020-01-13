@@ -1,0 +1,13 @@
+
+	  	<h4 class="cv-header">Select a Supplier</h4>
+	  	<% if current_page?(:action => 'new')%>
+	  		<input id="vendor">
+	  	<% elsif current_page?(:action => 'edit') %>
+	  		<% if @campaign.vendor_id && @campaign.vendor_id != 0 %>
+	  			<input id="vendor" value="<%=Vendor.find(@campaign.vendor_id).name%>">
+	  		<% else %>
+	  			<input id="vendor">
+	  		<% end %>
+	  	<% end %>
+	  	<%= f.hidden_field :vendor_id, id: "vendor-id" %>
+	  	<%= link_to "Don't see your vendor? Click here to add a new one.", new_vendor_path, "data-toggle"=> "modal", "data-target"=> "#inside-campaign", remote: true %>

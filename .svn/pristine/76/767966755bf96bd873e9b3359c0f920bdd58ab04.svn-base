@@ -1,0 +1,10 @@
+  <div class="field">
+    <%= f.label :metric_id, "Metric" %>
+    <%= f.collection_select :metric_id, Metric.all, :id, :metric_name %>
+    <%= f.label :kpi_id, "KPI" %>
+    <%#= f.number_field :kpi_id %>
+    <%= f.collection_select :kpi_id, Kpi.all, :id, :kpi %>
+    <%= f.hidden_field :_destroy %>
+	<%= link_to_remove_association "remove", f, :class => 'remove_fields' %>
+  </div>
+  

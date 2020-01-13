@@ -1,0 +1,36 @@
+<% if current_user.roles.first.id == 2 %>
+
+    campaign_table.destroy();
+	$('#specialist-campaigns-table').html('<%= j render(:partial => "static/campaign_list") %>');
+	$('#specialist-vendor-rows').html('<%= j render(:partial => "static/specialist_vendor_rows") %>');
+	$('#vendor-specialist-table').html('<%= j render(:partial => "static/specialist_vendor_table") %>');
+		var campaign_table = $('#specialist-campaigns-table').DataTable( {
+		    "retrieve": true,
+		    "paging": true,
+		    "order": [[ 10, "desc" ]],
+		    "oLanguage": {
+	         "sSearch": "General Search:</br>"
+	      	},
+	      	"dom": 'flptip',
+	      	"columnDefs": [ { "targets": [11,12,13,14], "orderable": false } ]
+		} );
+<% elsif current_user.roles.first.id == 3 %>
+
+  campaign_table.destroy();
+	$('#specialist-campaigns-table').html('<%= j render(:partial => "static/specialist_campaign_list") %>');
+		var campaign_table = $('#specialist-campaigns-table').DataTable( {
+		    "retrieve": true,
+		    "paging": true,
+		    "order": [[ 9, "desc" ]],
+		    "oLanguage": {
+	         "sSearch": "General Search:</br>"
+	      	},
+	      	"dom": 'flptip',
+	      	"columnDefs": [ { "targets": [10,11,12,13], "orderable": false } ]
+		} );
+<% end %>
+$(".best_in_place").each(function(){
+	if ($(this).html() == ""){
+		$(this).append("--");
+	}
+});

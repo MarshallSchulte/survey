@@ -1,0 +1,66 @@
+<style type="text/css">
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+</style>
+<div class="container" id="campaign-form">
+	  <div class="field" id="campaign-name" align="center">
+		<table class="gridtable" >
+			<tr>
+				<th>Campaign Name</th>
+				<th>Start Date</th>
+				<th>End Date</th>
+				<th>Tier</th>
+				<th>Status</th>
+			</tr>
+			<tr>
+				<td><%=@campaign.name%></td>
+				<td><%=@campaign.start_date%></td>
+				<td><%=@campaign.end_date%></td>
+				<td><%=@campaign.tier%></td>
+				<td><%=@campaign.status%></td>
+			</tr>
+		</table>
+	  </div>
+  </div>
+<%= form_for(@campaign) do |f| %>
+  
+  
+  <div class="container" id="question-container">
+  	<h4 class="container-header"><b>Send Campaign to Reviewers</b></h4>
+	  <div align="center">
+		  <%= render '/campaigns/send_campaign_labels'%>
+		  <%= f.nested_fields_for :reviewers do |reviewer|%>
+	 	  	<%= render '/campaigns/send_campaign_fields', :f => reviewer%>
+	 	  <%end%>
+	  </div>
+	    <div class="actions col-md-12">
+		    <%= f.submit "Send Campaign" %>
+	   </div>
+  </div>
+  
+
+<% end %>
+<script>
+
+</script>

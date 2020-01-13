@@ -1,0 +1,5 @@
+<h4 align="center">Create new Metric</h4> <br />
+
+<%= render 'form' %>
+
+<%= link_to 'Back', metrics_path %>

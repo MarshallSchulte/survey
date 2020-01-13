@@ -1,0 +1,129 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#first-results-page" aria-controls="first-results-page" role="tab" data-toggle="tab">Response Summary</a></li>
+    <li role="presentation"><a href="#second-results-page" aria-controls="second-results-page" role="tab" data-toggle="tab">Campaign Analytics</a></li>
+	<li role="presentation"><a href="#third-results-page" aria-controls="third-results-page" role="tab" data-toggle="tab">Market Analytics</a></li>
+</ul>
+<div class="tab-content">
+	<div id="first-results-page" class="tab-pane active">
+		<table id="campaign-results-table" class="display">
+			<thead>
+			  <tr>
+				<th>Question</th>
+				<th>Average Score</th>
+				<th>Number of Reviewers</th>
+				<th>Responses</th>
+				<th></th>
+			  </tr>
+			</thead>
+			<tbody>
+			<% @campaign.questions.each_with_index do |q, index| %>
+			  <tr>
+				<td><%= index + 1 %>. <%= Kpi.find(q.kpi_id).kpi_measurement %></td>
+				<% responses_count = q.responses.all.count %>
+				<% responses_answer_score = 0 %>
+				<% q.responses.each do |r| %>
+					<% responses_answer_score += r.answer_option %>
+				<% end %>
+				<% if responses_count != 0 %>
+					<% r_average = responses_answer_score/responses_count %>
+				<td><%= r_average %></td>
+				<% else %>
+					<td>No responses received for this question.</td>
+				<% end %>
+				<td><%= @campaign.reviewers.count %></td>
+				<td><%= q.responses.count %></td>
+				<td></td>
+			  </tr>
+			<% end %>
+			</tbody>
+		</table>
+		<%= link_to "Export Spreadsheet", export_spreadsheet_campaign_path(format: "xlsx"), id: "spreadsheet", class: "edit-btn" %>
+		<%= @chart5.series %>
+	</div>
+	
+	<div id="second-results-page" class="tab-pane">
+	  <div id="results-holder">
+	   <div class="tab-content">
+	     <div id="first-graph" class="tab-pane active">
+			<%= high_chart("results-charts-1", @chart1) %>
+			<%= link_to "Add to Powerpoint Slide", send_to_graphs_campaign_path, id: "fchart1", class: "edit-btn", remote: true %>
+		 </div>
+		 <div id="second-graph" class="tab-pane">
+			<%= high_chart("results-charts-2", @chart5) %>
+			<%= link_to "Add to Powerpoint Slide", send_to_graphs_5_campaign_path, id: "fchart2", class: "edit-btn", remote: true %>
+		 </div>
+		 <div id="third-graph" class="tab-pane">
+			<%= high_chart("results-charts-3", @chart3) %>
+			<%= link_to "Add to Powerpoint Slide", send_to_graphs_3_campaign_path, id: "fchart3", class: "edit-btn", remote: true %>
+		 </div>
+	   </div>
+	  </div>
+	  
+	  <ul class="nav nav-tabs" role="tablist">
+	    <li role="presentation" class="active"><a href="#first-graph" aria-controls="first-graph" role="tab" data-toggle="tab">Average Score(metric)</a></li>
+	    <li role="presentation"><a href="#second-graph" aria-controls="second-graph" role="tab" data-toggle="tab">Funnel Chart</a></li>
+		<li role="presentation"><a href="#third-graph" aria-controls="third-graph" role="tab" data-toggle="tab">Performance Review [Status] by Quarter</a></li>
+		<li role="presentation"><a href="#fifth-graph" aria-controls="fifth-graph" role="tab" data-toggle="tab">Funnel Chart</a></li>
+	 </ul>
+	 <%= link_to "Create Powerpoint", powerpoint_campaign_path, id: "powerpoint", class: "edit-btn", remote: true %>
+	 <%= link_to "Remove All Slides", remove_all_campaign_path, id: "remove-all", class: "edit-btn", remote: true %>
+	 <div class="row slide-rows" id="slide-row">
+	 	<%= render 'campaigns/slides'%>
+	 </div>
+	</div>
+	<div id="third-results-page" class="tab-pane">
+	  <div id="results-holder">
+	   <div class="tab-content">
+	     <div id="first-market-graph" class="tab-pane active">
+			<%= high_chart("results-market-charts-1", @chartper3) %>
+			<%= link_to "Add to Powerpoint Slide", send_to_ma_graphs_campaign_path, id: "fchart4", class: "edit-btn", remote: true %>
+		 </div>
+		 <div id="second-market-graph" class="tab-pane">
+			<%= high_chart("results-market-charts-2", @chartper4) %>
+			<%= link_to "Add to Powerpoint Slide", send_to_ma_graphs_2_campaign_path, id: "fchart5", class: "edit-btn", remote: true %>
+		 </div>
+		 <div id="third-market-graph" class="tab-pane">
+			<%= high_chart("results-market-charts-3", @chartper5) %>
+			<%= link_to "Add to Powerpoint Slide", send_to_ma_graphs_3_campaign_path, id: "fchart6", class: "edit-btn", remote: true %>
+		 </div>
+		 <div id="fourth-market-graph" class="tab-pane">
+			<%= high_chart("results-market-charts-4", @chartper6) %>
+			<%= link_to "Add to Powerpoint Slide", send_to_ma_graphs_4_campaign_path, id: "fchart7", class: "edit-btn", remote: true %>
+		 </div>
+		 <div id="fifth-market-graph" class="tab-pane">
+			<%= high_chart("results-market-charts-5", @chartper7) %>
+			<%= link_to "Add to Powerpoint Slide", send_to_ma_graphs_5_campaign_path, id: "fchart8", class: "edit-btn", remote: true %>
+		 </div>
+	   </div>
+	  </div>
+	  
+	  <ul class="nav nav-tabs" role="tablist">
+	    <li role="presentation" class="active"><a href="#first-market-graph" aria-controls="first-market-graph" role="tab" data-toggle="tab">Top Five Categories</a></li>
+	    <li role="presentation"><a href="#second-market-graph" aria-controls="second-market-graph" role="tab" data-toggle="tab">PAN 7 Scores Comparison</a></li>
+		<li role="presentation"><a href="#third-market-graph" aria-controls="third-market-graph" role="tab" data-toggle="tab">Vendor Comparison</a></li>
+	 	<li role="presentation"><a href="#fourth-market-graph" aria-controls="third-market-graph" role="tab" data-toggle="tab">Top Five Customers</a></li>
+		<li role="presentation"><a href="#fifth-market-graph" aria-controls="third-market-graph" role="tab" data-toggle="tab">Top Five Customers Overall</a></li>
+
+	 </ul>
+	 <%= link_to "Create Powerpoint", powerpoint_campaign_path, id: "powerpoint", class: "edit-btn", remote: true %>
+	 <%= link_to "Remove All Slides", remove_all_campaign_path, id: "remove-all", class: "edit-btn", remote: true %>
+	 <div class="row slide-rows" id="slide-row">
+	 	<%= render 'campaigns/slides'%>
+	 </div>
+	</div>
+<script>	
+		$("#powerpoint").click(function(){
+			graph_count = <%= Graph.all.count %>
+			$(".slide-rows").empty();
+			$(".slide-rows").html("<h3 style='text-align:center;'>Your Powerpoint has been created and will be emailed to you shortly.</h3>");
+		});
+		
+		$("#remove-all").click(function(){
+			$(".slide-rows").empty();
+			$(".slide-rows").html("<h3 style='text-align:center;'>Slides removed.</h3>");
+		});
+		$('.close-slide').on('click', function() {
+			console.log("destroy");
+        	$(this).parent('div').parent('form').parent('.slide').fadeOut();
+		});
+</script>

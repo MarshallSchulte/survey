@@ -1,0 +1,18 @@
+class GraphsController < ApplicationController
+  before_action :set_graph, only: [:destroy]
+  load_and_authorize_resource
+  
+  def destroy
+    File.delete(@graph.filename)
+    @graph.destroy
+    Rails.cache.clear
+  end
+  
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_graph
+      @graph = Graph.find(params[:id])
+      # @user_roles = UserRole.where(role_id: 2)
+      #@specialists = User.joins(:user_roles)
+    end
+end

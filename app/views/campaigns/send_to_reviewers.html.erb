@@ -1,0 +1,78 @@
+<style type="text/css">
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+</style>
+<div class="container" id="campaign-form">
+	  <div class="field" id="campaign-name" align="center">
+		<table class="gridtable" >
+			<tr>
+				<th>Campaign Name</th>
+				<th>Start Date</th>
+				<th>End Date</th>
+				<th>Tier</th>
+				<th>Status</th>
+			</tr>
+			<tr>
+				<td><%=@campaign.name%></td>
+				<td><%=@campaign.start_date%></td>
+				<td><%=@campaign.end_date%></td>
+				<td><%=@campaign.tier%></td>
+				<td><%=@campaign.status%></td>
+			</tr>
+		</table>
+	  </div>
+  </div>
+
+  
+  
+  <div class="container" id="question-container">
+  	<h4 class="container-header"><b>Survey Sent to the following Reviewers...</b></h4>
+	<table id="send_to_reviewers" class="display">
+ 	  	<thead>
+ 	  		<th>First Name</th>
+ 	  		<th>Last Name</th>
+ 	  		<th>Email</th>
+ 	  		<th>Reviewer Type</th>
+ 	  	</thead>
+ 	  	<tbody>
+ 	  		<% @campaign.reviewers.each do |reviewer|%>
+			<tr>
+				<td><%= reviewer.first_name %></td>
+				<td><%= reviewer.last_name %></td>
+				<td><%= reviewer.email %></td>
+				<td><%= ReviewerType.find(reviewer.reviewer_type_id).name %></td>
+			</tr>
+			<%end%>	 	  		
+ 	  	</tbody>
+ 	  </table>
+ 	  
+ 	  	    
+   			
+    		
+ 	  
+  </div>
+  
+<script>
+
+</script>

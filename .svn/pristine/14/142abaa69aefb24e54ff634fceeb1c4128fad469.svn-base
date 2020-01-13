@@ -1,0 +1,47 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#first-results-page" aria-controls="first-results-page" role="tab" data-toggle="tab">Response Summary</a></li>
+    <li role="presentation"><a href="#second-results-page" aria-controls="second-results-page" role="tab" data-toggle="tab">Campaign Analytics</a></li>
+</ul>
+<div class="tab-content">
+	<div id="first-results-page" class="tab-pane active">
+		<table id="campaign-results-table" class="display">
+			<thead>
+			  <tr>
+				<th>Question</th>
+				<th>Average Score</th>
+				<th>Number of Reviewers</th>
+				<th>Responses</th>
+				<th></th>
+			  </tr>
+			</thead>
+			<tbody>
+			<% @campaign.questions.each_with_index do |q, index| %>
+			  <tr>
+				<td><%= index + 1 %>. <%= Kpi.find(q.kpi_id).kpi_measurement %></td>
+				<% responses_count = q.responses.all.count %>
+				<% responses_answer_score = 0 %>
+				<% q.responses.each do |r| %>
+					<% responses_answer_score += r.answer_option %>
+				<% end %>
+				<% r_average = responses_answer_score/responses_count %>
+				<td><%= r_average %></td>
+				<td><%= @campaign.reviewers.count %></td>
+				<td><%= q.responses.count %></td>
+				<td></td>
+			  </tr>
+			<% end %>
+			</tbody>
+		</table>
+	</div>
+	<div id="second-results-page" class="tab-pane">
+	  <div id="results-holder">
+		<%= render 'static/results_charts' %>
+	  </div>
+	  <%= link_to "Graph 1", {controller: "campaigns", action: "graph_1", id: @campaign.id }, remote: true %>
+	  <%= link_to "Graph 2", {controller: "campaigns", action: "graph_2", id: @campaign.id }, remote: true %>
+	  <%= link_to "Graph 3", {controller: "campaigns", action: "graph_3", id: @campaign.id }, remote: true %>
+	</div>
+</div>
+<script>
+	
+</script>

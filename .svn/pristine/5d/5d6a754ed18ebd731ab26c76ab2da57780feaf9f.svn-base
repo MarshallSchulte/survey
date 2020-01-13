@@ -1,0 +1,8 @@
+$('#manager-inside-render').html('<%= j render 'campaigns/new' %>');
+
+		$('#start-date').datepicker();
+		$('#end-date').datepicker();
+		console.log("grey");
+		$('.form-button input').on('click', function(){
+			$('#inside-manager').modal('hide');
+		});

@@ -1,0 +1,23 @@
+<%= render 'layouts/internal_navbar' %>
+<p id="notice"><%= notice %></p>
+
+
+  <h3 id="index-header"><%= @ctype.name %></h3>
+  
+
+<div class="container">
+  <div id="customer-label">Companies: </div>
+  <div id="ctype-customers">
+	  <% @ctype.customers.each do |c| %>
+	  	<%= link_to c do %>
+	  		<div class="industry-type"><%= c.name %></div>
+	  	<% end %>
+	  <% end %>
+
+
+
+	<div class=".action-links">
+		<%= link_to 'Edit', edit_ctype_path(@ctype) %> |
+		<%= link_to 'Back', ctypes_path %>
+	</div>
+</div>

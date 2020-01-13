@@ -1,0 +1,30 @@
+class StaticController < ApplicationController
+  def home
+    logger.debug "def home"
+    if user_signed_in?
+    _user = User.new
+      if _user.campaign_manager(current_user.id)
+        redirect_to '/campaign_manager_landing' 
+      elsif _user.specialist(current_user.id)
+        redirect_to '/specialist_landing'
+      end
+    end
+  end
+
+  def contact
+  end
+
+  def about
+  end
+
+  def testimonials
+  end
+  
+  def campaign_manager_landing
+    @campaigns = Campaign.where(manager_id: current_user.id)
+  end
+  
+  def specialist_landing
+    @specialist_campaigns = Campaign.where(specialist_id: current_user.id)
+  end
+end

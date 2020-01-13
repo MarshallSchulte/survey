@@ -1,0 +1,15 @@
+console.log("CREATION: ");
+if ($('#new-campaign-inside-render').length){
+	$("#campaign_vendor_id").append('<option selected="selected" value="<%=Vendor.last.id %>"><%= Vendor.last.name %></option>');
+}else if ($('#vendor-specialist-table').length){
+	console.log("is it rendering?");
+	$("#vendor-specialist-table").html('<%= j render(:partial => "static/specialist_vendor_table") %>');
+}else{
+	vendor_table.destroy();
+	$("#vendors-table").html('<%= j render(:partial => "static/vendor_admin_list") %>');
+	
+	var vendor_table = $('#vendors-table').DataTable( {
+    "retrieve": true,
+    "paging": true
+} );
+}

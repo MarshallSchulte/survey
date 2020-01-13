@@ -1,0 +1,3 @@
+<div id='chartdiv'>
+	<%= high_chart("analytics", @chart) %>
+</div>

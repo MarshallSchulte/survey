@@ -1,0 +1,7 @@
+'<%= form_for @campaign do |ff| %>'
+$('#form-container form').submit(function(){
+	$('#customer-select').html('<%= j render "campaigns/customer_select", locals: {object: @campaign, f: ff } %>');
+	console.log("customer partial rerender");
+});
+
+'<% end %>'

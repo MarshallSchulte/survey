@@ -1,0 +1,17 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Campaign Results") do |sheet|
+    sheet.add_row ["Question", "Average Score","Number of Reviewers","Responses"]
+    @questions.each do |q|
+    	responses_count = q.responses.all.count 
+				responses_answer_score = 0 
+				q.responses.each do |r| 
+					responses_answer_score += r.answer_option 
+				end 
+				if responses_count != 0 
+					r_average = responses_answer_score/responses_count 
+				else 
+					r_average = "No responses received for this question."
+				end				
+        sheet.add_row [Kpi.find(q.kpi_id).kpi_measurement, responses_count, @campaign.reviewers.count, q.responses.count]
+    end
+end

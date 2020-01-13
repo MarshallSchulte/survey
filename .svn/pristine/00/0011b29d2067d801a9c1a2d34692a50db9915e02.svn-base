@@ -1,0 +1,243 @@
+// Place all the styles related to the campaigns controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+#campaign-header{
+  font-weight:bold;
+  text-align:center;
+  margin-top: 4%;
+}
+
+#nothing-header{
+  text-align:center;
+  margin-top: 4%;
+}
+
+#landing-page-header{
+  text-align:center;
+  font-weight:bold;
+}
+
+.container-header{
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#cv-container{
+  width:50%;
+  background-color: #CCCCCC;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+  margin-top: 5%;
+}
+
+.cv-header{
+  font-weight:bold;
+}
+
+.cv-select{
+  text-align:center;
+  select{
+    font-size:1.2em;
+    width:100%;
+    padding: 5px 0 5px 0;
+  }
+  a{
+    display:block;
+    width: 75%;
+    margin: 5px auto 10px auto;
+    border-width: 0 3px 3px 0;
+    border-radius: 3px;
+    border-color: #BBBBBB;
+    border-style:solid;
+    background-color: #EEEEEE;
+    padding: 5px 0 5px 0;
+  }
+}
+
+#campaign-form{
+  width: 50%;
+  background-color: #CCCCCC;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+  margin-top: 2%;
+  padding: 20px;
+  .field{
+    float:left;
+    text-align:center;
+  }
+}
+
+.back{
+      a{
+        background-color: #EEEEEE;
+        padding:10px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        border-radius: 3px;
+        border-width:0 3px 3px 0;
+        border-style:solid;
+        border-color: #AAAAAA;
+        font-size:12px;
+        margin-left:25%;
+        display:block;
+        max-width: 150px;
+        text-align:center;
+      }
+}
+
+#campaign-name{
+  width: 100%;
+  input{
+    width:100%;
+  }
+  label{
+  }
+}
+
+.cv-form-label{
+  text-align:center;
+}
+
+.cv-form-input{
+  
+}
+
+.modal-body{
+  width:70%;
+  margin-left:auto;
+  margin-right:auto;
+  background-color: white;
+  border-style: solid;
+  border-color: gray;
+  border-width: 2px 2px 2px 2px;
+  border-radius: 20px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+  #form-container{
+    margin: 0 auto 0 auto;
+    width:100%;
+    border-style:none;
+    box-shadow:0 0;
+  }
+}
+
+#manager-table{
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 3%;
+  border-radius: 3px;
+}
+
+.manager-table-header{
+  border-style:solid;
+  border-width: 1px;
+  border-color:black;
+  padding:10px;
+  font-weight:bold;
+  background-color:#BBBBBB;
+  color:black;
+}
+
+.manager-table-data{
+  border-style:solid;
+  border-width: 1px;
+  border-color:black;
+  padding:10px;
+  text-align:center;
+}
+
+.edit-btn{
+  border-radius: 5px;
+  background-color: #CCCCCC;
+  border-width: 0 3px 3px 0;
+  border-style: solid;
+  border-color: #AAAAAA;
+  padding: 5px;
+  display:inline-block;
+  margin-left:10px;
+}
+
+.new-btn{
+  border-radius: 10px;
+  background-color: #CCCCCC;
+  border-width: 0 3px 3px 0;
+  border-style: solid;
+  border-color: #AAAAAA;
+  padding: 10px;
+  display:inline-block;
+  margin-left: 20%;
+  margin-top: 3%;
+}
+
+#question-container{
+  width: 70%;
+  background-color: #CCCCCC;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+  margin-top: 2%;
+  padding: 20px;
+}
+
+#add_field{
+ padding:5px; 
+ background-color: #DDDDDD;
+ border-radius: 5px;
+ border-style: solid;
+ border-width: 0 2px 2px 0;
+ border-color: #AAAAAA;
+ transition: all 200ms;
+}
+
+#add_field:hover{
+  color: black;
+  background-color: #999999;
+}
+
+.remove_fields{
+ display:block;
+ width: 100px;
+ margin: 10px auto 10px auto;
+ padding:5px; 
+ background-color: #EEEEEE;
+ border-radius: 5px;
+ border-style: solid;
+ border-width: 0 2px 2px 0;
+ border-color: #AAAAAA;
+ transition: all 200ms;
+}
+.remove_fields:hover{
+  color: black;
+  background-color: #999999;
+}
+
+  .actions{
+    text-align:center;
+    input, a{
+      background-color: #EEEEEE;
+      padding:10px;
+      margin-top: 20px;
+      border-radius: 3px;
+      border-width:0 3px 3px 0;
+      border-style:solid;
+      border-color: #AAAAAA;
+      transition: all 200ms;
+    }
+    input{
+      font-weight:bold;
+    }
+    input:hover{
+      color: black;
+      background-color: #999999;
+    }
+  }
+  
+  .question-field{
+    text-align:center;
+    background-color: #DDDDDD;
+    border-radius: 10px;
+    padding: 20px;
+    width:100%;
+    p{
+      margin-top: 30px;
+      margin-bottom:30px;
+    }
+  }

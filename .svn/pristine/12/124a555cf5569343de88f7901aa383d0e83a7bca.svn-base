@@ -1,0 +1,8 @@
+class SurveyMailer < ActionMailer::Base
+  default from: "pranab.khanal@resourcestack.com"
+  def survey_email(reviewer)
+    @user = reviewer
+    mail(to: @user.email, subject: 'Sample Email')
+    #mail(to: reviewer.email, subject: 'Sample Email')
+  end
+end

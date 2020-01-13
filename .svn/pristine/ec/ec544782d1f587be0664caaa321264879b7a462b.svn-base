@@ -1,0 +1,97 @@
+<h1 id="campaign-header">Create a Campaign</h1>
+<div class="modal fade" id="inside-campaign" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" id="inside-campaign-close" type="button">×</button>
+  	<div id="new-campaign-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+<%= form_for @campaign, remote:true do |f| %>
+  <% if @campaign.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@campaign.errors.count, "error") %> prohibited this campaign from being saved:</h2>
+
+      <ul>
+      <% @campaign.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+ <div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="first-campaign-page">
+   <div class="container" id="cv-container">
+  	<div class="col-md-6 cv-select" id="vendor-select">
+		<%= render partial: 'vendor_select', :locals=>{:f=>f} %>
+	</div>
+   </div>
+  
+  <div class="container" id="campaign-form">
+	  <div class="field" id="campaign-name">
+	    <div class="cv-form-label col-md-2"><%= f.label :name %></div>
+	    <div class="cv-form-input col-md-10"><%= f.text_field :name, id: "name" %></div>
+	  </div>
+	  
+	  <div class="field col-md-6">
+	    <%= f.label :tier %><br>
+	    <%= f.select(:tier, [1, 2, 3, 4, 5]) %>
+	  </div>
+	  
+	  <div class="field col-md-6">
+	    <%= f.label :start_date %><br>
+	    <%= f.text_field :start_date, id: "start-date" %>
+	  </div>
+	  <div class="field col-md-6">
+	    <%= f.label :end_date %><br>
+	    <%= f.text_field :end_date, id: "end-date" %>
+	  </div>
+	  <div class="field col-md-6">
+	    <%= f.label :specialist %><br>
+	    <%= f.collection_select :specialist_id, @specialists, :id, :name, include_blank: true %>
+	  </div>
+	  <% if current_user.roles.first.id != 1 %>
+		  <div class="field col-md-6">
+		    <%= f.label "Survey Template" %><br>
+		    <%= f.collection_select :template_id, @templates, :id, :name, include_blank: true %>
+		  </div>
+	  <% end %>
+	  <!--<div class="field">
+	    <%= f.label :supplier_name %><br>
+	    <%= f.text_field :supplier_name %>
+	  </div>
+	  <div class="field">
+	    <%= f.label :complexity_weight %><br>
+	    <%= f.number_field :complexity_weight %>
+	  </div>
+	  <div class="field">
+	    <%= f.label :performance_review_number %><br>
+	    <%= f.number_field :performance_review_number %>
+	  </div>
+	    <div class="field">
+	    <%= f.label :executive_sponsor %><br>
+	    <%= f.text_field :executive_sponsor %>
+	  </div>-->
+	   	  <div class="actions col-md-12">
+		    <div class="form-button"><%= f.submit %></div>
+		  </div>
+	   </div>
+	 </div>
+	  
+	 	  
+		  
+	  
+  	   </div>
+  	  </div>
+  	 </div>
+<% end %>
+<script>
+$('#inside-campaign-close').click(function(){
+	$('#inside-campaign').modal('hide');
+});
+</script>

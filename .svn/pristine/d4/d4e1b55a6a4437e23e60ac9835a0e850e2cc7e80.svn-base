@@ -1,0 +1,1 @@
+$("#vendors-table").html('<%= j render(:partial => "static/vendor_admin_list") %>');

@@ -1,0 +1,14 @@
+<div id="shared-link">
+	<%= link_to 'Back', root_path %>
+</div>
+<% unless current_user.roles.first.id == 1 %>
+  <% if @campaign.template && @campaign.status && @campaign.status != "Complete" %>
+	<h1 id="campaign-header">Edit a Campaign for <%= Customer.find(current_user.customer_id).name %></h1>
+	<%= render 'form' %>
+  <% else %>
+	<h1 style="text-align:center;font-weight: bold;">This Cannot Be Edited By You.</h1>
+  <% end %>
+<% else %>
+	<h1 id="campaign-header">Edit a Template</h1>
+	<%= render 'form' %>
+<% end %>

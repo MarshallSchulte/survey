@@ -1,0 +1,9 @@
+<div class="container" id="form-container">
+	<h3 id="form-header-2">Edit Customer Industry Type</h3>
+	<%= render 'form' %>
+	
+	<div id="shared-link">
+		<%= link_to 'Show', @ctype %>
+		<%= link_to 'Back', ctypes_path %>
+	</div>
+</div>

@@ -1,0 +1,56 @@
+class RegistrationsController < Devise::RegistrationsController
+  def sign_up_params
+    params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation)
+  end
+ 
+  def account_update_params
+    params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :current_password)
+  end
+
+  def after_sign_up_path_for(resource)
+    user = User.new
+    logger.debug " -> User ID #{resource.id}"
+    logger.debug " -> params is :  #{params.inspect}" 
+    logger.debug " -> role ID is  #{params[:users][:roles_attributes][:role_id]}"
+      # Assign Role
+      user.assign_role(resource.id, params[:users][:roles_attributes][:role_id]) #(user_id, role_id)
+    if  !params[:users][:roles_attributes][:role_id].blank? 
+        if params[:users][:roles_attributes][:role_id] == "2"
+          logger.debug "2: params[:users][:roles_attributes][:role_id] is #{params[:users][:roles_attributes][:role_id]}"
+          '/campaign_manager_landing'
+        elsif params[:users][:roles_attributes][:role_id] == "3"
+          logger.debug "3: params[:users][:roles_attributes][:role_id] is #{params[:users][:roles_attributes][:role_id]}"
+          '/specialist_landing'
+        elsif params[:users][:roles_attributes][:role_id] == "1"
+          '/admin_landing'
+        else
+          # redirect to some appropriate page? Should not happen in most cases, but handle this anyways
+        end
+    else
+      # redirect to some appropriate page? Should not happen in most cases, but handle this anyways
+    end
+  end
+  
+  
+  
+  
+
+  #GET /resource/sign_up
+  def new
+    super
+  end
+  
+  def new_specialist
+    new
+  end
+  
+  def new_admin
+    new
+  end
+
+  # def create
+    # logger.debug "Out :: create params inspect is :  #{params.inspect}"
+    # super
+  # end
+  
+end

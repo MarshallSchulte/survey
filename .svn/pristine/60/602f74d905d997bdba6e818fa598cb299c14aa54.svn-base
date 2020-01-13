@@ -1,0 +1,20 @@
+class StaticController < ApplicationController
+  def home
+  end
+
+  def contact
+  end
+
+  def about
+  end
+
+  def testimonials
+  end
+  
+  def campaign_manager_landing
+    @campaigns = Campaign.all
+  end
+  
+  def specialist_landing
+  end
+end

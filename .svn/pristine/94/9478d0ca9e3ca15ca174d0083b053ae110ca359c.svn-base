@@ -1,0 +1,34 @@
+<%= high_chart("results-charts", @chart) %>
+<%= link_to "Export to Powerpoint", "#", class: "edit-btn", id: "powerpoint"%>
+<script type="text/javascript">
+	$("#powerpoint").click(function(){
+		
+		$("#graph-1").on('click', function(){
+
+			var chart = $("#results-charts").highcharts();
+			console.log("graph 1");
+			$.when(chart.exportChart()).done(function(){
+				console.log("trigger 2");
+				$("#graph-2").trigger('click');
+			});
+			
+		});
+		$("#graph-2").on('click', function(){
+			var chart = $("#results-charts").highcharts();
+			console.log("graph 2");
+			$.when(chart.exportChart()).done(function(){
+				console.log("trigger 3");
+				$("#graph-3").trigger('click');
+			});
+			
+		});
+		$("#graph-3").on('click', function(){
+
+			var chart = $("#results-charts").highcharts();
+			console.log("graph 3");
+			chart.exportChart();
+			
+		});
+	$("#graph-1").trigger('click');
+	});
+</script>

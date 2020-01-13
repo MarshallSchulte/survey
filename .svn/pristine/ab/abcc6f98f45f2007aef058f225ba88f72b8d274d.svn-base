@@ -1,0 +1,41 @@
+console.log("RUN");
+var graph_count = <%= @graph_count %>;
+<% @chartper7json = @chartper7.chart.to_json %>
+var chart8 = JSON.parse('<%= raw @chartper7json %>');
+console.log(chart8);
+chart8.series = [{
+	name: "Number of Responses",
+	 data:   [['Quality', <%= @data["Quality"]["percent"] %>],
+	           ['Customer Support', <%=@data["Customer Support"]["percent"]%>],
+	           ['Performance', <%=@data["Performance"]["percent"]%>],
+	           ['Delivery & Support', <%=@data["Delivery & Support"]["percent"]%>]]
+}];
+chart8.chart = {type: "pie"};
+console.log(chart8);
+console.log("initial count: " + graph_count);
+var src = 'assets/chart_<%= @underscore_name %>_' + graph_count + '_<%= @time %>.jpg'
+graph8 = {
+	infile: JSON.stringify(chart8),
+	outfile: 'app/assets/images/chart_<%= @underscore_name %>_'+ graph_count + '_<%= @time %>.jpg'
+};
+			
+graph_count += 1;
+			
+			$.ajax({
+			  type: "POST",
+			  origin: "http://<%= request.host %>:3000",
+			  url: "http://<%= request.host %>:3001",
+			  data: JSON.stringify(graph8),
+			  success: $(".slide-rows").delay(800).queue(function(){
+			  	$(this).html('<%= j render "campaigns/slides" %>').dequeue();
+			  	$('.close-slide').on('click', function() {
+					console.log("destroy");
+	        		$(this).parent('div').parent('form').parent('.slide').fadeOut();
+				});
+			  }),
+			  dataType: "json",
+			  crossDomain: true
+			});
+			console.log("working?");
+			
+

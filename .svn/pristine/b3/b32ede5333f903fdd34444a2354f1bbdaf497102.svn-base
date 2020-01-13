@@ -1,0 +1,21 @@
+  <div class="field question-field">
+  	<div class="iterator">
+  		<%= f.options[:child_index] + 1 %>
+  	</div>
+    <%= f.label :metric_id, "Metric" %>
+    <%#= f.number_field :metric_id %>
+      <%= f.collection_select :metric_id, Metric.all, :id, :metric_name, {include_blank: true},
+       { data:
+       	 {
+       	  dynamic_selectable_url: dynamic_select_kpis_path(':metric_id'),
+          dynamic_selectable_target: '#campaign_questions_attributes_0_kpi_id'
+        }
+      }%>
+    <div class="kpi-field">
+	    <%= f.label :kpi_id, "KPI" %>
+	    <%= f.collection_select :kpi_id, @kpis || [], :id, :kpi, prompt: "Select a KPI"  %>
+	    <%= f.hidden_field :_destroy %>
+	</div>
+	<%= link_to_remove_association "remove", f, :class => 'remove_fields' %>
+  </div>
+  

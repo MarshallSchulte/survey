@@ -1,0 +1,33 @@
+	@survey_evaluations : <%=@survey_evaluations[0].first_name%>
+	<table id="users-table" class="display">
+	  <thead>
+	  <tr>
+		<th>Reviewer Type</th>
+		<th>Campaign Name</th>
+		<th>Supplier</th>
+		<th>Review Date</th>
+		<th>Reviewer</th>
+		<th>Progress</th>
+		<th>Rating</th>
+		<th>Status</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @survey_evaluations.each do |se| %>
+		  <tr>
+		  	<td><%= se.reviewer_type_id %></td>
+		  	<td><%= se.name %></td>
+		  	<td><%= se.vendor_id %></td>
+		  	<td><%= %></td>
+		  	<td><%= se.first_name %> <%= se.last_name %></td>
+		  	<td><%= se.rev_count%></td>
+		  	<td><%= %></td>
+		  	<td><%= %></td>
+		  </tr>
+		<% end %>
+	   </tbody> 
+	</table>
+	<br />
+	<%= link_to "Invite a User", '/invite_user', "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %>
+	
+

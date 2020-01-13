@@ -1,0 +1,60 @@
+  <div class="field question-field">
+  	<div class="iterator">
+  		<%= f.options[:child_index] + 1 %>
+  	</div>
+    <%= f.label :metric_id, "Metric" %>
+    <%#= f.number_field :metric_id %>
+      <%= f.collection_select :metric_id, Metric.all, :id, :metric_name, {include_blank: true},
+       { data:
+       	 {
+       	  dynamic_selectable_url: dynamic_select_kpis_path(':metric_id'),
+          dynamic_selectable_target: '#campaign_questions_attributes_0_kpi_id'
+        }
+      }%>
+    <div class="kpi-field">
+	    <%= f.label :kpi_id, "KPI" %>
+	    <%= f.collection_select :kpi_id, @kpis || [], :id, :kpi, prompt: "Select a KPI"  %>
+	    <%= f.hidden_field :_destroy %>
+	</div>
+	
+	<div class="role-field">
+		<div id="reviewer-header">Reviewer Types</div>
+		<%#= collection_check_boxes(:id, ReviewerType.all, :id, :name ) %>
+		<div class="col-md-4">
+			<%= f.check_box :rt_supplier %> Supplier 
+		</div>
+		<div class="col-md-4">
+			<%= f.check_box :rt_business_unit %> Business Unit
+		</div>
+		<div class="col-md-4">
+			<%= f.check_box :rt_strategic_sourcing %> Strategic Sourcing
+		</div>
+		<div class="col-md-4">
+			<%= f.check_box :rt_supplier_diversity %> Supplier Diversity
+		</div>
+		<div class="col-md-4">
+			<%= f.check_box :rt_governance %> Governance
+		</div>
+		<div class="col-md-4">
+			<%= f.check_box :srm %> SRM
+		</div>
+	</div>
+	
+	Question Weight <%=f.number_field :weight, :size => '2' %>
+	<div class="answer-field">
+		<br /><div id="reviewer-header">Answer Options</div><br />
+		<div class="col-md-6">Option 1 <%=f.text_field :opt1, :value => 'Way below expectations'%></div>
+		<div class="col-md-6">Option 2 <%=f.text_field :opt2, :value => 'Far below expectations'%></div>
+		<div class="col-md-6">Option 3 <%=f.text_field :opt3, :value => 'Below expectations'%></div>
+		<div class="col-md-6">Option 4 <%=f.text_field :opt4, :value => 'Meets expectations'%></div>
+		<div class="col-md-6">Option 5 <%=f.text_field :opt5, :value => 'Exceeds expectations'%></div>
+		<div class="col-md-6">Option 6 <%=f.text_field :opt6, :value => 'Far exceeds expectations'%></div>
+		<div class="col-md-6">Option 7 <%=f.text_field :opt7, :value => 'Way above expectations'%></div>
+	</div>
+	<div class="row weight-field">
+		Question Weight <%=f.number_field :weight, :size => '2' %>
+	</div>
+	
+	<%= link_to_remove_association "remove", f, :class => 'remove_fields' %>
+  </div>
+  

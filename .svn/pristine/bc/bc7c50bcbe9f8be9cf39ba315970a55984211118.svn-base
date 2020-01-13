@@ -1,0 +1,2 @@
+$('#specialist-campaigns-table').html('<%= j render(:partial => "static/campaign_list") %>');
+console.log("AAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");

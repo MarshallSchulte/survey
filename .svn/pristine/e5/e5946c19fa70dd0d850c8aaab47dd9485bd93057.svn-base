@@ -1,0 +1,33 @@
+	<table id="users-table" class="display">
+	  <thead>
+	  <tr>
+		<th>First Name</th>
+		<th>Last Name</th>
+		<th>Email</th>
+		<th>Role</th>
+		<th></th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @users.each do |user| %>
+		  <tr>
+		  	<td><%= user.first_name %></td>
+		  	<td><%= user.last_name %></td>
+		  	<td><%= user.email %></td>
+		  	<td>
+		  		<%= user.roles.first.name if !user.roles.blank?%>
+		  	</td>
+		  	<% if user.roles.first && user.roles.first.id == 1 %>
+		  		<td></td>
+		  	<% elsif Campaign.where(["manager_id = ? and status != ?",  user.id, "Complete"]).present?  || Campaign.where(["specialist_id = ? and status != ?",  user.id, "Complete"]).present? %>
+		  		<td>User has Incomplete Campaigns</td>
+		  	<% else %>
+		  	<td><%= button_to "Delete", { action: "destroy", controller: "users", id: user.id }, method: :delete, data: { confirm: "Are you sure you want to delete this user?" }, remote: true, class: "destroy-btn" %></td>
+		  	<% end %>
+		  </tr>
+		<% end %>
+	   </tbody> 
+	</table>
+	
+	
+

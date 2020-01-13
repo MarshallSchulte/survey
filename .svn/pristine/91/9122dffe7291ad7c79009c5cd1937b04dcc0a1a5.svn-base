@@ -1,0 +1,28 @@
+<h1>Listing metric_scores</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Vendor</th>
+      <th>Actual score</th>
+      <th>Total score</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @metric_scores.each do |metric_score| %>
+      <tr>
+        <td><%= metric_score.metric_name %></td>
+        <td><%= link_to metric_score.vendor_name, "performance/#{metric_score.vendor_id}" %></td>
+        <td><%= metric_score.actual_score %></td>
+        <td><%= metric_score.total_score %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+

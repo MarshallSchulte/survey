@@ -1,0 +1,74 @@
+<%#=@campaign.questions.as_json%><br>
+<h4 align="center">Hello <%=@reviewer.first_name%> <%=@reviewer.last_name%>!</h4>
+
+<% if @reviewer.survey_sent %>
+	<h4 align="center">You have already taken this survey.</h4>
+<% else %>
+<h4 align="center">Please respond to the following survey</h4>
+
+
+	<div class="tab-content">
+	 <div role="tabpanel" class="tab-pane active" id="first-page">
+	 <%= form_for @campaign do |f| %>
+	 <table>
+	  <thead>
+	  	<tr class = "question-row row">
+	  		<th></th>
+	  		<th>Greatly Exceeds Expectations</th>
+	  		<th>Far Exceeds Expectations</th>
+	  		<th>Exceeds Expectations</th>
+	  		<th>Meets Expectations</th>
+	  		<th>Below Expectations</th>
+	  		<th>Far Below Expectations</th>
+	  		<th>Greatly Below Expectations</th>
+	  		<th>Comments</th>
+	  	</tr>
+	  </thead>
+	  <tbody>
+	   
+	   
+	   <% @campaign.questions.each_with_index do |qn, index| %>
+		 <%_kpi_id = qn.kpi_id %> <!--KPI ID's-->
+		 <% if !qn.opt1.blank? && !qn.opt2.blank? && !qn.opt3.blank? && !qn.opt4.blank? && !qn.opt5.blank? && !qn.opt6.blank? && !qn.opt7.blank? %>
+		  <%= f.fields_for :questions, qn do |q| %>
+		  
+		   <tr class="answer-row row">
+		   	<%= q.fields_for :responses, Response.new do |r| %>
+		   		<%= r.hidden_field :reviewer_id, value: @reviewer.id %>
+				<td>
+				<b><%=index+1%>.</b> <%=Kpi.find(_kpi_id).kpi_measurement %>
+				</td>
+				<%if !qn.opt1.blank?%> <td> <%= r.radio_button :answer_option, "1"%></td>   <%end%>
+				<%if !qn.opt2.blank?%> <td> <%= r.radio_button :answer_option, "2"%></td>   <%end%>
+				<%if !qn.opt3.blank?%> <td> <%= r.radio_button :answer_option, "3"%></td>   <%end%>
+				<%if !qn.opt4.blank?%> <td> <%= r.radio_button :answer_option, "4"%></td>   <%end%>
+				<%if !qn.opt5.blank?%> <td> <%= r.radio_button :answer_option, "5"%></td>   <%end%>
+				<%if !qn.opt6.blank?%> <td> <%= r.radio_button :answer_option, "6"%></td>   <%end%>
+				<%if !qn.opt7.blank?%> <td> <%= r.radio_button :answer_option, "7"%></td>   <%end%>
+				<td><%= r.text_area :comment %></td>
+			 <% end %>
+			  </tr>
+			<% end %>
+			<br /><br /><br />
+
+		   
+
+		 
+		  <% end %>
+		 <% end %>
+		</tbody>
+		</table>
+		 <div class="button-row row"><a class="form-button-2" href="#second-page" aria-controls="second-page" role="tab" data-toggle="tab">Next</a></div>
+		 </div>
+		 <div role="tabpanel" class="tab-pane" id="second-page">
+		 
+		 <div class="button-row row"><a class="form-button-2" href="#first-page" aria-controls="first-page" role="tab" data-toggle="tab">Back</a></div>
+		  <br /> <br />
+		  <input type="submit" value="Submit">
+		 </div>
+		 <% end %>
+		</div>
+		
+	
+	<br />
+ <% end %>

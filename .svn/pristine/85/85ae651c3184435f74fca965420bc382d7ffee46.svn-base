@@ -1,0 +1,288 @@
+class StaticController < ApplicationController
+  respond_to :html, :js, :json
+  
+  def home
+    logger.debug "def home"
+    if user_signed_in?
+    _user = User.new
+      if _user.campaign_manager(current_user.id)
+        redirect_to '/campaign_manager_landing' 
+      elsif _user.specialist(current_user.id)
+        redirect_to '/specialist_landing'
+      elsif _user.admin(current_user.id)
+        redirect_to '/admin_landing'
+      end
+    end
+  end
+
+  def contact
+  end
+
+  def about
+  end
+
+  def testimonials
+  end
+  
+  def invite_user
+    @user_invite = UserInvite.new
+  end
+  
+  def admin_landing
+    @customers = Customer.where.not(id: 1)
+    @vendors = Vendor.all
+    @metrics = Metric.all
+    @kpis = Kpi.all
+    @users = User.all
+    
+  end
+  
+  def campaign_manager_landing
+    @campaigns = Campaign.where(manager_id: current_user.id, template: false)
+    @specialists = User.find_by_sql("
+      SELECT users.id, users.first_name, users.last_name,  
+      user_roles.role_id, user_roles.user_id 
+      FROM users, user_roles
+      WHERE user_roles.role_id = 3 
+      AND users.id = user_roles.user_id
+      ")
+    @customer = Customer.find(current_user.customer_id) if !current_user.customer_id.blank?
+    @specialists_for_this_customer = User.find_by_sql("
+      SELECT users.id, users.first_name, users.last_name, users.email,  users.senior_specialist,
+      user_roles.role_id, user_roles.user_id 
+      FROM users, user_roles
+      WHERE user_roles.role_id = 3 
+      AND users.id = user_roles.user_id AND users.customer_id = #{@customer.id}") if !@customer.blank?
+      
+    @survey_evaluations = Response.find_by_sql(" 
+        select count(1) as rev_count, rv.first_name, rv.last_name, rv.reviewer_type_id, c.id, c.name, c.vendor_id, r.created_at as response_created_at, c.status  
+        from responses r, questions q, campaigns_questions cq, campaigns c, reviewers rv 
+        where c.id = cq.campaign_id and q.id = cq.question_id and q.id = r.question_id 
+        and r.reviewer_id = rv.id group by c.id")
+    
+    
+        @years = Campaign.find_by_sql("SELECT DISTINCT YEAR(created_at) AS year FROM campaigns")
+        logger.debug "params[:year] in load_chart is #{params[:year]}"
+        year = params[:year] if !params[:year].blank?
+        year = '2014' if params[:year].blank? # setting current year to default .. set this to pick the latest year  later (like ews).
+    
+       
+    # Analytics Tab :
+    _cmp = Campaign.new
+    data = _cmp.get_performance_review_by_quarter_data(year)
+        
+    @chart = LazyHighCharts::HighChart.new('graph') do |f|
+      f.title(:text => "Workload Management Reporting for #{year}")
+      f.xAxis(:categories => ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"])
+      f.series(:name => "Draft", :yAxis => 0, :data => [ data["Draft"][0], data["Draft"][1], data["Draft"][2], data["Draft"][3] ])
+      f.series(:name => "In Process", :yAxis => 0, :data => [ data["InProcess"][0], data["InProcess"][1], data["InProcess"][2], data["InProcess"][3] ])
+      f.series(:name => "Completed", :yAxis => 0, :data => [data["Complete"][0], data["Complete"][1], data["Complete"][2], data["Complete"][3]])
+      f.yAxis [ {:title => {:text => "Number of Campaigns"}}]
+      f.legend(:align => 'right', :verticalAlign => 'top ', :y => 120, :x => -20, :layout => 'vertical',)
+      f.chart({:defaultSeriesType=>"column", :inverted => true})
+    end   
+    
+  end
+  
+  
+  def load_chart
+    
+    logger.debug "static_controller : load_chart"
+    logger.debug "Year Selected is :#{params[:year]}"
+    logger.debug "Chart Type Selected is :#{params[:chart_type]}"
+    @stacked = false
+    case params[:chart_type].to_i
+    when 1
+      chart_type = "column"
+    when 2
+      chart_type = "column"
+      @stacked = true
+    when 3
+      chart_type = "line"
+    when 4
+      chart_type = "area"
+    when 5 
+      chart_type = "pie"
+    when 6 
+      chart_type = "funnel"
+    end
+    #year = "2015"
+    logger.debug "params[:year] in load_chart is #{params[:year]}"
+    year = params[:year][:year] if !params[:year].blank?
+    year = '2014' if params[:year].blank? # setting current year to default .. set this to pick the latest year  later (like ews).
+      # Analytics Tab : 
+      _cmp = Campaign.new
+      case params[:chart_data].to_i
+      when 1
+            data = _cmp.get_performance_review_by_quarter_data(year)
+            @chart = LazyHighCharts::HighChart.new('graph') do |f|
+                  f.title(:text => "Performance Review [Status] by Quarter for <b>#{year}<b>")
+                  f.xAxis(:categories => ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"])
+                  f.series(:name => "Draft", :yAxis => 0, :data => [ data["Draft"][0], data["Draft"][1], data["Draft"][2], data["Draft"][3] ])
+                  f.series(:name => "In Process", :yAxis => 0, :data => [ data["InProcess"][0], data["InProcess"][1], data["InProcess"][2], data["InProcess"][3] ])
+                  f.series(:name => "Completed", :yAxis => 0, :data => [data["Complete"][0], data["Complete"][1], data["Complete"][2], data["Complete"][3]])
+                  f.yAxis [ {:title => {:text => "Number of Campaigns"}}]
+                  f.plot_options( :series=> {:stacking => 'normal'}) if @stacked
+                  f.legend(:align => 'right', :verticalAlign => 'top ', :y => 120, :x => -20, :layout => 'vertical',)
+                  f.chart({:defaultSeriesType=>"#{chart_type}", :inverted => true})
+            end
+      when 2
+            data = _cmp.get_performance_review_status_by_specialist(year)
+            specialists = Campaign.find_by_sql("SELECT count(1) AS total, status, specialist_id,  updated_at FROM campaigns  WHERE updated_at >= '#{year}-01-01' AND updated_at <= '#{year}-12-31' AND template IS NOT TRUE GROUP BY specialist_id, status ORDER BY specialist_id")
+            logger.debug "specialists is :::: #{specialists.inspect}"
+            specialist_arr = Array.new
+            series_draft = Array.new
+            series_inprocess = Array.new
+            series_completed = Array.new
+            specialists.each_with_index do |sp, index|
+              logger.debug "sp[#{index}] ::: is ::: #{sp.inspect}"
+              specialist_arr = specialist_arr.push(User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name)
+            end
+            specialist_arr = specialist_arr.uniq
+            # Balancing the data hash
+            specialist_arr.each do |spec|
+              data["Complete"]  = data["Complete"].merge({spec => 0}) if !data["Complete"].has_key?spec
+              data["Draft"]     = data["Draft"].merge({spec => 0}) if !data["Draft"].has_key?spec
+              data["InProcess"] = data["InProcess"].merge({spec => 0}) if !data["InProcess"].has_key?spec
+              
+              data["Complete"].each do |complete|
+                #logger.debug "complete is #{complete} "
+                series_completed = series_completed.push(complete[1]) if complete[0] == spec
+              end
+              logger.debug "series_completed is #{series_completed}"
+              
+              data["Draft"].each do |draft|
+                #logger.debug "draft is #{draft} "
+                series_draft = series_draft.push(draft[1]) if draft[0] == spec
+              end
+              logger.debug "series_draft is #{series_draft}"
+              
+              data["InProcess"].each do |inprocess|
+                #logger.debug "inprocess is #{inprocess} "
+                series_inprocess = series_inprocess.push(inprocess[1]) if inprocess[0] == spec
+              end
+              logger.debug "series_inprocess is #{series_inprocess}"
+              
+            end
+            logger.debug "-->>> specialist_arr is : #{specialist_arr}"
+            logger.debug "-->>> data after balancing is : #{data}"
+            @chart = LazyHighCharts::HighChart.new('graph') do |f|
+                  f.title(:text => "Performance Review [Status] by Specialist for <b>#{year}</b>")
+                  f.xAxis(:categories => specialist_arr)
+                  f.series(:name => "Draft", :yAxis => 0, :data => series_draft )
+                  f.series(:name => "In Process", :yAxis => 0, :data => series_inprocess )
+                  f.series(:name => "Completed", :yAxis => 0, :data => series_completed )
+                  f.yAxis [ {:title => {:text => "Number of Campaigns"}}]
+                  f.plot_options( :series=> {:stacking => 'normal'}) if @stacked
+                  f.legend(:align => 'right', :verticalAlign => 'top ', :y => 120, :x => -20, :layout => 'vertical',)
+                  f.chart({:defaultSeriesType=>"#{chart_type}", :inverted => true})
+            end
+      when 3
+            data = _cmp.get_performance_review_tiers_by_specialist(year)
+            specialists = Campaign.find_by_sql("SELECT count(1) AS total, status, specialist_id,  updated_at FROM campaigns  WHERE updated_at >= '#{year}-01-01' AND updated_at <= '#{year}-12-31' AND template IS NOT TRUE GROUP BY specialist_id, status ORDER BY specialist_id")
+            logger.debug "specialists is :::: #{specialists.inspect}"
+            specialist_arr = Array.new
+            series_T1 = Array.new
+            series_T2 = Array.new
+            series_T3 = Array.new
+            series_T4 = Array.new
+            series_T5 = Array.new
+            specialists.each_with_index do |sp, index|
+              logger.debug "sp[#{index}] ::: is ::: #{sp.inspect}"
+              specialist_arr = specialist_arr.push(User.find(sp.specialist_id).first_name + " " + User.find(sp.specialist_id).last_name)
+            end
+            specialist_arr = specialist_arr.uniq
+            # Balancing the data hash
+            specialist_arr.each do |spec|
+              data["T1"]  = data["T1"].merge({spec => 0}) if !data["T1"].has_key?spec
+              data["T2"]     = data["T2"].merge({spec => 0}) if !data["T2"].has_key?spec
+              data["T3"] = data["T3"].merge({spec => 0}) if !data["T3"].has_key?spec
+              
+              data["T1"].each do |t1|
+                series_T1 = series_T1.push(t1[1]) if t1[0] == spec
+              end
+              logger.debug "series_T1 is #{series_T1}"
+              
+              data["T2"].each do |t2|
+                series_T2 = series_T2.push(t2[1]) if t2[0] == spec
+              end
+              logger.debug "series_T2 is #{series_T2}"
+              
+             data["T3"].each do |t3|
+                series_T3 = series_T3.push(t3[1]) if t3[0] == spec
+              end
+              logger.debug "series_T3 is #{series_T3}"
+              
+              data["T4"].each do |t4|
+                series_T4 = series_T4.push(t4[1]) if t4[0] == spec
+              end
+              logger.debug "series_T4 is #{series_T4}"
+              
+              data["T5"].each do |t5|
+                series_T5 = series_T5.push(t5[1]) if t5[0] == spec
+              end
+              logger.debug "series_T5 is #{series_T5}"
+              
+            end
+            logger.debug "-->>> specialist_arr is : #{specialist_arr}"
+            logger.debug "-->>> data after balancing is : #{data}"
+            @chart = LazyHighCharts::HighChart.new('graph') do |f|
+                  f.title(:text => "Performance Review [Tiers] by Specialist for <b>#{year}</b>")
+                  f.xAxis(:categories => specialist_arr)
+                  f.series(:name => "Tier 1", :yAxis => 0, :data => series_T1 )
+                  f.series(:name => "Tier 2", :yAxis => 0, :data => series_T2 )
+                  f.series(:name => "Tier 3", :yAxis => 0, :data => series_T3 )
+                  f.series(:name => "Tier 4", :yAxis => 0, :data => series_T4 )
+                  f.series(:name => "Tier 5", :yAxis => 0, :data => series_T5 )
+                  f.yAxis [ {:title => {:text => "Number of Campaigns"}}]
+                  f.plot_options( :series=> {:stacking => 'normal'}) if @stacked
+                  f.legend(:align => 'right', :verticalAlign => 'top ', :y => 120, :x => -20, :layout => 'vertical',)
+                  f.chart({:defaultSeriesType=>"#{chart_type}", :inverted => true})
+            end
+       when 5
+            data = _cmp.get_funnel_chart_data(year)
+            @chart = LazyHighCharts::HighChart.new('graph') do |f|
+                  f.chart(type: "#{chart_type}", marginRight: 100)
+                  f.title({ text: 'Surveys Sent out to Campaigns', x: -50})
+                  f.plotOptions( series: {
+                                  dataLabels: {
+                                      enabled: true,
+                                      format: '<b>{point.name}</b> ({point.y:,.0f})',
+                                      color: 'black',
+                                      softConnector: true},
+                                  neckWidth: '30%',
+                                  neckHeight: '25%'
+                                })
+                  f.legend( { enabled: false })
+                  f.series( name: 'Number of Campaigns',
+                            data: [
+                                  ['Total Created',   data['all']],
+                                  ['InProcess', data['inprocess']],
+                                  ['Completed', data['complete']],
+                                  ['Completed ( All Responses Received )', data['complete_rr']]
+                                ]
+                          )
+            end      
+            
+      end
+      
+      respond_to :js
+       
+  end
+  
+  
+  
+  def specialist_landing
+    @specialist_campaigns = Campaign.where(specialist_id: current_user.id, template: false)
+    @campaigns = Campaign.where(specialist_id: current_user.id, template: false)
+  end
+  
+  def makeSenior
+     _user = User.find(params[:id])
+     _user.senior_specialist = true if _user.senior_specialist == false
+     _user.senior_specialist = false if _user.senior_specialist == true
+     
+     render '/campaign_manager_landing'   
+  end
+  
+end

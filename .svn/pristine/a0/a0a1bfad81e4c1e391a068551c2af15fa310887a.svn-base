@@ -1,0 +1,47 @@
+class UserInvitesController < ApplicationController
+  before_action :set_user_invite, only: [:show, :edit, :update, :destroy]
+
+  respond_to :html
+
+  def index
+    @user_invites = UserInvite.all
+    respond_with(@user_invites)
+  end
+
+  def show
+    respond_with(@user_invite)
+  end
+
+  def new
+    @user_invite = UserInvite.new
+    respond_with(@user_invite)
+  end
+
+  def edit
+  end
+
+  def create
+    @user_invite = UserInvite.new(user_invite_params)
+    @user_invite.save
+    respond_with(@user_invite)
+  end
+
+  def update
+    @user_invite.update(user_invite_params)
+    respond_with(@user_invite)
+  end
+
+  def destroy
+    @user_invite.destroy
+    respond_with(@user_invite)
+  end
+
+  private
+    def set_user_invite
+      @user_invite = UserInvite.find(params[:id])
+    end
+
+    def user_invite_params
+      params.require(:user_invite).permit(:first, :last, :email,  :invited, :customer_id)
+    end
+end

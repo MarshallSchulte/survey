@@ -1,0 +1,68 @@
+<!-- User invite for Schools-->
+<script type="text/javascript">
+// Popup window code
+function newPopup(url) {
+	popupWindow = window.open(
+		url,'popUpWindow','height=150,width=300,left=10,top=10,resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no')
+}
+</script>
+
+<fieldset class="form-inline">
+   <div class="form-group col-sm-2 col-md-4">  
+      <% if f.object.email.nil? %>
+        <%= f.label "First Name"%>
+      	<%= f.text_field :first, :class =>'form-control' %>
+      <% else %>
+        <%= f.label "First Name"%>
+      	<%= f.text_field :first, :class =>'form-control',:readonly => (true if !f.object.email.nil?) %>
+      <% end %>
+   </div>
+   <div class="form-group col-sm-2 col-md-4">	   
+      <% if f.object.email.nil? %>
+        <%= f.label "Last Name"%>
+      	<%= f.text_field :last, :class =>'form-control' %>
+      <% else %>
+      	<%= f.label "Last Name"%>
+      	<%= f.text_field :last, :class =>'form-control',:readonly => (true if !f.object.email.nil?)%>
+      <% end %>
+   </div>
+   <div class="form-group col-sm-2 col-md-4">  
+      <% if f.object.email.nil? %>
+        <%= f.label "Email" %>
+		<%= f.text_field :email, :class =>'form-control'%>
+	  <% else%>
+	    <%= f.label "Email" %>
+      	<%= f.text_field :email, :class =>'form-control',:readonly => (true if !f.object.email.nil?) %>
+      <% end %>
+   </div>
+   <!--<div class="form-group col-sm-2 col-md-2">    
+      <%#= f.collection_select :role_id, Role.all.order('name ASC'), :id, :name, {:prompt => "Select Role"}, :class =>'form-control input-sm'%>
+   </div>-->
+   <%_user=User.new%>
+	   <% if _user.admin(current_user.id) && user_signed_in? %>
+	   		<%= f.hidden_field :role_id, :value => 2 %>
+	   <% elsif _user.campaign_manager(current_user.id) && user_signed_in? %>
+	   		<%= f.hidden_field :role_id, :value => 3 %>
+	   <%else%>
+	   <%end%>		
+   <div class="form-group check col-md-2 col-sm-2 col-md-1">   
+      	<%if  ( (!f.object.email.nil?) && (!invitation_accepted(f.object.email)))%>
+   			<a class="btn btn-success btn-xs" href="JavaScript:newPopup('/resend_invite?email=<%=f.object.email%>&first=<%=f.object.first%>&last=<%=f.object.last%>');">Resend Invite</a>
+   		<% elsif (!f.object.email.nil? && invitation_accepted(f.object.email)) %>
+   				<%= f.label "✔ Accepted", :class => 'btn-xs' %>	
+   		<%else%>
+   			<%#= f.check_box :invited_flag %>
+        <%end%>
+   </div>
+   <div class="form-group col-sm-1 col-md-1">
+      <%= f.hidden_field :_destroy %>
+      <%#= link_to_remove_association "Deactivate", f, :class => 'remove_fields btn btn-danger btn-xs', :disabled => (!f.object.invited_flag) %>
+   	  <%#= link_to "Deactivate", f, :class => 'remove_fields btn btn-danger btn-xs', :disabled => (!f.object.invited_flag) %>
+   	  <%#if !deactivated_at_flag(f.object.email) %>
+   	  <%#=link_to "Deactivate", {:controller => "schools", :action => "deactivate_school_user", :user_email => f.object.email },  id: "deactivate", class: "btn btn-danger btn-xs", :disabled => (!f.object.invited_flag) %>
+   	  <%#else%>
+   	  	<%#= link_to "Activate", {:controller => "schools", :action => "reactivate_school_user", :user_email => f.object.email },  id: "deactivate", class: "btn btn-info btn-xs", :disabled => (!f.object.invited_flag)%>
+   	  <%#end%>
+   </div>
+</fieldset>
+

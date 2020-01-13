@@ -1,0 +1,111 @@
+class MetricScore < ActiveRecord::Base
+  belongs_to :vendor
+  belongs_to :metric
+  
+  def performance_data(vendor_id)
+      #_metric_scores = MetricScore.joins(:metric, :vendor).where(vendor_id: vendor_id).select("metric_scores.*, metrics.metric_name, vendors.name vendor_name")
+      _metric_scores = MetricScore.find_by_sql("select SUM(ms.actual_score) actual_score, SUM(ms.total_score) total_score, m.metric_name from metric_scores ms, metrics m, vendors v, vassociations va, vtypes vt  where ms.metric_id = m.id and ms.vendor_id = v.id and v.id = va.vendor_id and va.vtype_id = vt.id AND v.id = #{vendor_id} GROUP BY metric_name")
+      logger.debug "_metric_scores is #{_metric_scores} "
+      data_for_chart = Hash.new
+      @metrics = Metric.all
+      _d_metrics = Metric.all
+      _d_metrics.each do |m|
+        data_for_chart.store(m.metric_name, {"total_score"=> 0, "actual_score"=> 0, "percent"=> 0.00})    
+      end
+      
+      logger.debug "data_for_chart is #{data_for_chart}"
+      
+      _metric_scores.each do  |ms|
+        logger.debug "ms is #{ms.metric_name}, total score is #{ms.total_score}, actual_score is #{ms.actual_score}"
+        #data_for_chart[ms.metric_name].merge({"total_score" => ms.total_score}) if !data_for_chart[ms.metric_name].blank?
+        data_for_chart[ms.metric_name]["total_score"] =  ms.total_score 
+        data_for_chart[ms.metric_name]["actual_score"] = ms.actual_score
+        data_for_chart[ms.metric_name]["percent"] = (((ms.actual_score.to_f/ms.total_score.to_f).round(2))*100) if ms.total_score > 0
+      end
+      logger.debug "data_for_chart is #{data_for_chart.inspect}"
+      return data_for_chart
+  end
+  
+  def performance_data_across_industry(vendor_id)
+    #_metric_scores = MetricScore.joins(:metric, :vendor).select("metric_scores.*, metrics.metric_name, vendors.name vendor_name")
+    _metric_scores = MetricScore.find_by_sql("select SUM(ms.actual_score) actual_score, SUM(ms.total_score) total_score, m.metric_name from metric_scores ms, metrics m, vendors v, vassociations va, vtypes vt  where ms.metric_id = m.id and ms.vendor_id = v.id and v.id = va.vendor_id and va.vtype_id = vt.id GROUP BY metric_name")
+      logger.debug "_metric_scores is #{_metric_scores} "
+      data_for_chart = Hash.new
+      @metrics = Metric.all
+      _d_metrics = Metric.all
+      _d_metrics.each do |m|
+        data_for_chart.store(m.metric_name, {"total_score"=> 0, "actual_score"=> 0, "percent"=> 0.00})    
+      end
+      
+      logger.debug "data_for_chart is #{data_for_chart}"
+      
+      _metric_scores.each do  |ms|
+        logger.debug "ms is #{ms.metric_name}, total score is #{ms.total_score}, actual_score is #{ms.actual_score}"
+        #data_for_chart[ms.metric_name].merge({"total_score" => ms.total_score}) if !data_for_chart[ms.metric_name].blank?
+        data_for_chart[ms.metric_name]["total_score"] =  ms.total_score 
+        data_for_chart[ms.metric_name]["actual_score"] = ms.actual_score
+        data_for_chart[ms.metric_name]["percent"] = (((ms.actual_score.to_f/ms.total_score.to_f).round(2))*100) if ms.total_score > 0
+      end
+      logger.debug "data_for_chart for all vendors is #{data_for_chart.inspect}"
+      return data_for_chart
+  end
+  
+  def calculate_vendor_score(vendor_id)
+    metrics = Metric.all
+    metrics_map_for_vendor = metrics.to_a.each_with_object({}){ |m,h| h[m.id] = 0 }
+    metrics_map_potential_scores = metrics.to_a.each_with_object({}){ |m,h| h[m.id] = 0 }
+    metrics_map_for_industry = metrics.to_a.each_with_object({}){ |m,h| h[m.id] = 0 }
+    
+    vendor = Vendor.find(vendor_id)
+    
+    return nil if vendor.blank?
+    
+    # Now pull the vtypes that this vendor is associated with 
+    vtypes = Vtype.joins(:vendors).where("vendors.id = ?", vendor.id)
+    logger.debug "calculate_vendor_score - vendor info is #{vendor.inspect} for id #{vendor.id}, vtypes for this vendor are #{vtypes.count}"
+    
+    # STEP 1: Pull the scores of campaign responses for questions belonging to the 5 categories for one specific vendor
+    campaign_questions = CampaignsQuestion.joins(:campaign).where("campaigns.vendor_id = ?", vendor.id)
+    logger.debug "calculate_vendor_score - number of campaign_questions retrieved are #{campaign_questions.count}"
+    total_questions = campaign_questions.count
+    potential_score = total_questions * 5
+    total_score = 0
+    campaign_questions.each_with_index do |cq, i|
+      
+      response = Response.where("question_id = ?",  cq.question_id).first
+      question = Question.find(cq.question_id)
+      if !metrics_map_potential_scores[question.metric_id].blank?
+        metrics_map_potential_scores[question.metric_id] = metrics_map_potential_scores[question.metric_id] + 5
+      else
+        metrics_map_potential_scores[question.metric_id] = 5
+      end
+      if !response.blank?
+        logger.debug "calculate_vendor_score - index #{i} this question was #{cq.question_id}, response is #{response.answer_option} for metrics is #{Metric.find(question.metric_id).metric_name}"
+        # now find the metric_id of the question, and then bump up the appropriate count. 
+        # STEP 1a: find the average score for each category from STEP 1.
+        if !metrics_map_for_vendor[question.metric_id].blank?
+          metrics_map_for_vendor[question.metric_id] =  metrics_map_for_vendor[question.metric_id] + response.answer_option.to_i
+        else
+          metrics_map_for_vendor[question.metric_id] =  response.answer_option.to_i
+        end
+      else
+        logger.debug  "calculate_vendor_score - index #{i} this question was #{cq.question_id}, no responses" 
+      end
+        
+    end
+    metrics_map_potential_scores.keys.each do |p|
+      if !metrics_map_for_vendor[p].nil? && !(metrics_map_potential_scores[p].nil? || metrics_map_potential_scores[p].to_i <= 0)
+        metric_score = MetricScore.new
+        metric_score.metric_id = p 
+        metric_score.customer_id = 
+        metric_score.vendor_id = vendor_id 
+        metric_score.actual_score =  metrics_map_for_vendor[p].to_i
+        metric_score.total_score = metrics_map_potential_scores[p].to_i
+        
+        metric_score.save
+        logger.debug "calculate_vendor_score - Avg. score of metric #{Metric.find(p).metric_name} is #{(metrics_map_for_vendor[p].to_i/metrics_map_potential_scores[p].to_i)*100}%"
+        logger.debug "calculate_vendor_score - Potential Score for metric #{Metric.find(p).metric_name} is #{metrics_map_potential_scores[p]}, whereas scored is #{metrics_map_for_vendor[p].to_i}"
+      end
+    end
+  end # def calculate_vendor_score(vendor_id) 
+end

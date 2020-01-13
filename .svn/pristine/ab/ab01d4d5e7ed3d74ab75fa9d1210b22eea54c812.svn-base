@@ -1,0 +1,2 @@
+console.log("create vendor");
+$("#campaign_vendor_id").append('<option selected="selected" value="<%=Vendor.last.id %>"><%= Vendor.last.name %></option>');

@@ -1,0 +1,8 @@
+class CreateVassociation < ActiveRecord::Migration
+  def change
+    create_table :vassociations, :id => false do |t|
+      t.integer :vendor_id
+      t.integer :vtype_id
+    end
+  end
+end

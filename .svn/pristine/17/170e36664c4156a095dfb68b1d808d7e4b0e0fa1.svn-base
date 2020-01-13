@@ -1,0 +1,26 @@
+<table id="mk-table" class="display">
+	  <thead>
+	  <tr>
+		<th>Metric</th>
+		<th>Weight</th>
+		<th>KPI</th>
+		<th>KPI Measurement</th>
+		<th></th>
+	  </tr>
+	  </thead>
+	  <tbody>
+
+		<% @kpis.each do |k| %>
+		 <% if k.metric %>
+		  <tr>
+		  	<td><%= k.metric.metric_name %></td>
+		  	<td><%= k.metric.weight %></td>
+		  	<td><%= best_in_place k, :kpi %></td>
+		  	<td><%= best_in_place k, :kpi_measurement %></td>
+		  	<td><%= link_to "Edit", edit_kpi_path(k), "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true, class: "edit-btn" %></td>
+		  </tr>
+		 <% end %>
+		<% end %>
+
+	   </tbody> 
+	</table>

@@ -1,0 +1,9 @@
+<% if current_user.roles.first.id != 1 %>
+	<h1 id="campaign-header">Edit a Campaign for <%= Customer.find(current_user.customer_id).name %></h1>
+<% else %>
+	<h1 id="campaign-header">Edit a Template</h1>
+<% end %>
+
+<%= render 'form' %>
+
+<%= link_to 'Back', root_path %>

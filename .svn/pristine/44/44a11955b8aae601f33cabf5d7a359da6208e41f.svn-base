@@ -1,0 +1,173 @@
+class StaticController < ApplicationController
+  respond_to :html, :js, :json
+  
+  def home
+    logger.debug "def home"
+    if user_signed_in?
+    _user = User.new
+      if _user.campaign_manager(current_user.id)
+        redirect_to '/campaign_manager_landing' 
+      elsif _user.specialist(current_user.id)
+        redirect_to '/specialist_landing'
+      elsif _user.admin(current_user.id)
+        redirect_to '/admin_landing'
+      end
+    end
+  end
+
+  def contact
+  end
+
+  def about
+  end
+
+  def testimonials
+  end
+  
+  def invite_user
+    @user = User.new
+  end
+  
+  def admin_landing
+    @customers = Customer.all
+    @vendors = Vendor.all
+    @metrics = Metric.all
+    @kpis = Kpi.all
+    @users = User.all
+    
+  end
+  
+  def campaign_manager_landing
+    @campaigns = Campaign.where(manager_id: current_user.id)
+    @specialists = User.find_by_sql("
+      SELECT users.id, users.first_name, users.last_name,  
+      user_roles.role_id, user_roles.user_id 
+      FROM users, user_roles
+      WHERE user_roles.role_id = 3 
+      AND users.id = user_roles.user_id
+      ")
+    @customer = Customer.find(current_user.customer_id) if !current_user.customer_id.blank?
+    @specialists_for_this_customer = User.find_by_sql("
+      SELECT users.id, users.first_name, users.last_name, users.email,  users.senior_specialist,
+      user_roles.role_id, user_roles.user_id 
+      FROM users, user_roles
+      WHERE user_roles.role_id = 3 
+      AND users.id = user_roles.user_id AND users.customer_id = #{@customer.id}") if !@customer.blank?
+      
+    @survey_evaluations = Response.find_by_sql(" 
+        select count(1) as rev_count, rv.first_name, rv.last_name, rv.reviewer_type_id, c.id, c.name, c.vendor_id, r.created_at as response_created_at, c.status  
+        from responses r, questions q, campaigns_questions cq, campaigns c, reviewers rv 
+        where c.id = cq.campaign_id and q.id = cq.question_id and q.id = r.question_id 
+        and r.reviewer_id = rv.id group by c.id")
+    
+    
+        @years = Campaign.find_by_sql("SELECT DISTINCT YEAR(created_at) AS year FROM campaigns")
+        logger.debug "params[:year] in load_chart is #{params[:year]}"
+        year = params[:year] if !params[:year].blank?
+        year = '2014' if params[:year].blank? # setting current year to default .. set this to pick the latest year  later (like ews).
+    
+       
+    # Analytics Tab :
+    _cmp = Campaign.new
+    data = _cmp.get_performance_review_by_quarter_data(year)
+        
+    @chart = LazyHighCharts::HighChart.new('graph') do |f|
+      f.title(:text => "Workload Management Reporting for #{year}")
+      f.xAxis(:categories => ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"])
+      f.series(:name => "Draft", :yAxis => 0, :data => [ data["Draft"][0], data["Draft"][1], data["Draft"][2], data["Draft"][3] ])
+      f.series(:name => "In Process", :yAxis => 0, :data => [ data["InProcess"][0], data["InProcess"][1], data["InProcess"][2], data["InProcess"][3] ])
+      f.series(:name => "Completed", :yAxis => 0, :data => [data["Complete"][0], data["Complete"][1], data["Complete"][2], data["Complete"][3]])
+      f.yAxis [ {:title => {:text => "Number of Campaigns"}}]
+      f.legend(:align => 'right', :verticalAlign => 'top ', :y => 120, :x => -20, :layout => 'vertical',)
+      f.chart({:defaultSeriesType=>"column", :inverted => true})
+    end   
+    
+  end
+  
+  
+  def load_chart
+    
+    logger.debug "static_controller : load_chart"
+    logger.debug "Year Selected is :#{params[:year]}"
+    logger.debug "Chart Type Selected is :#{params[:chart_type]}"
+    @stacked = false
+    case params[:chart_type].to_i
+    when 1
+      chart_type = "column"
+    when 2
+      chart_type = "column"
+      @stacked = true
+    when 3
+      chart_type = "line"
+    when 4
+      chart_type = "area"
+    when 5 
+      chart_type = "pie"
+    end
+    #year = "2015"
+    logger.debug "params[:year] in load_chart is #{params[:year]}"
+    year = params[:year][:year] if !params[:year].blank?
+    year = '2014' if params[:year].blank? # setting current year to default .. set this to pick the latest year  later (like ews).
+      # Analytics Tab : 
+      _cmp = Campaign.new
+      case params[:chart_data].to_i
+      when 1
+            data = _cmp.get_performance_review_by_quarter_data(year)
+            @chart = LazyHighCharts::HighChart.new('graph') do |f|
+                  f.title(:text => "Performance Review [Status] by Quarter for <b>#{year}<b>")
+                  f.xAxis(:categories => ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"])
+                  f.series(:name => "Draft", :yAxis => 0, :data => [ data["Draft"][0], data["Draft"][1], data["Draft"][2], data["Draft"][3] ])
+                  f.series(:name => "In Process", :yAxis => 0, :data => [ data["InProcess"][0], data["InProcess"][1], data["InProcess"][2], data["InProcess"][3] ])
+                  f.series(:name => "Completed", :yAxis => 0, :data => [data["Complete"][0], data["Complete"][1], data["Complete"][2], data["Complete"][3]])
+                  f.yAxis [ {:title => {:text => "Number of Campaigns"}}]
+                  f.plot_options( :series=> {:stacking => 'normal'}) if @stacked
+                  f.legend(:align => 'right', :verticalAlign => 'top ', :y => 120, :x => -20, :layout => 'vertical',)
+                  f.chart({:defaultSeriesType=>"#{chart_type}", :inverted => true})
+            end
+      when 2
+            data = _cmp.get_performance_review_status_by_specialist(year)
+            @chart = LazyHighCharts::HighChart.new('graph') do |f|
+                  f.title(:text => "Performance Review <Status> by Specialist for <b>#{year}</b>")
+                  f.xAxis(:categories => ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"])
+                  f.series(:name => "Draft", :yAxis => 0, :data => [ data["Draft"][0], data["Draft"][1], data["Draft"][2], data["Draft"][3] ])
+                  f.series(:name => "In Process", :yAxis => 0, :data => [ data["InProcess"][0], data["InProcess"][1], data["InProcess"][2], data["InProcess"][3] ])
+                  f.series(:name => "Completed", :yAxis => 0, :data => [data["Complete"][0], data["Complete"][1], data["Complete"][2], data["Complete"][3]])
+                  f.yAxis [ {:title => {:text => "Number of Campaigns"}}]
+                  f.plot_options( :series=> {:stacking => 'normal'}) if @stacked
+                  f.legend(:align => 'right', :verticalAlign => 'top ', :y => 120, :x => -20, :layout => 'vertical',)
+                  f.chart({:defaultSeriesType=>"#{chart_type}", :inverted => true})
+            end
+      when 3
+            data = _cmp.get_performance_review_by_quarter_data(year)
+            @chart = LazyHighCharts::HighChart.new('graph') do |f|
+                  f.title(:text => "Workload Management Reporting for #{year}")
+                  f.xAxis(:categories => ["Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4"])
+                  f.series(:name => "Draft", :yAxis => 0, :data => [ data["Draft"][0], data["Draft"][1], data["Draft"][2], data["Draft"][3] ])
+                  f.series(:name => "In Process", :yAxis => 0, :data => [ data["InProcess"][0], data["InProcess"][1], data["InProcess"][2], data["InProcess"][3] ])
+                  f.series(:name => "Completed", :yAxis => 0, :data => [data["Complete"][0], data["Complete"][1], data["Complete"][2], data["Complete"][3]])
+                  f.yAxis [ {:title => {:text => "Number of Campaigns"}}]
+                  f.plot_options( :series=> {:stacking => 'normal'}) if @stacked
+                  f.legend(:align => 'right', :verticalAlign => 'top ', :y => 120, :x => -20, :layout => 'vertical',)
+                  f.chart({:defaultSeriesType=>"#{chart_type}", :inverted => true})
+            end
+      end
+      
+      respond_to :js
+       
+  end
+  
+  
+  
+  def specialist_landing
+    @specialist_campaigns = Campaign.where(specialist_id: current_user.id)
+  end
+  
+  def makeSenior
+     _user = User.find(params[:id])
+     _user.senior_specialist = true if _user.senior_specialist == false
+     _user.senior_specialist = false if _user.senior_specialist == true
+     
+     render '/campaign_manager_landing'   
+  end
+  
+end

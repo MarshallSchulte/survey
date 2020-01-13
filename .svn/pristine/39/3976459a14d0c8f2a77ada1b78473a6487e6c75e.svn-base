@@ -1,0 +1,135 @@
+<div class="modal fade" id="inside-admin" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" data-dismiss="modal" type="button">×</button>
+  	<div id="new-admin-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#first-admin-page" aria-controls="first-admin-page" role="tab" data-toggle="tab">Customers</a></li>
+    <li role="presentation"><a href="#second-admin-page" aria-controls="second-admin-page" role="tab" data-toggle="tab">Vendors</a></li>
+  	<li role="presentation"><a href="#third-admin-page" aria-controls="third-admin-page" role="tab" data-toggle="tab">Metrics and KPIs</a></li>
+</ul>
+<h4 id="landing-page-header"><%= current_user.name %> - Administrator</h4> 
+<div class="tab-content"> 
+  <div role="tabpanel" class="tab-pane active" id="first-admin-page">
+
+	<h4 class="cv-header">Customers</h4>
+	<table id="customers-table" class="display">
+	  <thead>
+	  <tr>
+		<th>Name</th>
+		<th>Address</th>
+		<th>City</th>
+		<th>State</th>
+		<th>Zipcode</th>
+		<th>Size</th>
+		<th>Industries</th>
+		<th>Point of Contact: First Name</th>
+		<th>Last Name</th>
+		<th>Email</th>
+		<th>Phone Number</th>
+		<th></th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @customers.each do |customer| %>  
+		  <tr>
+		  	<td><%= customer.name %></td>
+		  	<td><%= customer.address %></td>
+		  	<td><%= customer.city %></td>
+		  	<td><%= customer.state %></td>
+		  	<td><%= customer.zipcode %></td>
+		  	<td><%= customer.size %></td>
+		  	<td><% customer.ctypes.each do |c| %>
+		  			<%= c.name %>
+		  		<% end %>
+		  	</td>
+		  	<td><%= customer.poc_first_name %></td>
+		  	<td><%= customer.poc_last_name %></td>
+		  	<td><%= customer.poc_email %></td>
+		  	<td><%= customer.poc_phone %></td>
+		  	
+		  	<td><%= link_to "Edit", edit_customer_path(customer), "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true, class: "edit-btn" %></td>
+		  </tr>
+		<% end %>
+	   </tbody>
+	</table>
+	  	<%= link_to "Add a Customer", new_customer_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %>
+	</div>
+  <div role="tabpanel" class="tab-pane" id="second-admin-page">
+	<h4 class="cv-header">Vendors</h4>
+	<table id="vendors-table" class="display">
+	  <thead>
+	  <tr>
+		<th>Name</th>
+		<th>Address</th>
+		<th>City</th>
+		<th>State</th>
+		<th>Zipcode</th>
+		<th>Size</th>
+		<th>Industries</th>
+		<th></th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @vendors.each do |vendor| %>  
+		  <tr>
+		  	<td><%= vendor.name %></td>
+		  	<td><%= vendor.address %></td>
+		  	<td><%= vendor.city %></td>
+		  	<td><%= vendor.state %></td>
+		  	<td><%= vendor.zipcode %></td>
+		  	<td><%= vendor.size %></td>
+		  	<td><% vendor.vtypes.each do |v| %>
+		  			<%= v.name %>
+		  		<% end %>
+		  	</td>
+		  	
+		  	<td><%= link_to "Edit", edit_vendor_path(vendor), "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true, class: "edit-btn" %></td>
+		  </tr>
+		<% end %>
+	   </tbody> 
+	</table>
+	  	<%= link_to "Add a vendor", new_vendor_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %>
+	</div>
+	<div role="tabpanel" class="tab-pane" id="third-admin-page">
+	<h4 class="cv-header">Metrics and KPIs</h4>
+	<table id="mk-table" class="display">
+	  <thead>
+	  <tr>
+		<th>Metric</th>
+		<th>Weight</th>
+		<th>KPI</th>
+		<th>KPI Measurement</th>
+		<th><th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @metrics.each do |metric| %>
+		  <% metric.kpis.each do |k| %>
+		  <tr>
+		  	<td><%= k.metric.metric_name %></td>
+		  	<td><%= k.metric.weight %></td>
+		  	<td><%= k.kpi %></td>
+		  	<td><%= k.kpi_measurement %></td>
+		  	<td><%= link_to "Edit", edit_metric_path(metric), "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true, class: "edit-btn" %></td>
+		  </tr>
+		  <% end %>
+		<% end %>
+	   </tbody> 
+	</table>
+	  	<%= link_to "Add a metric", new_metric_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %>
+	</div>
+	
+</div>
+
+<script>
+	$('.display').DataTable();
+</script>

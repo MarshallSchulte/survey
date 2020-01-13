@@ -1,0 +1,7 @@
+mk_table.destroy();
+$("#mk-table").html('<%= j render(:partial => "static/metric_admin_list") %>');
+
+var mk_table = $('#mk-table').DataTable( {
+    "retrieve": true,
+    "paging": true
+} );

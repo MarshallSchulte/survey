@@ -1,0 +1,78 @@
+
+<table id="vendor-specialist-table" class="display col-md-6">
+	  <thead>
+	  <tr>
+		<th>Name</th>
+		<th>Complexity Weight</th>
+		<th>Supplier PoC</th>
+		<th>Executive Sponsor</th>
+		<th>Revenue</th>
+		<th>Specialist</th>
+		<th></th>
+		<th></th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @vendor_array.each do |vendor| %>
+		 <% if Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id).present? && (Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id).count != Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id, status: "Complete").count) %>
+		  <tr class="specialist-assigned">
+		  	<td class="vendor-name-cell"><%= vendor.name %></td>
+		  	<td><%= vendor.cw %></td>
+		  	<td><%= vendor.poc_name %></td>
+		  	<td><%= vendor.exec %></td>
+		  	<td><%= vendor.revenue %></td>
+		  	<td>
+		  			<% Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id).each do |campaign|%>
+		  			  <% unless campaign.status == "Complete"%>
+		  				<%= form_for campaign, remote: true do |c|%>
+		  					<% if campaign.name %><div class="row campaign-name-row">Campaign Name: <%= campaign.name %></div><% end %>
+		  					<div class="row specialist-select"><%= c.collection_select :specialist_id, @specialist_array, :id, :name, include_blank: true %></div>
+			  				<%= c.hidden_field :vendor_id, value: vendor.id %>
+			  				Ready? <%= best_in_place campaign, :ready, as: :checkbox, :collection => {false: raw("<i class='glyphicon glyphicon-unchecked'></i>"), true: raw("<i class='glyphicon glyphicon-check'></i>")}, place_holder: raw("<i class='glyphicon glyphicon-unchecked'></i>") %>
+			  				<div class="row submit-button"><%= c.submit "Submit", class: "edit-btn "%></div>
+		  				<% end %>
+		  			  <% end %>
+		  			<% end %>
+		  	</td>
+		   </tr>
+		  <% elsif (Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id).count == Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id, status: "Complete").count) || Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id).blank? %>
+		  <tr class="specialist-unassigned">
+			 <td class="vendor-name-cell"><%= vendor.name %></td>
+			 <td><%= vendor.cw %></td>
+			 <td><%= vendor.poc_name %></td>
+		  	 <td><%= vendor.exec %></td>
+		  	 <td><%= vendor.revenue %></td>
+			 <td>
+			  	<%= form_for Campaign.new, remote: true do |c| %>
+			  			<div class="row specialist-select"><%= c.collection_select :specialist_id, @specialist_array, :id, :name, include_blank: true %></div>
+			  			<%= c.hidden_field :vendor_id, value: vendor.id %>
+			  			<%= c.hidden_field :name, value: "#{Vendor.find(vendor.id).name}_#{Campaign.all.count + 1}_#{Time.now.strftime("%Y-%m-%d")}"%>
+			  			<div class="row submit-button"><%= c.submit "Submit", class: "edit-btn"%></div>
+			  		<% end %>
+			  	<% end %>
+		  	</td>
+		  </tr>
+		<% end %>
+	   </tbody> 
+	</table>
+	
+<script>
+	$("#ready").click(function(){
+		$(".best_in_place").each(function(){
+			if ($(this).children("i").hasClass("glyphicon-unchecked") && $(this).attr('data-bip-attribute') != "senior_specialist"){
+				console.log($(this).parent('form').children('.campaign-name-row').text());
+				console.log($(this).attr('class'));
+				$(this).click();
+			}
+		});
+	});
+	$("#unready").click(function(){
+		$(".best_in_place").each(function(){
+			if ($(this).children("i").hasClass("glyphicon-check") && $(this).attr('data-bip-attribute') != "senior_specialist"){
+				console.log($(this).parent('form').children('.campaign-name-row').text());
+				console.log($(this).attr('class'));
+				$(this).click();
+			}
+		});
+	});
+</script>

@@ -1,0 +1,97 @@
+<% if @campaign.reviewers.present? %>
+	<table id="mini-survey-evaluation-table" class="display">
+	  <thead>
+	  <tr>
+	  	<th>Reviewer</th>
+		<th>Reviewer Type</th>
+		<th>Supplier</th>
+		<th>Review Date</th>
+		<th>Progress</th>
+		<th>Survey Status</th>
+		<th></th>
+		<th></th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		 <% @campaign.reviewers.each do |r| %>
+		 <% questions_for_each_campaign = 0 %>
+		 <% if r.reviewer_type_id == 1 %>
+		 	<% logger.debug "Supplier" %>
+		 	<% questions_for_each_campaign = @campaign.questions.where(rt_supplier: true).count.to_f %>
+		 <% elsif r.reviewer_type_id == 2 %>
+		 <% logger.debug "Business Unit" %>
+		 	<% questions_for_each_campaign = @campaign.questions.where(rt_business_unit: true).count.to_f %>
+		 <% elsif r.reviewer_type_id == 3 %>
+		 	<% logger.debug "Strategic Sourcing" %>
+		 	<% questions_for_each_campaign = @campaign.questions.where(rt_strategic_sourcing: true).count.to_f %>
+		 <% elsif r.reviewer_type_id == 4 %>
+		 	<% logger.debug "Supplier Diversity" %>
+		 	<% questions_for_each_campaign = @campaign.questions.where(rt_supplier_diversity: true).count.to_f %>
+		 <% elsif r.reviewer_type_id == 5 %>
+		 	<% logger.debug "Governance" %>
+		 	<% questions_for_each_campaign = @campaign.questions.where(rt_governance: true).count.to_f %>
+		 <% elsif r.reviewer_type_id == 6 %>
+		 	<% logger.debug "SRM" %>
+		 	<% questions_for_each_campaign = @campaign.questions.where(srm: true).count.to_f %>
+		 <% end %>
+		 <% unless questions_for_each_campaign == 0 %>
+		  
+		  <% responses = r.responses.where.not(answer_option: [nil, 0]).count.to_f %>
+		  <% logger.debug "responses: ================#{responses}============="%>
+		  <% logger.debug "questions: ================#{questions_for_each_campaign}============="%>
+		  <% progress_percent = ((responses/questions_for_each_campaign)*100.0).round(2)%>
+		 <% else %>
+		  <% progress_percent = 0 %>
+		 <% end %>
+		  <% unless progress_percent == 0 || progress_percent.nan? %>
+		   <tr>
+		   	<td class="name-cell"><%= r.first_name %> <%= r.last_name %> <div class="hidden"><%= r.token %></div></td>
+		  	<td><%= ReviewerType.find(r.reviewer_type_id).name %></td>
+		  	<td><%= @campaign.vendor.name %></td>
+		  	<% if r.responses.last %>
+		  	
+		  		<td><%= r.responses.last.created_at %></td>
+		  	
+		  	<% else %>
+		  		<td></td>
+		  	<% end %>
+		  	
+		  	<td class="progress-cell">
+		  		<% if progress_percent < 100 %>
+		  			<%= progress_bar(progress_percent, :color => 'orange', :rounded => true, :tiny => true) %>
+		  			<span class="number" align="center"><%= progress_percent%> %</span>
+		  		<% else %>
+		  			<%= progress_bar(progress_percent, :color => 'green', :rounded => true, :tiny => true) %>
+		  			<span class="number" align="center"><%= progress_percent%> %</span>
+		  		<% end %>
+		  	</td>
+		  	<% if r.survey_complete %>
+		  		<td>Submitted</td>
+		  	<% elsif r.responses.present? %>
+		  		<td>Saved For Later</td>
+		  	<% else %>
+		  		<td>No Responses</td>
+		  	<% end %>
+		  	<td><%= link_to "Survey", "#{root_url}survey/?token=#{r.token}", class: "edit-btn", target: "_blank" %></td>
+		  	<td> <%if @campaign.status == "In Process" %>
+		  			<%= link_to "Resend Survey", {controller: "campaigns", action: "resend_survey", id: r.id }, remote:true, class: "edit-btn" %>
+		  		 <% end %></td>
+		   </tr>
+		  <% end %>
+		 <% end %>
+	   </tbody>
+	</table>
+	<% else %>
+		<h1 style="text-align: center;font-weight:bold;">No Responses To This Campaign Have Been Recorded.</h1>
+	<% end %>
+<script>
+
+    var mini_survey_table = $("#mini-survey-evaluation-table").DataTable({
+		"retrieve": true,
+	    "paging": true,
+	    "oLanguage": {
+         "sSearch": "General Search:</br>"
+      	},
+      	"dom": 'flptip'
+	});
+</script>

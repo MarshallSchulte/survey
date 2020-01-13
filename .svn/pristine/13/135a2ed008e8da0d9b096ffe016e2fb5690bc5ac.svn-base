@@ -1,0 +1,57 @@
+<div class="row-fluid" id="internal-navbar" data-spy="affix" data-offset-top="60" data-offset-bottom="60">
+	
+	<div class="container-fluid">
+		<a href="/">
+			<div class="col-md-1" id="logo-holder">
+				<img src="/assets/panlogo.png" id="logo">
+			</div>
+		</a>
+		
+		<div class="col-md-2 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    Templates
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= new_campaign_path %>">Create a Template</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= campaigns_path %>">Import Campaign Template</a></li>
+		  </ul>
+		</div>
+		
+		<div class="col-md-5 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    Customers / Vendors
+		    <span class="caret"></span>
+		  </button>
+		  
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><%= link_to "Add a Customer", new_customer_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true%></li>
+		    <li role="presentation"><%= link_to "Add a Vendor", new_vendor_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %></li>
+		  </ul>
+		</div>
+		
+		
+		<div class="col-md-2 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    Metrics / KPIs
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><%= link_to "Add a Metric", new_metric_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %></li>
+		    <li role="presentation"><%= link_to "Add a KPI", new_kpi_path, "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %></li>
+		  </ul>
+		</div>
+
+		<div class="col-md-2 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    <%= current_user.name %>
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Edit your profile</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= logout_path %>">Logout</a></li>
+		  </ul>
+		</div>
+
+	</div>
+</div>

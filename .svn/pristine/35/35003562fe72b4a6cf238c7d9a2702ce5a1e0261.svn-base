@@ -1,0 +1,9 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @reviewer_type.name %>
+</p>
+
+<%= link_to 'Edit', edit_reviewer_type_path(@reviewer_type) %> |
+<%= link_to 'Back', reviewer_types_path %>

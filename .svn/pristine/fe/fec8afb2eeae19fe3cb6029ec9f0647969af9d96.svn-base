@@ -1,0 +1,25 @@
+if ($('#new-campaign-inside-render').length){
+	$('#new-campaign-inside-render').html('<%= j render "vendors/new" %>');
+}else{
+	$('#new-admin-inside-render').html('<%= j render "vendors/new" %>');
+}
+
+$('form').validate({
+	errorPlacement: function(error, element) {
+	  if (element.attr("type") == "checkbox") {
+	    error.insertBefore($(element).parent('div'));
+	  }else{
+	  	error.insertBefore(element);
+	  }
+	},
+	rules:{
+		"vendor[name]": {required: true},
+		"vendor[vtype_ids][]": {required: true}
+	}
+});
+$('.form-button input').click(function(){
+  if ($('form').valid()){
+	$('#inside-admin').modal('hide');
+	$('#inside-campaign').modal('hide');
+  }
+});

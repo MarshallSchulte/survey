@@ -1,0 +1,6 @@
+class Vendor < ActiveRecord::Base
+  has_many :campaigns
+  has_and_belongs_to_many :vtypes, join_table: :vassociations
+  has_and_belongs_to_many :customers, join_table: :customers_vendors
+  validates :name, presence: true
+end

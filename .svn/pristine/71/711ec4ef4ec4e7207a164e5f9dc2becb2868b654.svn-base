@@ -1,0 +1,49 @@
+<div class="row-fluid" id="navbar">
+	<div class="col-md-3" id="login-logout" >
+		<% if user_signed_in? %>
+		<a href="/logout">
+			<div class="col-md-5 login-button" id="logout">
+				Logout
+			</div>
+		</a>
+		<% else %>
+		<a href="/login">
+			<div class="col-md-5 login-button" id="login">
+				Login
+			</div>
+		</a>
+		<a href="/signup">
+			<div class="col-md-5 login-button" id="sign-up">
+				Sign Up
+			</div>
+		</a>
+		<% end %>
+	</div>
+	<div class="container-fluid">
+		<a href="/">
+			<div class="col-md-2" id="logo-holder">
+				<img src="assets/panlogo.png" id="logo">
+			</div>
+		</a>
+		<div class="col-md-1 nav-button" id="nav-button-1">
+			Reviews
+		</div>
+		
+		<div class="col-md-1 nav-button" id="nav-button-2">
+			Features
+		</div>
+		
+		<a href="/about">
+			<div class="col-md-1 nav-button" id="nav-button-3">
+				About Us
+			</div>
+		</a>
+		
+		<a href="/contact">
+			<div class="col-md-1 nav-button" id="nav-button-4">
+				Contact
+			</div>
+		</a>
+			
+	</div>
+</div>

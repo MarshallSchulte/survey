@@ -1,0 +1,27 @@
+$('#new-admin-inside-render').html('<%= j render "customers/edit" %>');
+$('form').validate({
+	errorPlacement: function(error, element) {
+	  if (element.attr("type") == "checkbox") {
+	    error.insertBefore($(element).parent('div'));
+	  }else{
+	  	error.insertBefore(element);
+	  }
+	},
+	rules:{
+		"customer[name]": {required: true},
+		"customer[ctype_ids][]": {required: true},
+		"customer[user_invites_attributes][0][first]": {required:true},
+		"customer[user_invites_attributes][0][last]": {required:true},
+		"customer[user_invites_attributes][0][email]": {required: true, email: true, remote: "<%= check_email_customers_path %>"}
+	}, messages:{
+		"customer[user_invites_attributes][0][email]":{
+			remote: "That email address is already being used."
+		}
+	}
+	
+});
+$('.form-button input').click(function(){
+  if ($('form).valid()){
+	$('#inside-admin').modal('hide');
+  }
+});

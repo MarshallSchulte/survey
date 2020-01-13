@@ -1,0 +1,11 @@
+$('#manager-inside-render').html('<%= j render 'add_reviewers' %>');
+  $(".add_nested_fields_link").click(function(){
+  	var backdrop_height = $('.edit_campaign').outerHeight();
+	var new_height = backdrop_height + 600;
+	$('.modal-backdrop').css({'height': new_height});
+  });
+  $('.form-button input').click(function(){
+  	if ($('form')[0].checkValidity()){
+		$('#inside-manager').modal('hide');
+	}
+  });

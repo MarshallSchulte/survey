@@ -1,0 +1,2 @@
+$('#manager-inside-render').html('<%= j render 'send_campaign' %>');
+<%= @campaign.survey_sent = true %>

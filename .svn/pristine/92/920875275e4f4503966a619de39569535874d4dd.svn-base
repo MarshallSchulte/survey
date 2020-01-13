@@ -1,0 +1,20 @@
+<fieldset class="form-inline">
+ <div class="field form-group col-sm-2 col-md-2">
+   <%= label_tag :first, "First Name" %><br/>
+ </div>
+ 
+ <div class="field form-group col-sm-2 col-md-2">
+   <%= label_tag :last, "Last Name", :size => 3 %><br/>
+ </div>
+ 
+ <div class="field form-group col-sm-3 col-md-2">
+   <%= label_tag :email, "Email" %> <br/>
+ </div>
+
+<div class="col-sm-1">
+</div>
+     
+ <div class="field form-group col-sm-2 col-md-2">
+   <%= label_tag :invite, "Send?" %><br />
+ </div> 
+</fieldset>

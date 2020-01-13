@@ -1,0 +1,15 @@
+<%= render 'layouts/admin_navbar' %>
+<div class="col-md-12">
+	<h1>Import Customer</h1>
+	
+	
+	<%= form_tag import_customers_path, multipart: true do %>
+	  Choose a Excel Spreadsheet to Import from: <%= file_field_tag :file %> <br/>
+	  <hr/>
+	  <%= submit_tag "Import" %><br/>
+	<% end %>
+</div>
+
+<div class="col-md-12 back">
+	    <%= link_to 'Back', root_path %>
+</div>

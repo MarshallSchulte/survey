@@ -1,0 +1,91 @@
+class StaticController < ApplicationController
+  respond_to :html, :js, :json
+  
+  def home
+    logger.debug "def home"
+    if user_signed_in?
+    _user = User.new
+      if _user.campaign_manager(current_user.id)
+        redirect_to '/campaign_manager_landing' 
+      elsif _user.specialist(current_user.id)
+        redirect_to '/specialist_landing'
+      elsif _user.admin(current_user.id)
+        redirect_to '/admin_landing'
+      end
+    end
+  end
+
+  def contact
+  end
+
+  def about
+  end
+
+  def testimonials
+  end
+  
+  def invite_user
+    @user = User.new
+  end
+  
+  def admin_landing
+    @customers = Customer.all
+    @vendors = Vendor.all
+    @metrics = Metric.all
+    @kpis = Kpi.all
+    @users = User.all
+    
+  end
+  
+  def campaign_manager_landing
+    @campaigns = Campaign.where(manager_id: current_user.id)
+    @specialists = User.find_by_sql("
+      SELECT users.id, users.first_name, users.last_name,  
+      user_roles.role_id, user_roles.user_id 
+      FROM users, user_roles
+      WHERE user_roles.role_id = 3 
+      AND users.id = user_roles.user_id
+      ")
+    @customer = Customer.find(current_user.customer_id) if !current_user.customer_id.blank?
+    @specialists_for_this_customer = User.find_by_sql("
+      SELECT users.id, users.first_name, users.last_name, users.email,  users.senior_specialist,
+      user_roles.role_id, user_roles.user_id 
+      FROM users, user_roles
+      WHERE user_roles.role_id = 3 
+      AND users.id = user_roles.user_id AND users.customer_id = #{@customer.id}") if !@customer.blank?
+      
+    @survey_evaluations = Response.find_by_sql(" 
+        select count(1) as rev_count, rv.first_name, rv.last_name, rv.reviewer_type_id, c.id, c.name, c.vendor_id, r.created_at as response_created_at, c.status  
+        from responses r, questions q, campaigns_questions cq, campaigns c, reviewers rv 
+        where c.id = cq.campaign_id and q.id = cq.question_id and q.id = r.question_id 
+        and r.reviewer_id = rv.id group by c.id")
+    @chart = LazyHighCharts::HighChart.new('graph') do |f|
+      f.title(:text => "Population vs GDP For 5 Big Countries [2009]")
+      f.xAxis(:categories => ["United States", "Japan", "China", "Germany", "France"])
+      f.series(:name => "GDP in Billions", :yAxis => 0, :data => [14119, 5068, 4985, 3339, 2656])
+      f.series(:name => "Population in Millions", :yAxis => 1, :data => [310, 127, 1340, 81, 65])
+    
+      f.yAxis [
+        {:title => {:text => "GDP in Billions", :margin => 70} },
+        {:title => {:text => "Population in Millions"}, :opposite => true},
+      ]
+    
+      f.legend(:align => 'right', :verticalAlign => 'top', :y => 75, :x => -50, :layout => 'vertical',)
+      f.chart({:defaultSeriesType=>"column"})
+    end   
+      
+  end
+  
+  def specialist_landing
+    @specialist_campaigns = Campaign.where(specialist_id: current_user.id)
+  end
+  
+  def makeSenior
+     _user = User.find(params[:id])
+     _user.senior_specialist = true if _user.senior_specialist == false
+     _user.senior_specialist = false if _user.senior_specialist == true
+     
+     render '/campaign_manager_landing'   
+  end
+  
+end

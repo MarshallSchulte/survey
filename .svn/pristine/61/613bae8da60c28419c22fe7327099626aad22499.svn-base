@@ -1,0 +1,4 @@
+	  	<h4 class="cv-header">Select a Customer</h4>
+	  	<%= f.collection_select :customer_id, Customer.all, :id, :name, include_blank: true %>
+	  	<%= link_to "Add a Customer", new_customer_path, "data-toggle"=> "modal", "data-target"=> "#inside-campaign", remote: true %>
+	  	

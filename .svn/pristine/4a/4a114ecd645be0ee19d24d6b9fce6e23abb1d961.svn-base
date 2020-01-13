@@ -1,0 +1,2 @@
+$('#new-admin-inside-render').html('<%= j render "customers/new" %>');
+

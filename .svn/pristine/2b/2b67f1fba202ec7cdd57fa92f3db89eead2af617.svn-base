@@ -1,0 +1,57 @@
+<div class="modal fade" id="inside-manager" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" id="inside-manager-close" type="button">×</button>
+  	<div id="manager-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#first-admin-page" aria-controls="first-admin-page" role="tab" data-toggle="tab">Campaigns</a></li>
+    <li role="presentation"><a href="#second-admin-page" aria-controls="second-admin-page" role="tab" data-toggle="tab">Specialists</a></li>
+	<li role="presentation"><a href="#third-admin-page" aria-controls="third-admin-page" role="tab" data-toggle="tab">Analytics</a></li>
+    <li role="presentation"><a href="#forth-admin-page" aria-controls="forth-admin-page" role="tab" data-toggle="tab">Survey Evaluation</a></li>
+</ul>
+
+<div class="tab-content"> 
+  <div role="tabpanel" class="tab-pane active" id="first-admin-page">
+  	<h4 class="cv-header">Campaigns</h4>
+		<h5 id="landing-page-header">Customer: <%=link_to "#{@customer.name}", "/customers/#{@customer.id}/edit"%></h5> 
+		<%= render "campaign_list" %>
+		<%= link_to "New Campaign", new_campaign_path, "data-toggle" => "modal", "data-target" => "#inside-manager", remote: true, class: "new-btn" %>
+		<script>
+		$('#inside-manager-close').click(function(){
+			$('#inside-manager').modal('hide');
+		});
+		</script>
+  </div>
+  
+  <div role="tabpanel" class="tab-pane" id="second-admin-page">
+	<h4 class="cv-header">Manage Specialists</h4>
+	 <%= render 'static/user_specialist_list' %>
+  </div>
+  
+  <div role="tabpanel" class="tab-pane" id="third-admin-page">
+	<h4 class="cv-header">Analytics</h4>
+	 <%= render 'static/analytics' %>
+  </div>
+  
+  <div role="tabpanel" class="tab-pane" id="forth-admin-page">
+	<h4 class="cv-header">Survey Evaluation</h4>
+	 <%= render 'static/survey_evaluation_list' %>
+  </div>
+	
+</div>
+
+<script>
+	var campaign_table = $('#specialist-campaigns-table').DataTable( {
+	    "retrieve": true,
+	    "paging": true
+	} );
+</script>

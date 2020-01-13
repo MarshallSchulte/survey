@@ -1,0 +1,175 @@
+# encoding: UTF-8
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
+#
+# Note that this schema.rb definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using db:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# you'll amass, the slower it'll run and the greater likelihood for issues).
+#
+# It's strongly recommended that you check this file into your version control system.
+
+ActiveRecord::Schema.define(version: 20141223182929) do
+
+  create_table "campaigns", force: true do |t|
+    t.integer  "tier"
+    t.string   "name"
+    t.string   "status"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "supplier_name"
+    t.integer  "complexity_weight"
+    t.integer  "performance_review_number"
+    t.string   "executive_sponsor"
+  end
+
+  add_index "campaigns", ["user_id"], name: "index_campaigns_on_user_id", using: :btree
+
+  create_table "cassociations", id: false, force: true do |t|
+    t.integer  "customer_id"
+    t.integer  "ctype_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cassociations", ["ctype_id"], name: "index_cassociations_on_ctype_id", using: :btree
+  add_index "cassociations", ["customer_id"], name: "index_cassociations_on_customer_id", using: :btree
+
+  create_table "ctypes", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "customers", force: true do |t|
+    t.string   "name"
+    t.string   "address"
+    t.string   "city"
+    t.string   "state"
+    t.string   "poc_first_name"
+    t.string   "poc_last_name"
+    t.string   "poc_email"
+    t.string   "poc_phone"
+    t.string   "ctype"
+    t.integer  "size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "kpis", force: true do |t|
+    t.integer  "metric_id"
+    t.string   "kpi"
+    t.text     "kpi_measurement"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "metrics", force: true do |t|
+    t.string   "metric_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "models", force: true do |t|
+    t.string   "campaign_reviewer"
+    t.integer  "campaign_id"
+    t.integer  "reviewer_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "questions", force: true do |t|
+    t.integer  "metric_id"
+    t.integer  "kpi_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "responses", force: true do |t|
+    t.integer  "question_id"
+    t.integer  "reviewer_id"
+    t.integer  "answer_option"
+    t.text     "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "reviewers", force: true do |t|
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "roles", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_roles", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "role_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", force: true do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.integer  "user_type"
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "users_campaigns_joins", force: true do |t|
+    t.integer "campaign_id"
+    t.integer "user_id"
+  end
+
+  create_table "vassociations", force: true do |t|
+    t.integer  "vendor_id"
+    t.integer  "vtype_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "vassociations", ["vendor_id"], name: "index_vassociations_on_vendor_id", using: :btree
+  add_index "vassociations", ["vtype_id"], name: "index_vassociations_on_vtype_id", using: :btree
+
+  create_table "vendors", force: true do |t|
+    t.string   "name"
+    t.string   "address"
+    t.string   "city"
+    t.string   "vtype"
+    t.integer  "size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "vtypes", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+end

@@ -1,0 +1,57 @@
+<div class="modal fade" id="inside-invite" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" data-dismiss="modal" type="button">×</button>
+  	<div id="new-invite-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+<h2>Invite a User</h2>
+<%= form_for @user_invite, remote:true do |f| %>
+   <div class="container" id="campaign-form">
+	<div class="col-md-6">
+		<%= f.label "First Name" %></br>
+		<% if f.object.email.nil? %>
+      		<%= f.text_field :first, :class =>'form-control' %>
+     	<% else %>
+      		<%= f.text_field :first, :class =>'form-control',:readonly => (true if !f.object.email.nil?) %>
+      <% end %>
+	</div>
+	
+	<div class="col-md-6">
+		<%= f.label "Last Name" %></br>
+		<% if f.object.email.nil? %>
+      		<%= f.text_field :last, :class =>'form-control' %>
+	    <% else %>
+	      	<%= f.text_field :last, :class =>'form-control',:readonly => (true if !f.object.email.nil?)%>
+	    <% end %>
+	</div>
+	<div class="col-md-6">
+		<%= f.label "Email" %></br>
+		<% if f.object.email.nil? %>
+			<%= f.text_field :email, :class =>'form-control input-sm'%>
+		<% else%>
+	        <%= f.text_field :email, :class =>'form-control input-sm',:readonly => (true if !f.object.email.nil?) %>
+	    <% end %>
+	</div>
+	   
+	   <%if  ( (!f.object.email.nil?) && (!invitation_accepted(f.object.email)))%>
+   			<a class="btn btn-success btn-xs" href="JavaScript:newPopup('/resend_invite?email=<%=f.object.email%>&first=<%=f.object.first%>&last=<%=f.object.last%>');">Resend Invite</a>
+   		<% elsif (!f.object.email.nil? && invitation_accepted(f.object.email)) %>
+   				<%= f.label "✔ Accepted", :class => 'btn-xs' %>	
+   		<%else%>
+   			<%#= f.check_box :invited_flag %>
+        <%end%>
+        
+        <%= f.hidden_field :_destroy %>		
+	
+	<div class="actions col-md-12">
+	  <div class="form-button"><%= f.submit %></div>
+	</div>
+   </div>
+<% end %>

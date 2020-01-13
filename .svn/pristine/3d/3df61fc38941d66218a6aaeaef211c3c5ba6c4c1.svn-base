@@ -1,0 +1,4 @@
+$('#new-admin-inside-render').html('<%= j render "kpis/edit" %>');
+$('.form-button input').click(function(){
+	$('#inside-admin').modal('hide');
+});

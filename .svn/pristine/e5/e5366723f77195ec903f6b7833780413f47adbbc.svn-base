@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>First name:</strong>
+  <%= @reviewer.first_name %>
+</p>
+
+<p>
+  <strong>Last name:</strong>
+  <%= @reviewer.last_name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @reviewer.email %>
+</p>
+
+<%= link_to 'Edit', edit_reviewer_path(@reviewer) %> |
+<%= link_to 'Back', reviewers_path %>

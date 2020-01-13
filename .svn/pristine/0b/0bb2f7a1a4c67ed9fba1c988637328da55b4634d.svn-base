@@ -1,0 +1,17 @@
+<% if @campaign.manager_id == current_user.id %>
+
+    campaign_table.destroy();
+	$('#specialist-campaigns-table').html('<%= j render(:partial => "static/campaign_list") %>');
+		var campaign_table = $('#specialist-campaigns-table').DataTable( {
+		    "retrieve": true,
+		    "paging": true
+		} );
+<% elsif @campaign.specialist_id == current_user.id %>
+
+  campaign_table.destroy();
+	$('#specialist-campaigns-table').html('<%= j render(:partial => "static/specialist_campaign_list") %>');
+		var campaign_table = $('#specialist-campaigns-table').DataTable( {
+		    "retrieve": true,
+		    "paging": true
+		} );
+<% end %>

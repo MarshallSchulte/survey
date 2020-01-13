@@ -1,0 +1,52 @@
+class StaticController < ApplicationController
+  respond_to :html, :js, :json
+  
+  def home
+    logger.debug "def home"
+    if user_signed_in?
+    _user = User.new
+      if _user.campaign_manager(current_user.id)
+        redirect_to '/campaign_manager_landing' 
+      elsif _user.specialist(current_user.id)
+        redirect_to '/specialist_landing'
+      end
+    end
+  end
+
+  def contact
+  end
+
+  def about
+  end
+
+  def testimonials
+  end
+  
+  def invite_user
+    @user = User.new
+  end
+  
+  def admin_landing
+    @customers = Customer.all
+    @vendors = Vendor.all
+    @metrics = Metric.all
+    @kpis = Kpi.all
+    @users = User.all
+    
+  end
+  
+  def campaign_manager_landing
+    @campaigns = Campaign.where(manager_id: current_user.id)
+    @specialists = User.find_by_sql("
+      SELECT users.id, users.first_name, users.last_name,  
+      user_roles.role_id, user_roles.user_id 
+      FROM users, user_roles
+      WHERE user_roles.role_id = 3 
+      AND users.id = user_roles.user_id
+      ")
+  end
+  
+  def specialist_landing
+    @specialist_campaigns = Campaign.where(specialist_id: current_user.id)
+  end
+end

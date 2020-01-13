@@ -1,0 +1,156 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#first-results-page" aria-controls="first-results-page" role="tab" data-toggle="tab">Response Summary</a></li>
+    <li role="presentation"><a href="#second-results-page" aria-controls="second-results-page" role="tab" data-toggle="tab">Campaign Analytics</a></li>
+</ul>
+<div class="tab-content">
+	<div id="first-results-page" class="tab-pane active">
+		<table id="campaign-results-table" class="display">
+			<thead>
+			  <tr>
+				<th>Question</th>
+				<th>Average Score</th>
+				<th>Number of Reviewers</th>
+				<th>Responses</th>
+				<th></th>
+			  </tr>
+			</thead>
+			<tbody>
+			<% @campaign.questions.each_with_index do |q, index| %>
+			  <tr>
+				<td><%= index + 1 %>. <%= Kpi.find(q.kpi_id).kpi_measurement %></td>
+				<% responses_count = q.responses.all.count %>
+				<% responses_answer_score = 0 %>
+				<% q.responses.each do |r| %>
+					<% responses_answer_score += r.answer_option %>
+				<% end %>
+				<% r_average = responses_answer_score/responses_count %>
+				<td><%= r_average %></td>
+				<td><%= @campaign.reviewers.count %></td>
+				<td><%= q.responses.count %></td>
+				<td></td>
+			  </tr>
+			<% end %>
+			</tbody>
+		</table>
+	</div>
+	<div id="second-results-page" class="tab-pane">
+	  <div id="results-holder">
+	   <div class="tab-content">
+	     <div id="first-graph" class="tab-pane active">
+			<%= high_chart("results-charts-1", @chart1) %>
+			<%= link_to "Download for Future Powerpoint", send_to_graphs_campaign_path, id: "fchart1", class: "edit-btn", remote: true %>
+		 </div>
+		 <div id="second-graph" class="tab-pane">
+			<%= high_chart("results-charts-2", @chart2) %>
+			<%= link_to "Download for Future Powerpoint", send_to_graphs_campaign_path, id: "fchart2", class: "edit-btn", remote: true %>
+		 </div>
+		 <div id="third-graph" class="tab-pane">
+			<%= high_chart("results-charts-3", @chart3) %>
+			<%= link_to "Download for Future Powerpoint", send_to_graphs_campaign_path, id: "fchart3", class: "edit-btn", remote: true %>
+		 </div>
+	   </div>
+	  </div>
+	  
+	  <ul class="nav nav-tabs" role="tablist">
+	    <li role="presentation" class="active"><a href="#first-graph" aria-controls="first-graph" role="tab" data-toggle="tab">Graph 1</a></li>
+	    <li role="presentation"><a href="#second-graph" aria-controls="second-graph" role="tab" data-toggle="tab">Graph 2</a></li>
+		<li role="presentation"><a href="#third-graph" aria-controls="third-graph" role="tab" data-toggle="tab">Graph 3</a></li>
+	 </ul>
+	 <%= link_to "Powerpoint", powerpoint_campaign_path, id: "powerpoint", class: "edit-btn", remote: true %>
+	</div>
+</div>
+<script>
+var getUnQuotedJsonString = function (str) {
+  return str.replace(/"\w+":/g, function(s, key) {
+    return s.replace(/"/g, "");
+  });
+}
+		var graph_count = <%= @graph_count %>;
+		var chart1 = '<%= raw @chart1json %>';
+		var chart2 = '<%= raw @chart2json %>';
+		var chart3 = '<%= raw @chart3json %>';
+
+		function setHeader(xhr) {
+	        xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+	        xhr.setRequestHeader('Content-Type', 'application/json');
+	      }
+		function fchart1(){
+			
+			$.ajax({
+			  type: "POST",
+			  origin: "http://<%= request.host %>:3000",
+			  url: "http://<%= request.host %>:3001",
+			  data: JSON.stringify(graph1),
+			  success: console.log("YEAH"),
+			  dataType: "json",
+			  crossDomain: true
+			});
+			
+		}
+		/*,
+			  headers:{
+			  	"Access-Control-Allow-Origin": "*",
+			  	"Access-Control-Expose-Headers": "x-json",
+			  	'Access-Control-Allow-Methods': 'POST, GET, PUT, PATCH, DELETE, OPTIONS',
+			   	'X-Frame-Options': 'ALLOWALL',
+			    'X-XSS-Protection': '1; mode=block',
+			    'X-Content-Type-Options': 'nosniff',
+			    'Access-Control-Request-Method': 'POST, PUT, DELETE, GET, OPTIONS',
+				'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+			  }*/
+		function fchart2(){
+			$.ajax({
+			  type: "POST",
+			  origin: "<%= request.host %>:3000",
+			  url: "http://<%= request.host %>:3001",
+			  data: JSON.stringify(graph2),
+			  success: console.log("YEAH"),
+			  dataType: "json"
+			});
+			
+
+		}
+		
+		function fchart3(){
+			$.ajax({
+			  type: "POST",
+			  origin: "<%= request.host %>:3000",
+			  url: "http://<%= request.host %>:3001",
+			  crossDomain: true,
+			  data: JSON.stringify(graph3),
+			  success: console.log("YEAH"),
+			  dataType: "json"
+			});
+			
+		}
+		$("#fchart1").click(function(){
+			console.log("initial count: " + graph_count);
+			graph1 = {
+				infile: chart1,
+				outfile: 'app//assets//images//chart_<%= current_user.name %>_'+ graph_count + '.jpg'
+			};
+			console.log(JSON.stringify(graph1));
+			graph_count += 1;
+			return fchart1();
+		});
+		$("#fchart2").click(function(){
+			console.log("initial count: " + graph_count);
+			graph2 = {
+				"async": true,
+				"infile": chart2,
+				"outfile": 'app//assets//images//chart_<%= current_user.name %>_'+ graph_count + '.jpg'
+			};
+			graph_count += 1;
+			return fchart2();
+		});
+		$("#fchart3").click(function(){
+			console.log("initial count: " + graph_count);
+			graph3 = {
+				"async": true,
+				"infile":chart3,
+				"outfile": 'app//assets//images//chart_<%= current_user.name %>_'+ graph_count + '.jpg'
+			};
+			graph_count += 1;
+			return fchart3();
+		});
+</script>

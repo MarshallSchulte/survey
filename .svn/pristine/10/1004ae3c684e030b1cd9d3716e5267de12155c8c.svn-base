@@ -1,0 +1,42 @@
+<h1>Listing campaigns</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tier</th>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @campaigns.each do |campaign| %>
+      <tr>
+        <td><%= campaign.tier %></td>
+        <td><%= campaign.name %></td>
+        <td><%= campaign.status %></td>
+        <td><%= campaign.start_date %></td>
+        <td><%= campaign.end_date %></td>
+        <td><%= campaign.user_id %></td>
+        <td><%= link_to 'Show', campaign %></td>
+        <td><%= link_to 'Edit', edit_campaign_path(campaign) %></td>
+        <td><%= link_to 'Destroy', campaign, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Campaign', new_campaign_path %>
+
+<h2>Import Products</h2>
+
+<%= form_tag import_campaigns_path, multipart: true do %>
+  <%= file_field_tag :file %>
+  <%= submit_tag "Import" %>
+<% end %>

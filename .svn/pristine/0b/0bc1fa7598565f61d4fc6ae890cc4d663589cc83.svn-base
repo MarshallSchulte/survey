@@ -1,0 +1,40 @@
+<% if cannot? :update, Customer %>
+<div class="modal fade" id="inside-manager" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" id="inside-manager-close" type="button">×</button>
+  	<div id="manager-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#first-admin-page" aria-controls="first-admin-page" role="tab" data-toggle="tab">Campaigns</a></li>
+    <li role="presentation"><a href="#second-admin-page" aria-controls="second-admin-page" role="tab" data-toggle="tab">Survey Evaluation</a></li>
+</ul>
+<div class="tab-content"> 
+  <div role="tabpanel" class="tab-pane active" id="first-admin-page">
+	<%= render partial: "specialist_campaign_list"%> <br />
+  </div>
+    <div role="tabpanel" class="tab-pane" id="second-admin-page">
+	<%= render partial: "static/survey_evaluation_list"%> <br />
+  </div>
+</div>
+<% else %>
+	<h1 style="border-color: red; border-style: dashed; border-width: 5px 0 5px 0; padding: 50px; color:red; text-align:center;font-weight:bold; background-color:rgb(255, 195, 195); margin-top: 10%;">You are not authorized to view this page!</h1>
+<% end %>
+<script>
+var campaign_table = $('#specialist-campaigns-table').DataTable( {
+    "retrieve": true,
+    "paging": true
+} );
+
+
+$('#inside-manager-close').click(function(){
+	$('#inside-manager').modal('hide');
+});
+</script>

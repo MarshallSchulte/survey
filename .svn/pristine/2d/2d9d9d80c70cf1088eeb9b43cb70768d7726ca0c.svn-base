@@ -1,0 +1,54 @@
+		<div class="row">
+			<table id="specialist-stats">
+				<thead>
+				  <tr>
+				  	<th></th>
+					<th>Total Team Complexity Weighting</th>
+					<th>Avg Complexity Weighting Per Specialist</th>
+					<th>Total Vendors Assigned</th>
+					<th>Avg Vendors Per Specialist</th>
+				  </tr>
+				</thead>
+				<tbody>
+				  <tr>
+				  	<td>Last Year</td>
+					<td><%= @cw_last_total %></td>
+					<td><%= @cw_last_average %></td>
+					<td><%= @last_year_campaigns %></td>
+					<td><%= @last_vendor_per_specialist %></td>
+				  </tr>
+				  <tr>
+				  	<td>This Year</td>
+					<td><%= @cw_total %></td>
+					<td><%= @cw_average %></td>
+					<td><%= @this_year_campaigns %></td>
+					<td><%= @this_vendor_per_specialist %></td>
+				  </tr>
+				  
+				</tbody>
+			</table>
+		</div>
+<div class="row">
+	<div class="col-md-6 specialist-header" style="text-align:center; font-weight: bold;"> Specialist </div>
+	<div class="col-md-6 vendor-header" style="text-align:center; font-weight: bold;"> Vendors </div>
+</div>
+		<% @specialist_array.each do |sp|%>
+		 <% if Campaign.where("specialist_id = ? and customer_id = ? and status != ?", sp.id, current_user.customer_id, "Complete").present?%>
+		  <div class="row specialist-row assigned">
+		 <% else %>
+		  <div class="row specialist-row">
+		 <% end %>
+			<div class="col-md-6"><%= sp.name %></div>
+			<div class="col-md-6 vendor-box">
+				<% Campaign.where("specialist_id = ? and customer_id = ? and status != ?", sp.id, current_user.customer_id, "Complete").each do |c| %>
+					<% if c.ready %>
+						<div class="row vendor-row assigned"><%= Vendor.find(c.vendor_id).name %></div>
+					<% else %>
+						<div class="row vendor-row unassigned"><%= Vendor.find(c.vendor_id).name %></div>
+					<% end %>
+				 <% end %>
+			</div>
+		 </div>
+		<% end %>
+		
+

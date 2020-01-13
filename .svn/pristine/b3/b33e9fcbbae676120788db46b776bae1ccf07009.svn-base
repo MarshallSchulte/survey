@@ -1,0 +1,95 @@
+class VendorsController < ApplicationController
+  before_action :set_vendor, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource
+  # GET /vendors
+  # GET /vendors.json
+  def index
+    @vendors = Vendor.all.order('tier DESC, cw DESC')
+  end
+
+  # GET /vendors/1
+  # GET /vendors/1.json
+  def show
+  end
+
+  # GET /vendors/new
+  def new
+    @vendor = Vendor.new
+  end
+
+  # GET /vendors/1/edit
+  def edit
+  end
+  
+  def import
+    Vendor.import(params[:file])
+    redirect_to "/", notice: "Vendor imported."
+  end
+
+  # POST /vendors
+  # POST /vendors.json
+  def create
+    @customer_id = current_user.customer_id
+    @vendor = Vendor.new(vendor_params)
+    if @vendor.save
+      @specialist_array = []
+        User.where(customer_id: @customer_id).each do |u|
+          logger.debug "---------------------USER ROLE: #{u.roles.first}----------------------------"
+          if u.roles.first.id == 3
+            @specialist_array.push(u)
+          end
+        end
+      
+      if current_user.roles.first.id == 2
+        @vendor.customer_ids = @customer_id
+        logger.debug "===========================#{@vendor.customer_ids}=========================="
+      end
+      @vendor_array = []
+        Vendor.all.order('tier DESC, cw DESC').each do |v|
+         if v.customers.where(id: @customer_id).present?
+          @vendor_array.push(v)
+         end     
+        end
+    @vendors = Vendor.all.order('tier DESC, cw DESC')
+    respond_to :js, :json
+   end
+   
+  end
+
+  # PATCH/PUT /vendors/1
+  # PATCH/PUT /vendors/1.json
+  def update
+    @vendors = Vendor.all
+    respond_to do |format|
+      if @vendor.update(vendor_params)
+        format.html { redirect_to @vendor, notice: 'Vendor was successfully updated.' }
+        format.json { render :show, status: :ok, location: @vendor }
+        format.js
+      else
+        format.html { render :edit }
+        format.json { render json: @vendor.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /vendors/1
+  # DELETE /vendors/1.json
+  def destroy
+    @vendor.destroy
+    respond_to do |format|
+      format.html { redirect_to vendors_url, notice: 'Vendor was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_vendor
+      @vendor = Vendor.find(params[:id])
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def vendor_params
+      params.require(:vendor).permit(:name, :address, :city, :state, :zipcode, :vtype, :size, :poc_name, :poc_phone, :cw, :revenue, :tier, :exec, customer_ids: [], vtype_ids: [])
+    end
+end

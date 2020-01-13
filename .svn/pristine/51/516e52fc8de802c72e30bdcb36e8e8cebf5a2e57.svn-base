@@ -1,0 +1,89 @@
+
+<div role="tabpanel" class="tab-pane" id="third-admin-page">
+	 
+	<br />
+	<div> <!--class="c_scroll"-->
+	
+	
+<%= form_tag('/performance', :method => :get, :id =>'filter', :remote => true) do %>
+		<table class="table">
+			<thead>
+				<tr>
+					<th><span id='asterisk'>*</span> Vendor</th>
+					<th><span id='asterisk'>*</span> Chart Type</th>
+					<th><span id='asterisk'>*</span> Year</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+						<td>
+							<%= select_tag :market_chart_data, options_for_select(@vendors.map {|m| [m.name, m.id]}), :class => 'form-control input-sm filter' %>
+						</td>
+						
+						<td>
+							<%= select_tag :market_chart_type, options_for_select( [ 	["Top 5 Categories", 1], 
+																				["PAN 7 Scores Comparison", 2], 
+																				["Vendor Comparison", 3], 
+																				["Top 5 Customers", 4], 
+																				["Top 5 Customers overall", 5] 
+																			]), :class => 'form-control input-sm filter' %>
+						</td>
+						<td>
+							<%= select_tag :market_year, options_for_select(@metric_years), :id => "market_year", :class => 'form-control input-sm filter' %>
+						</td>
+						<td>
+							<%= submit_tag "Filter", :id=>"filter", :class=>"btn btn-sm btn-primary"%>
+						</td>
+							
+					
+				</tr>
+			</tbody>
+		</table>
+		<% end %>
+		
+</div>
+	<table>
+		<tr>
+			<td>
+				<%= render 'metric_scores/analytics' %>
+			</td>
+			<td>
+	 			<%= render 'metric_scores/compare_analytics' %>
+	 		</td>
+	 	</tr>
+	 </table>
+  </div>
+  
+<script>
+	$("#market_chart_data").change(function(){
+ 			console.log("value");
+ 			var value = $(this,'option:selected').val();
+			var picker = $(this);
+			var current_year = <%= Time.now.year %>;
+			var options;
+			$("#market_year").empty();
+			if (value){
+					console.log("if value");
+							$.getJSON("/vendors", {}).success(function(data){
+								console.log("value" + value);
+							 	for (var i = 0; i < data.length; i++){
+									if (value == data[i].id){
+										console.log(data[i]);
+										var created_at = parseInt(data[i].created_at.split("-")[0])
+										console.log(created_at + 1);
+										while (created_at <= current_year) {
+											options += "<option value='"+created_at+"'>"+created_at+"</option>";
+											created_at += 1;
+											console.log(options);
+										}
+										console.log(options);
+										$("#market_year").append(options);
+									}
+							 }
+							});
+						  	
+				}
+				
+ 		});
+</script>

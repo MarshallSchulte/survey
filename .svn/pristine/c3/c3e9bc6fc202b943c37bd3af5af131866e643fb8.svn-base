@@ -1,0 +1,10 @@
+class Customer < ActiveRecord::Base
+  belongs_to :user
+  has_and_belongs_to_many :ctypes, join_table: :cassociations
+  
+  validates :name, presence: true
+  validates :poc_first_name, presence: true
+  validates :poc_last_name, presence: true
+  validates :poc_email, presence: true
+  validates_format_of :poc_email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+end

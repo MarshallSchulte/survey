@@ -1,0 +1,16 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Vendor:</strong>
+  <% @vtype.vendors.each do |v| %>
+  	<%= v.name %>
+  <% end %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @vtype.name %>
+</p>
+
+<%= link_to 'Edit', edit_vtype_path(@vtype) %> |
+<%= link_to 'Back', vtypes_path %>

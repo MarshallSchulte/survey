@@ -1,0 +1,10 @@
+<tr>
+
+    <td><%= f.text_field :first_name %></td>
+  
+    <td><%= f.text_field :last_name %></td>
+  
+    <td><%= f.text_field :email %></td>
+    <td><%=f.remove_nested_fields_link 'Remove'%></td>
+
+</tr>

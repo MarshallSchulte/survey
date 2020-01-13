@@ -1,0 +1,53 @@
+<%= render 'layouts/internal_navbar' %>
+<h1 id="index-header">Customers</h1>
+
+  
+    <% @customers.each do |customer| %>
+      <%= link_to customer do %>
+      	<div class="container customer">
+        <h3 class="customer-name"><%= customer.name %></h3>
+      <% end %>
+        <div class="col-md-6">
+        	Street Address: <%= customer.address %>
+        </div>
+        <div class="col-md-6">
+        	City: <%= customer.city %>
+        </div>
+        <div class="col-md-6">
+        	State: <%= customer.state %>
+        </div>
+        <div class="col-md-6">
+        	Point of Contact Name: <%= customer.poc_first_name %> <%= customer.poc_last_name %>
+        </div>
+        <div class="col-md-6">
+        	Point of Contact Email: <%= customer.poc_email %>
+        </div>
+        <div class="col-md-6">
+        	Point of Contact Phone Number: <%= customer.poc_phone %>
+        </div>
+        <div class="col-md-6">
+        	Company Size: <%= customer.size %>
+        </div>
+        <div class="col-md-12">
+        	<div class="col-md-3" id="industry-type-label">Customer Industry Types: </div>
+        		<div class="col-md-9">
+        			<% customer.ctypes.each do |c| %>
+        				<%= link_to c do %>
+        					<div class="industry-type"><%= c.name %></div>
+        				<% end %>
+        			<% end %>
+        		</div>
+        </div>
+
+		<div class="action-links col-md-6">
+	        <div class="form-button"><%= link_to 'Edit', edit_customer_path(customer) %></div>
+	        <div class="form-button"><%= link_to 'Destroy', customer, method: :delete, data: { confirm: 'Are you sure?' } %></div>
+	    </div>
+
+      </div>
+    <% end %>
+
+<br>
+<div class="action-links">
+	<div class="form-button"><%= link_to 'New Customer', new_customer_path %></div>
+</div>

@@ -1,0 +1,35 @@
+<table id="vendor-specialist-table" class="display col-md-6">
+	  <thead>
+	  <tr>
+		<th>Name</th>
+		<th>Complexity Weight</th>
+		<th>Specialist</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @vendor_array.each do |vendor| %>  
+		  <tr>
+		  	<td><%= vendor.name %></td>
+		  	<td><%= vendor.cw %></td>
+		  	<td><% if Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id).present? %>
+		  			<% Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id).each do |campaign|%>
+		  				<%= form_for campaign, remote: true do |c|%>
+		  					<%= campaign.name %>
+		  					<%= c.collection_select :specialist_id, @specialist_array, :id, :name, include_blank: true %>
+			  				<%= c.hidden_field :vendor_id, value: vendor.id %>
+			  				<%= c.submit "Submit", class: "edit-btn"%>
+		  				<% end %>
+		  			<% end %>
+		  			
+		  		<% else %>
+			  		<%= form_for Campaign.new, remote: true do |c| %>
+			  			<%= c.collection_select :specialist_id, @specialist_array, :id, :name, include_blank: true %>
+			  			<%= c.hidden_field :vendor_id, value: vendor.id %>
+			  			<%= c.submit "Submit", class: "edit-btn"%>
+			  		<% end %>
+			  	<% end %>
+		  	</td>
+		  </tr>
+		<% end %>
+	   </tbody> 
+	</table>

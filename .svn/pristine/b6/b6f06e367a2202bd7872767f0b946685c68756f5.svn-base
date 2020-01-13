@@ -1,0 +1,22 @@
+<%=@campaign.questions.inspect%>
+<div class="container" id="cv-container">
+<%= form_for(@campaign) do |f| %>
+  
+  
+  	
+	  
+	  <div class="field col-md-6">
+	    <%= f.label :end_date %><br>
+	    <%= f.text_field :end_date, id: "end-date" %>
+	  </div>
+	  <div class="field col-md-6">
+	    <%= f.label :specialist %><br>
+	    <%= f.collection_select :specialist_id, @specialists, :user_id, :name, include_blank: true %>
+	  </div>
+ 	  
+	  <div class="actions col-md-12">
+	    <%= f.submit %>
+	 
+	  
+<% end %>
+ </div>

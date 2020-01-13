@@ -1,0 +1,19 @@
+<%= render 'layouts/internal_navbar' %>
+<h1 id="index-header">Choose an Industry</h1>
+  	
+    <% @ctypes.each do |ctype| %>
+	  <div class="col-md-3">
+        <%= link_to ctype do %>
+        	<div class="industry-type-list"><%= ctype.name %></div>
+        <% end %>
+        <div class="col-md-12">
+	        <%= link_to 'Edit', edit_ctype_path(ctype) %>
+	        <%= link_to 'Destroy', ctype, method: :delete, data: { confirm: 'Are you sure?' } %>
+	    </div>
+	  </div>
+    <% end %>
+
+<br>
+<div class="action-links">
+	<div class="form-button"><%= link_to 'New Ctype', new_ctype_path %></div>
+</div>

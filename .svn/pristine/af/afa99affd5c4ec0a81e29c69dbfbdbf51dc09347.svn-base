@@ -1,0 +1,18 @@
+$('#manager-inside-render').html('<%= j render 'static/invite_user' %>');
+$('#new_user_invite').validate({
+	debug: true,
+	rules:{
+		"user_invite[first]": {required: true},
+		"user_invite[last]": {required: true},
+		"user_invite[email]": {required:true, email: true, remote: "<%= check_email_users_path %>"}
+	}, messages:{
+		"user_invite[email]":{
+			remote: "That email address is already being used."
+		}
+	}
+});
+$('.form-button input').click(function(){
+	if ($("#new_user_invite").valid()){
+		$('#inside-manager').modal('hide');
+	}
+});

@@ -1,0 +1,6 @@
+<h1>Editing reviewer_type</h1>
+
+<%= render 'form' %>
+
+<%= link_to 'Show', @reviewer_type %> |
+<%= link_to 'Back', reviewer_types_path %>

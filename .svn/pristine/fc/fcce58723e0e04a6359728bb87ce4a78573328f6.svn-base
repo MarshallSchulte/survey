@@ -1,0 +1,10 @@
+console.log($('#manager-inside-render').length);
+if ($('#new-campaign-inside-render').length){
+	$('#new-campaign-inside-render').html('<%= j render "vendors/new" %>');
+}else if ($('#new-admin-inside-render').length){
+	$('#new-admin-inside-render').html('<%= j render "vendors/new" %>');
+}else{
+
+	$('#manager-inside-render').html('<%= j render "vendors/new" %>');
+}
+

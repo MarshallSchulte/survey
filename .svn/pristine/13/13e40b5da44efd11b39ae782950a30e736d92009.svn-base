@@ -1,0 +1,2 @@
+<h4 id="landing-page-header"><%= current_user.name %> - Specialist</h4> <br />
+<%= render partial: "specialist_campaign_list"%> <br />

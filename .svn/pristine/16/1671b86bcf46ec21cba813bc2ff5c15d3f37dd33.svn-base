@@ -1,0 +1,37 @@
+console.log("RUN");
+var graph_count = <%= @graph_count %>;
+<% @chart1json = @chart1.chart.to_json %>
+var chart1 = JSON.parse('<%= raw @chart1json %>');
+chart1.series = [{data: <%= @answer_array %>}];
+chart1.chart = {type: "column"};
+console.log(chart1);
+console.log("initial count: " + graph_count);
+var time = "<%= Time.now.strftime("%I%M%S%z") %>"
+var src = 'assets/chart_<%= @underscore_name %>_' + graph_count + '_' + time + '.jpg'
+graph1 = {
+	infile: JSON.stringify(chart1),
+	outfile: 'app/assets/images/chart_<%= @underscore_name %>_'+ graph_count + '_' + time + '.jpg'
+};
+			
+graph_count += 1;
+			
+			$.ajax({
+			  type: "POST",
+			  origin: "http://<%= request.host %>:3000",
+			  url: "http://<%= request.host %>:3001",
+			  data: JSON.stringify(graph1),
+			  success: $("#slide-row").delay(800).queue(function(){
+			  	$(this).html('<%= j render "campaigns/slides" %>').dequeue();
+			  	$('.close-slide').on('click', function() {
+					console.log("destroy");
+	        		$(this).parent('div').parent('form').parent('.slide').fadeOut();
+				});
+			  }),
+			  dataType: "json",
+			  crossDomain: true
+			});
+			console.log("working?");
+			
+
+
+

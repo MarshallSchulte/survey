@@ -1,0 +1,41 @@
+console.log("RUN");
+var graph_count = <%= @graph_count %>;
+<% @chart3json = @chart3.chart.to_json %>	
+var chart3 = JSON.parse('<%= raw @chart3json %>');	
+chart3.series = [{data: <%= @answer_array %>}];
+chart3.chart = {type: "column"};
+console.log("initial count: " + graph_count);
+var time = "<%= Time.now.strftime("%I%M%S%z") %>"
+var src = 'assets/chart_<%= @underscore_name %>_' + graph_count + '_' + time + '.jpg'
+graph3 = {
+	"async": true,
+	"infile":JSON.stringify(chart3),
+	"outfile": 'app/assets/images/chart_<%= @underscore_name %>_'+ graph_count + '_' + time + '.jpg'
+};
+graph_count += 1;
+
+$('.close-slide').on('click', function() {
+	console.log("destroy");
+    $(this).parent('div').parent('form').parent('.slide').fadeOut();
+}); 
+
+			$.ajax({
+			  type: "POST",
+			  origin: "<%= request.host %>:3000",
+			  url: "http://<%= request.host %>:3001",
+			  crossDomain: true,
+			  data: JSON.stringify(graph3),
+			  success: $("#slide-row").delay(800).queue(function(){
+			  	$(this).html('<%= j render "campaigns/slides" %>').dequeue();
+			  	$('.close-slide').on('click', function() {
+					console.log("destroy");
+	        		$(this).parent('div').parent('form').parent('.slide').fadeOut();
+				});
+			  }),
+			  dataType: "json"
+			});
+			console.log("working?");
+
+		
+		
+		

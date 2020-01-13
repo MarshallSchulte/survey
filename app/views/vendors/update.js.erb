@@ -1,0 +1,8 @@
+vendor_table.destroy();
+
+$("#vendors-table").html('<%= j render(:partial => "static/vendor_admin_list") %>');
+
+var vendor_table = $('#vendors-table').DataTable( {
+    "retrieve": true,
+    "paging": true
+} );

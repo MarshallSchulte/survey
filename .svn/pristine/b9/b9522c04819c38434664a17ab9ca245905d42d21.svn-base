@@ -1,0 +1,19 @@
+  <div class="field reviewer-field">
+    <div class="col-md-6">
+	    <%= f.label :first_name %>
+	    <%= f.text_field :first_name %>
+	</div>
+  
+    <div class="col-md-6">
+	    <%= f.label :last_name %>
+	    <%= f.text_field :last_name %>
+    </div>
+    <div class="col-md-6">
+	    <%= f.label :email %></br>
+	    <%= f.text_field :email %>
+	</div>
+	<div class="col-md-6"></div>
+    <%= f.hidden_field :_destroy %>
+	<div class="col-md-6"><%= link_to_remove_association "remove", f, :class => 'remove_fields' %></div>
+  </div>
+  

@@ -1,0 +1,21 @@
+<div class="modal fade" id="inside-manager" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" id="inside-manager-close" type="button">×</button>
+  	<div id="manager-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+
+<%= render partial: "specialist_campaign_list"%> <br />
+
+<script>
+$('#inside-manager-close').click(function(){
+	$('#inside-manager').modal('hide');
+});
+</script>

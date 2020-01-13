@@ -1,0 +1,12 @@
+  <div class="field reviewer-field">
+    <div class="field">
+    <%= reviewer.first_name %>
+  
+  
+    <%= reviewer.last_name %>
+  
+    <%= reviewer.email %>
+  	</div>
+    
+  </div>
+  

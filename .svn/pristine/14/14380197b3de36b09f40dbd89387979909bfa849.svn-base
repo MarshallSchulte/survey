@@ -1,0 +1,24 @@
+<table id="manager-table">
+  <tr>
+	<th class="manager-table-header">Campaign</div>
+	<th class="manager-table-header">Tier</div>
+	<th class="manager-table-header">Supplier Name</div>
+	<th class="manager-table-header">Complexity Weight</div>
+	<th class="manager-table-header">Performance Review #</div>
+	<th class="manager-table-header">Executive Sponsor</div>
+	<th class="manager-table-header">Specialist</div>
+  </tr>
+
+	<% @campaigns.each do |campaign| %>  
+	  <tr class="manager-table-row">
+	  	<td class="manager-table-data"><%= campaign.name %></td>
+	  	<td class="manager-table-data"><%= campaign.tier %></td>
+	  	<td class="manager-table-data"><%= campaign.vendor.name %></td>
+	  	<td class="manager-table-data"><%= campaign.complexity_weight %></td>
+	  	<td class="manager-table-data"><%= campaign.performance_review_number %></td>
+	  	<td class="manager-table-data"><%= campaign.customer.name %></td>
+	  	<td class="manager-table-data"></td>
+	  	<td><%= link_to "Edit", edit_campaign_path(campaign), "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+	  </tr>
+	<% end %>
+</table>

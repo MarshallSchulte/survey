@@ -1,0 +1,17 @@
+<div class="modal fade" id="inside-manager" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" data-dismiss="modal" type="button">×</button>
+  	<div id="manager-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+<h4 id="landing-page-header"><%= current_user.name %> - Campaign Manager</h4> 
+		<%= render "campaign_list" %>
+		  
+<%= link_to "New Campaign", new_campaign_path, "data-toggle" => "modal", "data-target" => "#inside-manager", remote: true, class: "new-btn" %>

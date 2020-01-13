@@ -1,0 +1,4 @@
+
+	  	<h4 class="cv-header">Select a Vendor</h4>
+	  	<%= f.collection_select :vendor_id, Vendor.all, :id, :name, include_blank: true %>
+	  	<%= link_to "Add a Vendor", new_vendor_path, "data-toggle"=> "modal", "data-target"=> "#inside-campaign", remote: true %>

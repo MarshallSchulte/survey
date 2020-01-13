@@ -1,0 +1,9 @@
+if ($('#new-campaign-inside-render').length){
+	$('#new-campaign-inside-render').html('<%= j render "vendors/new" %>');
+}else{
+	$('#new-admin-inside-render').html('<%= j render "vendors/new" %>');
+}
+$('.form-button input').click(function(){
+	$('#inside-admin').modal('hide');
+	$('#inside-campaign').modal('hide');
+});

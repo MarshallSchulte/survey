@@ -1,0 +1,2 @@
+console.log("create customer");
+$("#campaign_customer_id").append('<option selected="selected" value="<%=Customer.last.id %>"><%= Customer.last.name %></option>');

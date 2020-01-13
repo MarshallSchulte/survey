@@ -1,0 +1,32 @@
+	<table id="survey-evaluation-table" class="display">
+	  <thead>
+	  <tr>
+		<th>Reviewer Type</th>
+		<th>Campaign Name</th>
+		<th>Supplier</th>
+		<th>Review Date</th>
+		<th>Reviewer</th>
+		<th>Progress</th>
+		<th>Status</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @survey_evaluations.each do |se| %>
+		 <%questions_for_each_campaign = Reviewer.find_by_sql("select * from campaigns_questions where campaign_id = #{se.id}")%>
+		  <%=progress_percent = ((se.rev_count.to_f/questions_for_each_campaign.count.to_f)*100.0).round(2)%>
+		  <tr>
+		  	<td><%= ReviewerType.find(se.reviewer_type_id).name %></td>
+		  	<td><%= se.name %></td>
+		  	<td><%= Vendor.find(se.vendor_id).name %></td>
+		  	<td><%= se.response_created_at%></td>
+		  	<td><%= se.first_name %> <%= se.last_name %></td>
+		  	<td><%= progress_bar(progress_percent, :color => 'green', :rounded => true, :tiny => true) %><%= progress_percent%> %</td>
+		  	<td><%= se.status%></td>
+		  </tr>
+		<% end %>
+	   </tbody> 
+	</table>
+	<br />
+	<%= link_to "Invite a User", '/invite_user', "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %>
+	
+

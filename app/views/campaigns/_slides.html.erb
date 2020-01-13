@@ -1,0 +1,9 @@
+<% if Graph.where(campaign_id: @campaign.id, user_id: current_user.id).present? %>
+	 	<% Graph.where(campaign_id: @campaign.id, user_id: current_user.id).each_with_index do |g, index| %>
+		 	<div class="slide col-md-2">
+		 		<span class="slide-number"><%= index +1 %></span>
+		 		<%= button_to 'x', g, method: :delete, class:'close close-slide', type:'button', remote: true %>
+		 		<img class='image-thumb' src=<%= g.rails_path %>>
+			</div>
+		<% end %>
+<% end %>

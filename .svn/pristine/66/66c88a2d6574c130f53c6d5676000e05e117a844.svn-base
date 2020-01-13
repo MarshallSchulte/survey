@@ -1,0 +1,144 @@
+<% if can? :update, Customer %>
+<div class="modal fade" id="inside-manager" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" id="inside-manager-close" type="button">×</button>
+  	<div id="manager-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+<div class="modal fade" id="inside-vendor" title="My modal">
+  <div class="modal-header">
+    
+  </div>
+  <div class="modal-body">
+  	<button aria-hidden="true" class="close" id="inside-vendor-close" type="button">×</button>
+  	<div id="vendor-inside-render">
+    
+    </div>
+  </div>
+  <div class="modal-footer">
+  </div>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#first-admin-page" aria-controls="first-admin-page" role="tab" data-toggle="tab">Workload Management</a></li>
+    <li role="presentation"><a href="#second-admin-page" aria-controls="second-admin-page" role="tab" data-toggle="tab">Campaigns</a></li>
+	<li role="presentation"><a href="#third-admin-page" aria-controls="third-admin-page" role="tab" data-toggle="tab">Analytics</a></li>
+    <li role="presentation"><a href="#fourth-admin-page" aria-controls="fourth-admin-page" role="tab" data-toggle="tab">Specialists</a></li>
+</ul>
+
+<div class="tab-content"> 
+  <div role="tabpanel" class="tab-pane active" id="first-admin-page">
+  	<h4 class="cv-header">Vendors and Specialists</h4>
+	 <div class="row"><%= link_to "Add a Vendor", new_vendor_path, "data-toggle"=> "modal", id: "add-vendor", "data-target"=> "#inside-vendor", remote: true, class: "edit-btn" %>
+	 				  <%= link_to "Import a Vendor", vendors_path, class: "edit-btn" %>
+	 				  <a class="edit-btn" id="ready" href="javascript:void(0);">Commit</a>
+	 </div>
+	 <%= render 'static/vendor_specialist_list' %>
+  	
+  </div>
+  
+  <div role="tabpanel" class="tab-pane" id="second-admin-page">
+  	<div class="row">
+		<div class="col-md-4 search-div"><h2 style="text-align:center; font-size:1.5em; font-weight: bold;margin-top:0px;">Search by Start and End Dates</h2>
+			<div class="col-md-6"><b>Start Date:</b></br><input id="min"></div>
+			<div class-"col-md-6"><b>End Date:</b></br><input id="max"></div>
+		</div>
+		<div class=" col-md-4 header-holder">
+	  		<h4 class="cv-header">Campaigns</h4>
+			<h5 id="landing-page-header">Customer: <%=link_to "#{@customer.name}", "/customers/#{@customer.id}/edit"%></h5>
+		</div>
+	</div>
+		<%= render "campaign_list" %>
+		<%= link_to "New Campaign", new_campaign_path, "data-toggle" => "modal", "data-target" => "#inside-manager", remote: true, class: "new-btn" %>
+		<script>
+
+		</script>
+  </div>
+  
+  <div role="tabpanel" class="tab-pane" id="third-admin-page">
+	 
+	<br />
+	<div> <!--class="c_scroll"-->
+		<%=render :partial => 'filter_analytics'%>
+	</div>
+	
+	 <%= render 'static/analytics' %>
+  </div>
+  
+  <div role="tabpanel" class="tab-pane" id="fourth-admin-page">
+	<h4 class="cv-header">Manage Specialists</h4>
+	<%= link_to "Invite a User", invite_user_path, "data-toggle"=> "modal", "data-target"=> "#inside-manager", class: "edit-btn", id: "invite-user", remote: true %>
+	 <%= render 'static/user_specialist_list' %>
+  </div>
+	
+</div>
+<% else %>
+	<h1 style="border-color: red; border-style: dashed; border-width: 5px 0 5px 0; padding: 50px; color:red; text-align:center;font-weight:bold; background-color:rgb(255, 195, 195); margin-top: 10%;">You are not authorized to view this page!</h1>
+<% end %>
+<script>
+	
+	var campaign_table = $('#specialist-campaigns-table').DataTable( {
+	    "retrieve": true,
+	    "paging": true,
+	    "order": [[ 10, "desc" ]],
+	    "oLanguage": {
+         "sSearch": "General Search:</br>"
+      	},
+      	"dom": 'flptip',
+      	"columnDefs": [ { "targets": [11,12,13,14], "orderable": false } ]
+	} );
+	
+	//"dom": '<<"left"f><"right"p>tip>'
+	
+	  $('#min').datepicker({
+                dateFormat: "mm/dd/yy",
+                onClose: function(date){
+                	campaign_table.draw();
+                }
+      });
+                
+      $('#max').datepicker({
+                dateFormat: "mm/dd/yy",
+                onClose: function(date){
+                	campaign_table.draw();
+                }
+      });
+	// Add event listeners to the two range filtering inputs
+      $('#min').keyup( function() { campaign_table.draw(); } );
+      $('#max').keyup( function() { campaign_table.draw(); } );
+      $('a').click(function(){
+      	$('#min').val("");
+	  	$('#max').val("");
+      });
+	  $(document).on('click', function(){
+		$(".best_in_place").each(function(){
+			if ($(this).html() == ""){
+				$(this).append("--");
+			}
+		});
+	  });
+
+	var user_table = $("#users-table").DataTable({
+		"retrieve": true,
+	    "paging": true,
+	    "oLanguage": {
+         "sSearch": "General Search:</br>"
+      	},
+      	"dom": 'flptip'
+	});
+	
+	$('#inside-manager-close').click(function(){
+		$('#inside-manager').modal('hide');
+	});
+	
+	$('#inside-vendor-close').click(function(){
+		$('#inside-vendor').modal('hide');
+	});
+</script>

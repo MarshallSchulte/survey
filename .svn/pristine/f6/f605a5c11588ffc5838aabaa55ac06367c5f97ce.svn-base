@@ -1,0 +1,71 @@
+class Campaign < ActiveRecord::Base
+  belongs_to :user, class_name: 'User', primary_key: :id, foreign_key: :manager_id
+  has_one :user #, class_name: 'User', primary_key: :id, foreign_key: :specialist_id
+  has_and_belongs_to_many :reviewers, join_table: :campaigns_reviewers
+  has_and_belongs_to_many :questions, join_table: :campaigns_questions
+  has_many :responses, through: :questions
+  accepts_nested_attributes_for :questions, allow_destroy: true
+  accepts_nested_attributes_for :reviewers, allow_destroy: true
+  accepts_nested_attributes_for :responses
+  belongs_to :customer
+  belongs_to :vendor
+  #accepts_nested_attributes_for :campaigns_questions
+  
+  
+  def get_performance_review_by_quarter_data(year)
+    _q1_data = Campaign.find_by_sql("SELECT count(1) AS total, status, updated_at FROM campaigns  WHERE updated_at >= '#{year}-01-01' AND updated_at < '#{year}-04-01' GROUP BY status")
+    _q2_data = Campaign.find_by_sql("SELECT count(1) AS total, status, updated_at FROM campaigns  WHERE updated_at >= '#{year}-04-01' AND updated_at < '#{year}-07-01' GROUP BY status")
+    _q3_data = Campaign.find_by_sql("SELECT count(1) AS total, status, updated_at FROM campaigns  WHERE updated_at >= '#{year}-07-01' AND updated_at < '#{year}-10-01' GROUP BY status")
+    _q4_data = Campaign.find_by_sql("SELECT count(1) AS total, status, updated_at FROM campaigns  WHERE updated_at >= '#{year}-10-31' AND updated_at < '#{year}-12-31' GROUP BY status")
+    logger.debug "_q1_data is #{_q1_data} "
+    _all_data = Hash.new
+    _all_data = {
+            ### STATUS ###  Q1 Q2  Q3 Q4
+            "Complete"   => [0, 0, 0, 0],
+            "Draft"      => [0, 0, 0, 0],
+            "InProcess"  => [0, 0, 0, 0],
+            "Submitted"  => [0, 0, 0, 0],
+    }
+    # Quarter 1
+    _q1_data.each do  |status_grp| 
+          case status_grp.status
+          when "Complete";                          _all_data["Complete"][0]   = status_grp.total
+          when "Draft" || "Submitted For Review";   _all_data["Draft"][0]      = status_grp.total
+          when "In Process";                        _all_data["InProcess"][0]  = status_grp.total
+          else
+          end
+    end
+    # Quarter 2
+    _q2_data.each do  |status_grp| 
+          case status_grp.status
+          when "Complete";                          _all_data["Complete"][1]   = status_grp.total
+          when "Draft" || "Submitted For Review";   _all_data["Draft"][1]      = status_grp.total
+          when "In Process";                        _all_data["InProcess"][1]  = status_grp.total
+          else
+          end
+    end
+    # Quarter 3
+    _q3_data.each do  |status_grp| 
+          case status_grp.status
+          when "Complete";                          _all_data["Complete"][2]   = status_grp.total
+          when "Draft" || "Submitted For Review";   _all_data["Draft"][2]      = status_grp.total
+          when "In Process";                        _all_data["InProcess"][2]  = status_grp.total
+          else
+          end
+    end
+    # Quarter 4
+    _q4_data.each do  |status_grp| 
+          case status_grp.status
+          when "Complete";                          _all_data["Complete"][3]   = status_grp.total
+          when "Draft" || "Submitted For Review";   _all_data["Draft"][3]      = status_grp.total
+          when "In Process";                        _all_data["InProcess"][3]  = status_grp.total
+          else
+          end
+    end
+    logger.debug "_all_data outside is : #{_all_data.inspect}" 
+    
+   return _all_data    
+  
+  end
+  
+end

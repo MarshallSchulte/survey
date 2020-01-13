@@ -1,0 +1,4 @@
+class Metric < ActiveRecord::Base
+  has_many :kpis
+  belongs_to :question
+end

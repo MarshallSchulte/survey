@@ -1,0 +1,13 @@
+class Campaign < ActiveRecord::Base
+  belongs_to :user, class_name: 'User', primary_key: :id, foreign_key: :manager_id
+  has_one :user #, class_name: 'User', primary_key: :id, foreign_key: :specialist_id
+  has_and_belongs_to_many :reviewers, join_table: :campaigns_reviewers
+  has_and_belongs_to_many :questions, join_table: :campaigns_questions
+  has_many :responses, through: :questions
+  accepts_nested_attributes_for :questions, allow_destroy: true
+  accepts_nested_attributes_for :reviewers, allow_destroy: true
+  accepts_nested_attributes_for :responses
+  belongs_to :customer
+  belongs_to :vendor
+  #accepts_nested_attributes_for :campaigns_questions
+end

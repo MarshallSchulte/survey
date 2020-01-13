@@ -1,0 +1,46 @@
+<% if @campaigns.any? %>
+<table id="specialist-campaigns-table" class="display">
+  <thead>
+  <tr>
+	<th>Campaign Name</th>
+	<th>Executive Sponsor Company</th>
+	<th>Tier</th>
+	<th>Status</th>
+	<th>Supplier Name</th>
+	<th>Complexity Weight</th>
+	<th>Performance Review #</th>
+	<th>Specialist</th>
+	<th></th>
+
+  </tr>
+  </thead>
+  <tbody>
+	<% @campaigns.each do |campaign| %>
+	 <% if campaign.status == "Submitted For Review"%>
+	  <tr class="review-row">
+	 <% else %>
+	  <tr>
+	 <% end %>
+	  	<td><%= best_in_place campaign, :name, :as => :input %></td>
+	  	<td><%= campaign.customer.name if !campaign.customer.blank?%></td>
+	  	<td><%= best_in_place campaign, :tier %></td>
+	  	<td><%= campaign.status %></td>
+	  	<td><%= best_in_place campaign, :vendor_id, :as => :select, :collection => Vendor.all.map { |i| [i.id, i.name] } %></td>
+	  	<td><%= best_in_place campaign, :complexity_weight %></td>
+	  	<td><%= best_in_place campaign, :performance_review_number %></td>
+	  	<td>
+	  		<%= best_in_place campaign, :specialist_id, :as => :select, :collection => @specialists.map { |i| [i.id, i.name] } %>
+	  	</td>
+	  	<td><%= link_to "Edit", edit_campaign_path(campaign), "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+
+	 </tr>
+	<% end %>
+   <% else %>
+   	<h4 id="nothing-header">You have not made any campaigns yet. Click the New Campaign button to get started.</h2>
+   <% end %>
+   </tbody> 
+</table>
+
+<script>
+
+</script>

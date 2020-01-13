@@ -1,0 +1,19 @@
+<% if current_user.roles.first.id == 2 %>
+
+    campaign_table.destroy();
+	$('#specialist-campaigns-table').html('<%= j render(:partial => "static/campaign_list") %>');
+	$('#specialist-vendor-rows').html('<%= j render(:partial => "static/specialist_vendor_rows") %>');
+	$('#vendor-specialist-table').html('<%= j render(:partial => "static/specialist_vendor_table") %>');
+		var campaign_table = $('#specialist-campaigns-table').DataTable( {
+		    "retrieve": true,
+		    "paging": true
+		} );
+<% elsif current_user.roles.first.id == 3 %>
+
+  campaign_table.destroy();
+	$('#specialist-campaigns-table').html('<%= j render(:partial => "static/specialist_campaign_list") %>');
+		var campaign_table = $('#specialist-campaigns-table').DataTable( {
+		    "retrieve": true,
+		    "paging": true
+		} );
+<% end %>

@@ -1,0 +1,77 @@
+	<table id="survey-evaluation-table" class="display">
+	  <thead>
+	  <tr>
+		<th>Reviewer Type</th>
+		<th>Campaign Name</th>
+		<th>Supplier</th>
+		<th>Review Date</th>
+		<th>Reviewer</th>
+		<th>Progress</th>
+		<th>Status</th>
+		<th>Hex</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @campaigns.each do |c| %>
+		 <% c.reviewers.each do |r| %>
+		 <% questions_for_each_campaign = c.questions %>
+		  <% responses = r.responses.where.not(answer_option: nil).count.to_f %>
+		  <% progress_percent = ((responses/questions_for_each_campaign.count.to_f)*100.0).round(2)%>
+		  <% unless progress_percent.nan? %>
+		   <tr>
+		  	<td><%= ReviewerType.find(r.reviewer_type_id).name %></td>
+		  	<td><%= c.name %></td>
+		  	<td><%= c.vendor.name %></td>
+		  	<% if r.responses.last %>
+		  	
+		  		<td><%= r.responses.last.created_at %></td>
+		  	
+		  	<% else %>
+		  		<td></td>
+		  	<% end %>
+		  	<td class="name-cell"><%= r.first_name %> <%= r.last_name %> <div class="hidden"><%= r.token %></div></td>
+		  	<td>
+		  		<% if progress_percent < 100 %>
+		  			<%= progress_bar(progress_percent, :color => 'orange', :rounded => true, :tiny => true) %>
+		  			<span class="number" align="center"><%= progress_percent%> %</span>
+		  		<% else %>
+		  			<%= progress_bar(progress_percent, :color => 'green', :rounded => true, :tiny => true) %>
+		  			<span class="number" align="center"><%= progress_percent%> %</span>
+		  		<% end %>
+		  	</td>
+		  	<td><%= c.status%></td>
+		  	<td><%= r.token %></td>
+		   </tr>
+		  <% end %>
+		 <% end %>
+		<% end %>
+	   </tbody>
+	</table>
+	<br />
+	<%= link_to "Invite a User", '/invite_user', "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true %>
+<script>
+$(document).on('page:change', function(){
+    var survey_table = $("#survey-evaluation-table").DataTable();
+    
+    $("#survey-evaluation-table tbody tr").click(function(){
+    	var token = $(this).children('.name-cell').children('.hidden').text()
+		window.location = "/survey/?token=" + token;
+	});
+	
+	$(".paginate_button").click('page', function(){
+		console.log('change');
+		$("#survey-evaluation-table tbody tr").click(function(){
+	    	var token = $(this).children('.name-cell').children('.hidden').text()
+			window.location = "/survey/?token=" + token;
+		});
+	})
+	$("#survey-evaluation-table thead").click('page', function(){
+		console.log('change');
+		$("#survey-evaluation-table tbody tr").click(function(){
+	    	var token = $(this).children('.name-cell').children('.hidden').text()
+			window.location = "/survey/?token=" + token;
+		});
+	})
+});
+</script>
+

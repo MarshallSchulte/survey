@@ -1,0 +1,82 @@
+class MetricScoresController < ApplicationController
+  before_action :set_metric_score, only: [:show, :edit, :update, :destroy]
+
+  respond_to :html
+
+  def index
+    #@metric_scores = MetricScore.all
+    @metric_scores = MetricScore.joins(:metric, :vendor).select("metric_scores.*, metrics.metric_name, vendors.name vendor_name")
+    respond_with(@metric_scores)
+  end
+
+  def show
+    respond_with(@metric_score)
+  end
+
+  def new
+    @metric_score = MetricScore.new
+    respond_with(@metric_score)
+  end
+
+  def edit
+  end
+
+  def create
+    @metric_score = MetricScore.new(metric_score_params)
+    @metric_score.save
+    respond_with(@metric_score)
+  end
+
+  def update
+    @metric_score.update(metric_score_params)
+    respond_with(@metric_score)
+  end
+
+  def destroy
+    @metric_score.destroy
+    respond_with(@metric_score)
+  end
+  
+  def performance
+    vendor_id = params[:id]
+    m_score = MetricScore.new
+    data = m_score.performance_data(vendor_id)
+    #data = _cmp.get_performance_review_by_quarter_data(year)
+    @chart = LazyHighCharts::HighChart.new('graph') do |f|
+      f.chart(type: "pie", marginRight: 100)
+      f.title({ text: 'Top Metrics', x: -50})
+      f.plotOptions( series: {
+        dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b> ({point.y:,.0f})',
+            color: 'black',
+            softConnector: true},
+        neckWidth: '30%',
+        neckHeight: '25%'
+      })
+      f.legend( { enabled: false })
+      f.series( name: 'Number of Campaigns',
+        data: [
+              ['Quality',   data['Quality']],
+              ['Customer Support', data['Customer Support']],
+              ['Performance', data['Performance']],
+              ['Delivery ad Support', data['Delivery ad Support']]
+            ]
+      )
+    end
+    
+    respond_to do |format|
+      format.html
+      format.js
+    end
+  end
+
+  private
+    def set_metric_score
+      @metric_score = MetricScore.find(params[:id])
+    end
+
+    def metric_score_params
+      params.require(:metric_score).permit(:metric_id, :campaign_id, :customer_id, :vendor_id, :actual_score, :total_score)
+    end
+end

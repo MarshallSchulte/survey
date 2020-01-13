@@ -1,0 +1,20 @@
+
+
+    <td><%= f.text_field :first_name, required:true %></td>
+  
+    <td><%= f.text_field :last_name, required:true %></td>
+  
+    <td><%= f.text_field :email, required:true %></td>
+    <td><%= f.collection_select :reviewer_type_id, ReviewerType.all, :id, :name, {include_blank: true}, required:true %></td>
+    <td><%= f.text_field :title %></td>
+    <td><%= f.text_field :division %></td>
+    <td><%= f.text_field :bu %></td>
+    <td><%= f.text_field :location %></td>
+    <td><%= f.text_field :platform %></td>
+    
+
+    <td><%=f.remove_nested_fields_link 'Remove'%></td>
+
+
+
+  

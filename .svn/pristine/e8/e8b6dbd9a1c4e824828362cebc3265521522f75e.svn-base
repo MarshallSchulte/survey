@@ -1,0 +1,54 @@
+
+<div role="tabpanel" class="tab-pane" id="third-admin-page">
+	 
+	<br />
+	<div> <!--class="c_scroll"-->
+	
+	
+<%= form_tag('/performance', :method => :get, :id =>'filter', :remote => true) do %>
+		<table class="table">
+			<thead>
+				<tr>
+					<th><span id='asterisk'>*</span> Vendor</th>
+					<th><span id='asterisk'>*</span> Chart Type</th>
+					
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+						<td>
+							<%= select_tag :chart_data, options_for_select(@vendors.map {|m| [m.name, m.id]}), :class => 'form-control input-sm filter' %>
+						</td>
+						
+						<td>
+							<%= select_tag :chart_type, options_for_select( [ 	["Top 5 Categories", 1], 
+																				["PAN 7 Scores Comparison", 2], 
+																				["Vendor Comparison", 3], 
+																				["Top 5 Customers", 4], 
+																				["Top 5 Customers overall", 5] 
+																			]), :class => 'form-control input-sm filter' %>
+						</td>
+							
+						<td>
+							<%= submit_tag "Filter", :id=>"filter", :class=>"btn btn-sm btn-primary"%>
+						</td>
+							
+					
+				</tr>
+			</tbody>
+		</table>
+		<% end %>
+		
+</div>
+	<table>
+		<tr>
+			<td>
+				<%= render 'metric_scores/analytics' %>
+			</td>
+			<td>
+	 			<%= render 'metric_scores/compare_analytics' %>
+	 		</td>
+	 	</tr>
+	 </table>
+  </div>

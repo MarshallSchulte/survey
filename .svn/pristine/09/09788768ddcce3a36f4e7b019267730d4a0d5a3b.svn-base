@@ -1,0 +1,26 @@
+<%#=@campaign.questions.as_json%><br>
+<h4 align="center">Please Respond to the following Survey</h4>
+<div class="container" id="cv-container">
+<br />
+	<form action="/survey_response" method="get">
+		  <% @campaign.questions.each_with_index do |qn, index| %>
+			<%_question_id = @campaign.questions[index].id%> <!-- Question ID -->
+			<%_kpi_id = Question.find(_question_id).kpi_id %> <!--KPI ID's-->
+			<div style="color: #5E1919">
+				<b>Question <%=index+1%></b> : <%=Kpi.find(_kpi_id).kpi_measurement %><br />
+			</div>
+			<tr>
+				<%if !qn.opt1.blank?%> <td><input type="radio" name="s1" value="<%=index+1%>"> <%=qn.opt1%> </td> <%end%>
+				<%if !qn.opt2.blank?%> <td><input type="radio" name="s1" value="<%=index+1%>"> <%=qn.opt2%> </td> <%end%>
+				<%if !qn.opt3.blank?%> <td><input type="radio" name="s1" value="<%=index+1%>"> <%=qn.opt3%> </td> <%end%>
+				<%if !qn.opt4.blank?%> <td><input type="radio" name="s1" value="<%=index+1%>"> <%=qn.opt4%> </td> <%end%>
+				<%if !qn.opt5.blank?%> <td><input type="radio" name="s1" value="<%=index+1%>"> <%=qn.opt5%> </td> <%end%>
+				<%if !qn.opt6.blank?%> <td><input type="radio" name="s1" value="<%=index+1%>"> <%=qn.opt6%> </td> <%end%>
+           	</tr>
+			<br /><br /><br />
+		  <% end %>
+		  <br /> <br />
+		  <input type="submit" value="Submit">
+	</form>
+	<br />
+</div>

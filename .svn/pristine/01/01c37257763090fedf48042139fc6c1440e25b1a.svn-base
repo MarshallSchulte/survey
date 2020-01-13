@@ -1,0 +1,85 @@
+<div class="container" id="form-container">
+	<h3 id="form-header-2">New Customer</h3>
+
+<%= form_for @customer, remote:true, authenticity_token: true do |f| %>
+	<% if @customer.errors.any? %>
+	    <div id="error_explanation">
+	      <h2><%= pluralize(@customer.errors.count, "error") %> prohibited this customer from being saved:</h2>
+	
+	      <ul>
+	      <% @customer.errors.full_messages.each do |message| %>
+	        <li><%= message %></li>
+	      <% end %>
+	      </ul>
+	    </div>
+	  <% end %>
+	<div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :name %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :name %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :address %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :address %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :city %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :city %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :state %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :state %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :zipcode %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :zipcode %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :poc_first_name %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :poc_first_name %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :poc_last_name %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :poc_last_name %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :poc_email %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :poc_email %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :poc_phone %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :poc_phone %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label "Industry" %></div>
+	    <div class="form-checkboxes col-md-4">
+	    		
+	    		<%= f.collection_check_boxes :ctype_ids, Ctype.all, :id, :name, multiple: true %>
+	
+	    </div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :size %></div>
+	    <div class="form-input col-md-6"><%= f.number_field :size %></div>
+	  </div>
+	  
+	  <!-- EWS Team Details -->
+	<h4><span>USER INVITES</span></h4>
+	<br/>
+	<%= render 'user_invite_labels'%>
+	
+	<%= f.fields_for :user_invites do |user_invite| %>
+		<%= render 'user_invite_fields', :f => user_invite %>
+	<% end %>
+  <p><%#=f.add_nested_fields_link :user_invites%><%= link_to_add_association "Add User", f, :user_invites, class: "add_fields btn btn-primary btn-xs" %></p>
+		
+		<!-- EWS Team Details End -->
+	  
+	  <div class="row" id="button-row">
+	    <div class="form-button"><%= f.submit "Add Customer", onclick: "$('#inside-campaign').modal('hide');" %></div>
+	  </div>
+<% end %>
+</div>
+
+<script>
+
+</script>

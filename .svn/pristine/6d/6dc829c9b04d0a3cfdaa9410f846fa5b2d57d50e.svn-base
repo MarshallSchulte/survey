@@ -1,0 +1,40 @@
+<% if @campaigns.any? %>
+<table id="specialist-campaigns-table" class="display">
+<thead>
+  <tr>
+	<th>Template</th>
+	<th>Tier</th>
+	<th>Status</th>
+	<th>Supplier Name</th>
+	<th>Complexity Wt.</th>
+	<th>Review #</th>
+	<th>Sponsor</th>
+	<th>Start Date</th>
+	<th>End Date</th>
+	<th></th>
+  </tr>
+ </thead>
+   <tbody>
+	<% @campaigns.each do |campaign| %>  
+	  <tr>
+	  	<td><%= campaign.name %></td>
+	  	<td><%= campaign.tier %></td>
+	  	<td><%= campaign.status %></td>
+	  	<td><%= campaign.vendor.name if !campaign.vendor.blank?%></td>
+	  	<td><%= campaign.complexity_weight %></td>
+	  	<td><%= campaign.performance_review_number %></td>
+	  	<td><%= campaign.customer.name if !campaign.customer.blank?%></td>
+	  	<td><%= campaign.start_date %></td>
+	  	<td><%= campaign.end_date %></td>  	
+		<td><%= link_to "Edit", edit_campaign_path(campaign), class: "edit-btn" %></td>
+	  </tr>
+	<% end %>
+	
+   <% else %>
+   	
+   	<table id="specialist-campaigns-table" class="display">
+   		<h4 id="nothing-header">You have not made any templates yet.</h4>
+   	</table>
+   <% end %>
+   </tbody>
+</table>

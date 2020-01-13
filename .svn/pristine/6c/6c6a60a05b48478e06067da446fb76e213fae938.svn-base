@@ -1,0 +1,10 @@
+<h1 id="campaign-header">Create a Campaign</h1>
+
+<%= render 'form' %>
+
+<div class="col-md-12 back">
+	    <%= link_to 'Back to Campaigns', campaigns_path %>
+</div>
+<script>
+	console.log(console.log("<%= request.original_url %>"));
+</script>

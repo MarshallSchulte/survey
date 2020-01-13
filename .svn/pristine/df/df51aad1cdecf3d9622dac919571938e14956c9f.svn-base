@@ -1,0 +1,47 @@
+  <div class="field question-field">
+  	<%= link_to_remove_association "x", f, :class => 'close' %>
+  	<div class="iterator">
+  		<%= f.options[:child_index] + 1 %>.
+  	</div>
+    <%#= f.number_field :metric_id %>
+      <%= f.collection_select :metric_id, Metric.all, :id, :metric_name, {prompt: "Select a Metric"}%>
+    <div class="kpi-field">
+	    <%= f.collection_select :kpi_id, @kpis || [], :id, :kpi, prompt: "Select a KPI"  %>
+	    <%= f.hidden_field :_destroy %>
+	</div>
+	<div class="row weight-field"><%=f.number_field :weight, :size => '2', placeholder: "Question Weight" %>
+	</div>
+	
+	<div class="role-field row">
+		<%#= collection_check_boxes(:id, ReviewerType.all, :id, :name ) %>
+		<div class="col-md-2">
+			<%= f.check_box :rt_supplier %> Supplier 
+		</div>
+		<div class="col-md-2">
+			<%= f.check_box :rt_business_unit %> Business Unit
+		</div>
+		<div class="col-md-2">
+			<%= f.check_box :rt_strategic_sourcing %> Strategic Sourcing
+		</div>
+		<div class="col-md-2">
+			<%= f.check_box :rt_supplier_diversity %> Supplier Diversity
+		</div>
+		<div class="col-md-2">
+			<%= f.check_box :rt_governance %> Governance
+		</div>
+		<div class="col-md-2">
+			<%= f.check_box :srm %> SRM
+		</div>
+	</div>
+	
+	<div class="answer-field row">
+		<div class="answer-option"><%=f.text_field :opt1, :value => 'Way below expectations'%></div>
+		<div class="answer-option"><%=f.text_field :opt2, :value => 'Far below expectations'%></div>
+		<div class="answer-option"><%=f.text_field :opt3, :value => 'Below expectations'%></div>
+		<div class="answer-option"><%=f.text_field :opt4, :value => 'Meets expectations'%></div>
+		<div class="answer-option"><%=f.text_field :opt5, :value => 'Exceeds expectations'%></div>
+		<div class="answer-option"><%=f.text_field :opt6, :value => 'Far exceeds expectations'%></div>
+		<div class="answer-option"><%=f.text_field :opt7, :value => 'Way above expectations'%></div>
+	</div>
+  </div>
+  

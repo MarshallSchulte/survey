@@ -1,0 +1,10 @@
+<% if @vendor_array %>
+	<%= render 'static/specialist_vendor_table'%>
+<% end %>
+
+<% if @specialist_array %>
+	<div id="specialist-vendor-rows" class="col-md-4">
+		
+		<%= render 'static/specialist_vendor_rows' %>
+	</div>
+<% end %>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Panception</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+  <script src="http://code.highcharts.com/modules/funnel.js"></script>
+</head>
+<body>
+	<div class="container-fluid">
+		<% if user_signed_in? %>
+			<%= render 'layouts/intern_navbar' %>
+		<% else %>
+			<%= render 'layouts/navbar' %>
+		<% end %>
+			<%= yield %>
+		<%= render 'layouts/footer' %>
+	</div>
+</body>
+</html>

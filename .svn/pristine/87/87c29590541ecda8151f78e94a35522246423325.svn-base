@@ -1,0 +1,8 @@
+<h1>Import Campaign Template</h1>
+
+
+<%= form_tag import_campaigns_path, multipart: true do %>
+  Choose a Excel Spreadsheet to Import from: <%= file_field_tag :file %> <br/>
+  <hr/>
+  <%= submit_tag "Import" %><br/>
+<% end %>

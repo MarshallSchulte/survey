@@ -1,0 +1,46 @@
+<h2>Reviewer: <%= @reviewer.first_name %> <%= @reviewer.last_name %></h2>
+
+<%= form_for @campaign do |f| %>
+	 <table>
+	  <thead>
+	  	<tr class = "question-row row">
+	  		<th></th>
+	  		<th>Greatly Below Expectations</th>
+	  		<th>Far Below Expectations</th>
+	  		<th>Below Expectations</th>
+	  		<th>Meets Expectations</th>
+	  		<th>Exceeds Expectations</th>
+	  		<th>Far Exceeds Expectations</th>
+	  		<th>Greatly Exceeds Expectations</th>
+	  		<th>Comments</th>
+	  	</tr>
+	  </thead>
+	  <tbody>
+	<% @campaign.questions.each_with_index do |qn, index| %>
+		  <%_kpi_id = qn.kpi_id %> <!--KPI ID's-->
+		   <% if !qn.opt1.blank? && !qn.opt2.blank? && !qn.opt3.blank? && !qn.opt4.blank? && !qn.opt5.blank? && !qn.opt6.blank? && !qn.opt7.blank? %>
+		    <%= f.fields_for :questions, qn do |q| %>
+			  <tr class="answer-row row">
+		   	
+		   	  <%= q.fields_for :responses, qn.responses.where(reviewer_id: @reviewer.id) do |r| %>
+		   		<%= r.hidden_field :reviewer_id, value: @reviewer.id %>
+				<td>
+				<b><%=index+1%>.</b> <%=Kpi.find(_kpi_id).kpi_measurement %>
+				</td>
+				<%if !qn.opt1.blank?%> <td> <%= r.radio_button :answer_option, "1", disabled: true %></td>   <%end%>
+				<%if !qn.opt2.blank?%> <td> <%= r.radio_button :answer_option, "2", disabled: true %></td>   <%end%>
+				<%if !qn.opt3.blank?%> <td> <%= r.radio_button :answer_option, "3", disabled: true %></td>   <%end%>
+				<%if !qn.opt4.blank?%> <td> <%= r.radio_button :answer_option, "4", disabled: true %></td>   <%end%>
+				<%if !qn.opt5.blank?%> <td> <%= r.radio_button :answer_option, "5", disabled: true %></td>   <%end%>
+				<%if !qn.opt6.blank?%> <td> <%= r.radio_button :answer_option, "6", disabled: true %></td>   <%end%>
+				<%if !qn.opt7.blank?%> <td> <%= r.radio_button :answer_option, "7", disabled: true %></td>   <%end%>
+				<td><%= r.text_area :comment %></td>
+			 <% end %>
+			  </tr>
+			<br /><br /><br />
+		   <% end %>
+		  <% end %>
+		 <% end %>
+	 </tbody>
+    </table>
+<% end %>

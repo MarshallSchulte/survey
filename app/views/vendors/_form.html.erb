@@ -1,0 +1,83 @@
+
+
+<%= form_for(@vendor) do |f| %>
+  <% if @vendor.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@vendor.errors.count, "error") %> prohibited this vendor from being saved:</h2>
+
+      <ul>
+      <% @vendor.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label :name %></div>
+    <div class="form-input col-md-6"><%= f.text_field :name %></div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label :address %></div>
+    <div class="form-input col-md-6"><%= f.text_field :address %></div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label :city %></div>
+    <div class="form-input col-md-6"><%= f.text_field :city %></div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label :state %></div>
+    <div class="form-input col-md-6"><%= f.text_field :state %></div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label :zipcode %></div>
+    <div class="form-input col-md-6"><%= f.text_field :zipcode %></div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label "Name of Contact" %></div>
+    <div class="form-input col-md-6"><%= f.text_field :poc_name %></div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label "Phone Number of Contact" %></div>
+    <div class="form-input col-md-6"><%= f.text_field :poc_phone %></div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label "Industry" %></div>
+    <div class="form-checkboxes col-md-4">
+    		
+    		<%= f.collection_check_boxes :vtype_ids, Vtype.all, :id, :name, multiple: true %>
+
+    </div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label "Number of Employees" %></div>
+    <div class="form-input col-md-6"><%= f.number_field :size %></div>
+  </div>
+    <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label "Complexity Weight" %></div>
+    <div class="form-input col-md-6"><%= f.text_field :cw %></div>
+  </div>
+
+  <div class="row" id="button-row">
+    <div class="form-button"><%= f.submit %></div>
+  </div>
+<% end %>
+
+<script>
+$(document).on('page:change', function(){
+	$('form').validate({
+		errorPlacement: function(error, element) {
+		  if (element.attr("type") == "checkbox") {
+		    error.insertBefore($(element).parent('div'));
+		  }else{
+		  	error.insertBefore(element);
+		  }
+		},
+		rules:{
+			"vendor[name]": {required: true},
+			"vendor[vtype_ids][]": {required: true}
+		}
+	});
+});
+</script>
+

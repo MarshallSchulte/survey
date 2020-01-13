@@ -1,0 +1,46 @@
+	<%= form_tag('/load_chart', :method => :get, :id =>'filter', :remote => true) do %>
+		<table class="table">
+			<thead>
+				<tr>
+					<th><span id='asterisk'>*</span> Year</th>
+					<th><span id='asterisk'>*</span> Chart Data</th>
+					<th><span id='asterisk'>*</span> Chart Type</th>
+					
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+						<td>
+							<%= collection_select(:year, :year, @years, :year, :year, {:selected => '2014'}, :class => 'form-control input-sm filter') %>
+						</td>
+						
+						<td>
+							<%= select_tag :chart_data, options_for_select( [ 
+								["Performance Review <Status> by Quarter", 1], 
+								["Performance Review <Status> by Specialist", 2], 
+								["Performance Review <Tiers> by Specialist", 3], 
+								["Supplier Perf Review Scores Vs their Industry Min/Max", 4],
+								["Surveys Sent out to Campaigns Completed By X number of Specialists", 5] 
+								]), :class => 'form-control input-sm filter' %>
+						</td>
+						
+						<td>
+							<%= select_tag :chart_type, options_for_select( [ 	["Bar Chart", 1], 
+																				["Stacked-Bar Chart", 2], 
+																				["Line Chart", 3], 
+																				["Area Chart", 4], 
+																				["Pie Chart", 5], 
+																				["Funnel Chart", 6] 
+																			]), :class => 'form-control input-sm filter' %>
+						</td>
+							
+						<td>
+							<%= submit_tag "Filter", :id=>"filter", :class=>"btn btn-sm btn-primary"%>
+						</td>
+							
+					
+				</tr>
+			</tbody>
+		</table>
+		<% end %>

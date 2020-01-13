@@ -1,0 +1,7 @@
+customer_table.destroy();
+$("#customers-table").html('<%= j render(:partial => "static/customer_admin_list") %>');
+
+var customer_table = $('#customers-table').DataTable( {
+    "retrieve": true,
+    "paging": true
+} );

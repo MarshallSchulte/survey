@@ -1,0 +1,41 @@
+<table id="vendor-specialist-table" class="display col-md-6">
+	  <thead>
+	  <tr>
+		<th>Name</th>
+		<th>Complexity Weight</th>
+		<th>Specialist</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @vendor_array.each do |vendor| %>
+		 <% if Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id).present? %>
+		  <tr class="specialist-assigned">
+		  	<td class="vendor-name-cell"><%= vendor.name %></td>
+		  	<td><%= vendor.cw %></td>
+		  	<td>
+		  			<% Campaign.where(customer_id: current_user.customer_id, vendor_id: vendor.id).each do |campaign|%>
+		  				<%= form_for campaign, remote: true do |c|%>
+		  					<div class="row campaign-name-row">Campaign Name: <%= campaign.name %></div>
+		  					<div class="row specialist-select"><%= c.collection_select :specialist_id, @specialist_array, :id, :name, include_blank: true %></div>
+			  				<%= c.hidden_field :vendor_id, value: vendor.id %>
+			  				<div class="row submit-button"><%= c.submit "Submit", class: "edit-btn "%></div>
+		  				<% end %>
+		  			<% end %>
+		  	</td>
+		   </tr>
+		  <% else %>
+		  <tr class="specialist-unassigned">
+			 <td class="vendor-name-cell"><%= vendor.name %></td>
+			 <td><%= vendor.cw %></td>
+			 <td>
+			  	<%= form_for Campaign.new, remote: true do |c| %>
+			  			<div class="row specialist-select"><%= c.collection_select :specialist_id, @specialist_array, :id, :name, include_blank: true %></div>
+			  			<%= c.hidden_field :vendor_id, value: vendor.id %>
+			  			<div class="row submit-button"><%= c.submit "Submit", class: "edit-btn"%></div>
+			  		<% end %>
+			  	<% end %>
+		  	</td>
+		  </tr>
+		<% end %>
+	   </tbody> 
+	</table>

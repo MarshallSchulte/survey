@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Metric:</strong>
+  <%= @metric_score.metric_id %>
+</p>
+
+<p>
+  <strong>Campaign:</strong>
+  <%= @metric_score.campaign_id %>
+</p>
+
+<p>
+  <strong>Customer:</strong>
+  <%= @metric_score.customer_id %>
+</p>
+
+<p>
+  <strong>Vendor:</strong>
+  <%= @metric_score.vendor_id %>
+</p>
+
+<p>
+  <strong>Actual score:</strong>
+  <%= @metric_score.actual_score %>
+</p>
+
+<p>
+  <strong>Total score:</strong>
+  <%= @metric_score.total_score %>
+</p>
+
+<%= link_to 'Edit', edit_metric_score_path(@metric_score) %> |
+<%= link_to 'Back', metric_scores_path %>

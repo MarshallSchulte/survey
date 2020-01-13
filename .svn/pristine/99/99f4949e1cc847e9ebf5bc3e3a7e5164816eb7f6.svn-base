@@ -1,0 +1,75 @@
+<% if @specialist_campaigns %>
+<table id="specialist-campaigns-table" class="display">
+<thead>
+  <tr>
+	<th>Campaign</th>
+	<th>Tier</th>
+	<th>Status</th>
+	<th>Supplier Name</th>
+	<th>Complexity Wt.</th>
+	<th>Review #</th>
+	<th>Sponsor</th>
+	<th>Start Date</th>
+	<th>End Date</th>
+	<th></th>
+	<th></th>
+	<th></th>
+  </tr>
+ </thead>
+   <tbody>
+	<% @specialist_campaigns.each do |campaign| %>  
+	 <% if campaign.status == "Submitted For Review"%>
+	  <tr class="review-row">
+	 <% elsif campaign.status == "Complete" %>
+	  <tr class="complete-row">
+	 <% elsif campaign.end_date && (campaign.end_date - Date.today).to_i <= 5 && campaign.status != "Complete" %>
+	  <tr class="end-date-row">
+	 <% elsif campaign.status == "In Process" %>
+	  <tr class="process-row">
+	 <% else %>
+	  <tr>
+	 <% end %>
+	  	<td><%= campaign.name %></td>
+	  	<td><%= campaign.tier %></td>
+	  	<% if campaign.end_date %>
+		  	<% if (campaign.end_date < Date.today && campaign.status != "On Hold") %>
+		  		<% campaign.update(status: "Complete") %>
+		  		<% campaign.question_average %>
+		  		<td><%= campaign.status %></td>
+		  	<% else %>
+		  		<td><%= campaign.status %></td>
+		  	<% end %>
+		<% else %>
+			<td><%= campaign.status %></td>
+		<% end %>
+	  	<td><%= campaign.vendor.name if !campaign.vendor.blank?%></td>
+	  	<td><%= campaign.complexity_weight %></td>
+	  	<td><%= campaign.performance_review_number %></td>
+	  	<td><%= campaign.customer.name if !campaign.customer.blank?%></td>
+	  	<td><%= campaign.start_date %></td>
+	  	<td><%= campaign.end_date %></td>
+	  	<% if campaign.status == "Draft" && !current_user.senior_specialist %>
+		  	<td><%= link_to "Edit", edit_campaign_path(campaign), "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+		  	<td><%= link_to "Add Reviewers", {controller: "campaigns", action: "add_reviewers", id: campaign.id }, "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+		  	<td><%= link_to "Submit to Director", {controller: "campaigns", action: "send_campaign", id: campaign.id }, method: "put", remote: true, class: "edit-btn", data: { confirm: "Are you sure this campaign is ready to be sent to your director?" } %></td>
+	  	<% elsif current_user.senior_specialist && campaign.status != "Complete"%>
+	  		<td><%= link_to "Edit", edit_campaign_path(campaign), "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+	  		<td><%= link_to "Add Reviewers", {controller: "campaigns", action: "add_reviewers", id: campaign.id }, "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+	  		<td><%= link_to "Send to All Reviewers", {controller: "campaigns", action: "send_to_reviewers", id: campaign.id }, data: { confirm: "Are you sure this campaign are ready to be sent to reviewers??" }, remote: true, class: "edit-btn" %></td>
+	  	<% elsif campaign.status == "Complete"%>
+	  		<td><%= link_to "Campaign Results", {controller: "campaigns", action: "results", id: campaign.id}, "data-toggle" => "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn"%></td>
+	  		<td></td>
+	  		<td></td>
+	  	<% else %>
+	  		<td><%= link_to "Edit", edit_campaign_path(campaign), "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+	  		<td></td>
+	  		<td></td>
+	  	<% end %>
+	  </tr>
+	<% end %>
+	
+   <% else %>
+   	<h4 id="nothing-header">You have not been assigned any campaigns yet.</h2>
+   <% end %>
+   </tbody>
+</table>

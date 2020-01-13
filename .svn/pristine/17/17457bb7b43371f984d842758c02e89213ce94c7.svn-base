@@ -1,0 +1,448 @@
+<%#=@campaign.questions.as_json%><br>
+<h4 align="center">Hello <%=@reviewer.first_name%> <%=@reviewer.last_name%>!</h4>
+
+<% if @reviewer.survey_complete && !user_signed_in? %>
+	<h4 align="center">You have already taken this survey.</h4>
+<% else %>
+<% question_number = 0%>
+<h4 align="center" style="margin-top:20px;">Please respond to the following survey</h4>
+
+<div class="bar_container rounded_bar_container blue_container" id="survey-bar">
+	<div class="bar_mortice rounded blue_mortice">
+		<div class="progress rounded blue">
+			<span id="number" align="center"></span>
+		</div>
+	</div>
+</div>
+  <div class="tab-content">
+   <div role="tabpanel" class="tab-pane active" id="first-page">
+	<%= form_for @campaign do |f| %>
+	 <table>
+	  <thead>
+	  	<tr class = "question-row row">
+	  		<th></th>
+	  		<th>Not Applicable</th>
+	  		<th>Greatly Below Expectations</th>
+	  		<th>Far Below Expectations</th>
+	  		<th>Below Expectations</th>
+	  		<th>Meets Expectations</th>
+	  		<th>Exceeds Expectations</th>
+	  		<th>Far Exceeds Expectations</th>
+	  		<th>Greatly Exceeds Expectations</th>
+	  		<th>Comments</th>
+	  	</tr>
+	  </thead>
+	  <tbody>
+	 
+	  <% if Response.where(reviewer_id: @reviewer.id).blank? && !user_signed_in?%>
+	   <% @campaign.questions.each_with_index do |qn, index| %>
+		 <%_kpi_id = qn.kpi_id %> <!--KPI ID's-->
+		 <% if (qn.rt_supplier && @reviewer.reviewer_type_id == 1) || (qn.rt_business_unit && @reviewer.reviewer_type_id == 2) || (qn.rt_strategic_sourcing && @reviewer.reviewer_type_id == 3) || (qn.rt_supplier_diversity && @reviewer.reviewer_type_id == 4) || (qn.rt_governance && @reviewer.reviewer_type_id == 5) || (qn.srm && @reviewer.reviewer_type_id == 6)%>
+		  <% if !qn.opt1.blank? && !qn.opt2.blank? && !qn.opt3.blank? && !qn.opt4.blank? && !qn.opt5.blank? && !qn.opt6.blank? && !qn.opt7.blank? %>
+		   <%= f.fields_for :questions, qn do |q| %>
+		    
+		     <tr class="answer-row row">
+		   		
+		   	  <%= q.fields_for :responses, Response.new do |r| %>
+		   		<%= r.hidden_field :reviewer_id, value: @reviewer.id %>
+				<td>
+				<b><%=question_number += 1%>.</b> <%=Kpi.find(_kpi_id).kpi_measurement %>
+				</td>
+				<td> <%= r.radio_button :answer_option, "0"%></td>
+				<%if !qn.opt1.blank?%> <td> <%= r.radio_button :answer_option, "1"%></td>   <%end%>
+				<%if !qn.opt2.blank?%> <td> <%= r.radio_button :answer_option, "2"%></td>   <%end%>
+				<%if !qn.opt3.blank?%> <td> <%= r.radio_button :answer_option, "3"%></td>   <%end%>
+				<%if !qn.opt4.blank?%> <td> <%= r.radio_button :answer_option, "4"%></td>   <%end%>
+				<%if !qn.opt5.blank?%> <td> <%= r.radio_button :answer_option, "5"%></td>   <%end%>
+				<%if !qn.opt6.blank?%> <td> <%= r.radio_button :answer_option, "6"%></td>   <%end%>
+				<%if !qn.opt7.blank?%> <td> <%= r.radio_button :answer_option, "7"%></td>   <%end%>
+				<td><%= r.text_area :comment, size: "30x10" %></td>
+			  <% end %>
+			  </tr>
+			<% end %>
+		  <% end %>
+		 <% end %>
+		<% end %>
+
+		<% elsif user_signed_in? %>
+		 <% @campaign.questions.each_with_index do |qn, index| %>
+		  <%_kpi_id = qn.kpi_id %> <!--KPI ID's-->
+		 <% if (qn.rt_supplier && @reviewer.reviewer_type_id == 1) || (qn.rt_business_unit && @reviewer.reviewer_type_id == 2) || (qn.rt_strategic_sourcing && @reviewer.reviewer_type_id == 3) || (qn.rt_supplier_diversity && @reviewer.reviewer_type_id == 4) || (qn.rt_governance && @reviewer.reviewer_type_id == 5) || (qn.srm && @reviewer.reviewer_type_id == 6)%>
+		   <% if !qn.opt1.blank? && !qn.opt2.blank? && !qn.opt3.blank? && !qn.opt4.blank? && !qn.opt5.blank? && !qn.opt6.blank? && !qn.opt7.blank? %>
+		    <%= f.fields_for :questions, qn do |q| %>
+			  <tr class="answer-row row">
+		   	  <% if Response.where(reviewer_id: @reviewer.id).blank?%>
+		   	    <%= q.fields_for :responses, Response.new do |r| %>
+		   		 <%= r.hidden_field :reviewer_id, value: @reviewer.id %>
+				 <td>
+				 <b><%=question_number += 1%>.</b> <%=Kpi.find(_kpi_id).kpi_measurement %>
+				 </td>
+				 <td> <%= r.radio_button :answer_option, "0", disabled: true %></td>
+				 <%if !qn.opt1.blank?%> <td> <%= r.radio_button :answer_option, "1", disabled: true %></td>   <%end%>
+				 <%if !qn.opt2.blank?%> <td> <%= r.radio_button :answer_option, "2", disabled: true %></td>   <%end%>
+				 <%if !qn.opt3.blank?%> <td> <%= r.radio_button :answer_option, "3", disabled: true %></td>   <%end%>
+				 <%if !qn.opt4.blank?%> <td> <%= r.radio_button :answer_option, "4", disabled: true %></td>   <%end%>
+				 <%if !qn.opt5.blank?%> <td> <%= r.radio_button :answer_option, "5", disabled: true %></td>   <%end%>
+				 <%if !qn.opt6.blank?%> <td> <%= r.radio_button :answer_option, "6", disabled: true %></td>   <%end%>
+				 <%if !qn.opt7.blank?%> <td> <%= r.radio_button :answer_option, "7", disabled: true %></td>   <%end%>
+				 <td><%= r.text_area :comment, size: "30x10", disabled: true %></td>
+			    <% end %>
+			   <% else %>
+		   	    <%= q.fields_for :responses, qn.responses.where(reviewer_id: @reviewer.id) do |r| %>
+		   		 <%= r.hidden_field :reviewer_id, value: @reviewer.id %>
+				 <td>
+				 <b><%=question_number += 1%>.</b> <%=Kpi.find(_kpi_id).kpi_measurement %>
+				 </td>
+				 <td> <%= r.radio_button :answer_option, "0", disabled: true%></td>
+				 <%if !qn.opt1.blank?%> <td> <%= r.radio_button :answer_option, "1", disabled: true %></td>   <%end%>
+				 <%if !qn.opt2.blank?%> <td> <%= r.radio_button :answer_option, "2", disabled: true %></td>   <%end%>
+				 <%if !qn.opt3.blank?%> <td> <%= r.radio_button :answer_option, "3", disabled: true %></td>   <%end%>
+				 <%if !qn.opt4.blank?%> <td> <%= r.radio_button :answer_option, "4", disabled: true %></td>   <%end%>
+				 <%if !qn.opt5.blank?%> <td> <%= r.radio_button :answer_option, "5", disabled: true %></td>   <%end%>
+				 <%if !qn.opt6.blank?%> <td> <%= r.radio_button :answer_option, "6", disabled: true %></td>   <%end%>
+				 <%if !qn.opt7.blank?%> <td> <%= r.radio_button :answer_option, "7", disabled: true %></td>   <%end%>
+				 <td><%= r.text_area :comment, size: "30x10", disabled: true %></td>
+			   <% end %>
+			  <% end %>
+			  </tr>
+		    <% end %>
+		   <% end %>
+		  <% end %>
+		 <% end %>
+		<% else %>
+		 <% @campaign.questions.each_with_index do |qn, index| %>
+		  <%_kpi_id = qn.kpi_id %> <!--KPI ID's-->
+		 <% if (qn.rt_supplier && @reviewer.reviewer_type_id == 1) || (qn.rt_business_unit && @reviewer.reviewer_type_id == 2) || (qn.rt_strategic_sourcing && @reviewer.reviewer_type_id == 3) || (qn.rt_supplier_diversity && @reviewer.reviewer_type_id == 4) || (qn.rt_governance && @reviewer.reviewer_type_id == 5) || (qn.srm && @reviewer.reviewer_type_id == 6)%>
+		   <% if !qn.opt1.blank? && !qn.opt2.blank? && !qn.opt3.blank? && !qn.opt4.blank? && !qn.opt5.blank? && !qn.opt6.blank? && !qn.opt7.blank? %>
+		    <%= f.fields_for :questions, qn do |q| %>
+			  <tr class="answer-row row">
+		   	
+		   	  <%= q.fields_for :responses, qn.responses.where(reviewer_id: @reviewer.id) do |r| %>
+		   		<%= r.hidden_field :reviewer_id, value: @reviewer.id %>
+				<td>
+				<b><%=question_number += 1%>.</b> <%=Kpi.find(_kpi_id).kpi_measurement %>
+				</td>
+				<td> <%= r.radio_button :answer_option, "0"%></td>
+				<%if !qn.opt1.blank?%> <td> <%= r.radio_button :answer_option, "1"%></td>   <%end%>
+				<%if !qn.opt2.blank?%> <td> <%= r.radio_button :answer_option, "2"%></td>   <%end%>
+				<%if !qn.opt3.blank?%> <td> <%= r.radio_button :answer_option, "3"%></td>   <%end%>
+				<%if !qn.opt4.blank?%> <td> <%= r.radio_button :answer_option, "4"%></td>   <%end%>
+				<%if !qn.opt5.blank?%> <td> <%= r.radio_button :answer_option, "5"%></td>   <%end%>
+				<%if !qn.opt6.blank?%> <td> <%= r.radio_button :answer_option, "6"%></td>   <%end%>
+				<%if !qn.opt7.blank?%> <td> <%= r.radio_button :answer_option, "7"%></td>   <%end%>
+				<td><%= r.text_area :comment, size: "30x10" %></td>
+			 <% end %>
+			  </tr>
+		   <% end %>
+		  <% end %>
+		 <% end %>
+		<% end %>
+		<% end %>
+		</tbody>
+	</table>
+	
+		 <% if @campaign.questions.where(opt1: "").present? || @campaign.questions.where(opt2: "").present? || @campaign.questions.where(opt3: "").present? || @campaign.questions.where(opt4: "").present? || @campaign.questions.where(opt5: "").present? || @campaign.questions.where(opt6: "").present? || @campaign.questions.where(opt7: "").present? %>
+			  <div class="button-row row">
+			  	<% unless user_signed_in? %>
+			  		<input class="form-button-2 save" type="submit" value="Save">
+			  	<% else %>
+			  		<input class="form-button-2" type="submit" value="Save" disabled>
+			  		<%= link_to "Back to Landing Page", root_path, class: "form-button-2" %>
+			  	<% end %>
+			 	<a class="form-button-2" href="#second-page" aria-controls="second-page" role="tab" data-toggle="tab">Next</a>
+			  </div>
+			 </div>
+			 <div role="tabpanel" class="tab-pane" id="second-page">
+			 <table>
+			  <thead>
+			  	<tr class = "question-row row">
+			  		<th></th>
+			  		<th>Not Applicable</th>
+			  		<th>Greatly Below Expectations</th>
+			  		<th>Far Below Expectations</th>
+			  		<th>Below Expectations</th>
+			  		<th>Meets Expectations</th>
+			  		<th>Exceeds Expectations</th>
+			  		<th>Far Exceeds Expectations</th>
+			  		<th>Greatly Exceeds Expectations</th>
+			  		<th>Comments</th>
+			  	</tr>
+			  </thead>
+			  <tbody>
+
+			 <% if Response.where(reviewer_id: @reviewer.id).blank? && !user_signed_in? %>
+			   <% @campaign.questions.each_with_index do |qn, index| %>
+				 <%_kpi_id = qn.kpi_id %> <!--KPI ID's-->
+		 		 <% if (qn.rt_supplier && @reviewer.reviewer_type_id == 1) || (qn.rt_business_unit && @reviewer.reviewer_type_id == 2) || (qn.rt_strategic_sourcing && @reviewer.reviewer_type_id == 3) || (qn.rt_supplier_diversity && @reviewer.reviewer_type_id == 4) || (qn.rt_governance && @reviewer.reviewer_type_id == 5) || (qn.srm && @reviewer.reviewer_type_id == 6)%>
+				 <% if qn.opt1.blank? || qn.opt2.blank? || qn.opt3.blank? || qn.opt4.blank? || qn.opt5.blank? || qn.opt6.blank? || qn.opt7.blank? %>
+				  <%= f.fields_for :questions, qn do |q| %>
+				    
+				     <tr class="answer-row row">
+				   		
+				   	  <%= q.fields_for :responses, Response.new do |r| %>
+				   	  
+				   		<%= r.hidden_field :reviewer_id, value: @reviewer.id %>
+						<td>
+						<b><%=question_number += 1%>.</b> <%=Kpi.find(_kpi_id).kpi_measurement %>
+						</td>
+						<td> <%= r.radio_button :answer_option, "0"%></td>
+						<%if !qn.opt1.blank?%> <td> <%= r.radio_button :answer_option, "1"%></td>
+						<% else %>  <td></td><% end %>
+						<%if !qn.opt2.blank?%> <td> <%= r.radio_button :answer_option, "2"%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt3.blank?%> <td> <%= r.radio_button :answer_option, "3"%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt4.blank?%> <td> <%= r.radio_button :answer_option, "4"%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt5.blank?%> <td> <%= r.radio_button :answer_option, "5"%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt6.blank?%> <td> <%= r.radio_button :answer_option, "6"%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt7.blank?%> <td> <%= r.radio_button :answer_option, "7"%></td>   
+						<% else %>  <td></td> <%end%>
+						<td><%= r.text_area :comment, size: "30x10" %></td>
+					  <% end %>
+					  </tr>
+					 <% end %>
+				   <% end %>
+				  <% end %>
+				 <% end %>
+				<% elsif user_signed_in? %>
+				 <% @campaign.questions.each_with_index do |qn, index| %>
+				  <%_kpi_id = qn.kpi_id %> <!--KPI ID's-->
+				  <% if (qn.rt_supplier && @reviewer.reviewer_type_id == 1) || (qn.rt_business_unit && @reviewer.reviewer_type_id == 2) || (qn.rt_strategic_sourcing && @reviewer.reviewer_type_id == 3) || (qn.rt_supplier_diversity && @reviewer.reviewer_type_id == 4) || (qn.rt_governance && @reviewer.reviewer_type_id == 5) || (qn.srm && @reviewer.reviewer_type_id == 6)%>
+				   <% if qn.opt1.blank? || qn.opt2.blank? || qn.opt3.blank? || qn.opt4.blank? || qn.opt5.blank? || qn.opt6.blank? || qn.opt7.blank? %>
+				    <%= f.fields_for :questions, qn do |q| %>
+					  <tr class="answer-row row">
+				   	  <% if Response.where(reviewer_id: @reviewer.id).blank?%>
+				   	   <%= q.fields_for :responses, Response.new do |r| %>
+				   		<%= r.hidden_field :reviewer_id, value: @reviewer.id %>
+						<td>
+						<b><%=question_number += 1%>.</b> <%=Kpi.find(_kpi_id).kpi_measurement %>
+						</td>
+						<td> <%= r.radio_button :answer_option, "0", disabled: true%></td>
+						<%if !qn.opt1.blank?%> <td> <%= r.radio_button :answer_option, "1", disabled: true%></td>
+						<% else %>  <td></td><% end %>
+						<%if !qn.opt2.blank?%> <td> <%= r.radio_button :answer_option, "2", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt3.blank?%> <td> <%= r.radio_button :answer_option, "3", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt4.blank?%> <td> <%= r.radio_button :answer_option, "4", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt5.blank?%> <td> <%= r.radio_button :answer_option, "5", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt6.blank?%> <td> <%= r.radio_button :answer_option, "6", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt7.blank?%> <td> <%= r.radio_button :answer_option, "7", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<td><%= r.text_area :comment, size: "30x10", disabled: true %></td>
+					   <% end %>
+					  <% else %>
+					  <%= q.fields_for :responses, qn.responses.where(reviewer_id: @reviewer.id) do |r| %>
+				   		<%= r.hidden_field :reviewer_id, value: @reviewer.id %>
+						<td>
+						<b><%=question_number += 1%>.</b> <%=Kpi.find(_kpi_id).kpi_measurement %>
+						</td>
+						<td> <%= r.radio_button :answer_option, "0", disabled: true%></td>
+						<%if !qn.opt1.blank?%> <td> <%= r.radio_button :answer_option, "1", disabled: true%></td>
+						<% else %>  <td></td><% end %>
+						<%if !qn.opt2.blank?%> <td> <%= r.radio_button :answer_option, "2", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt3.blank?%> <td> <%= r.radio_button :answer_option, "3", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt4.blank?%> <td> <%= r.radio_button :answer_option, "4", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt5.blank?%> <td> <%= r.radio_button :answer_option, "5", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt6.blank?%> <td> <%= r.radio_button :answer_option, "6", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt7.blank?%> <td> <%= r.radio_button :answer_option, "7", disabled: true%></td>   
+						<% else %>  <td></td> <%end%>
+						<td><%= r.text_area :comment, size: "30x10", disabled: true %></td>
+					  <% end %>
+					 <% end %>
+					  </tr>
+				   <% end %>
+				  <% end %>
+				 <% end %>
+				 <% end %>
+				<% else %>
+				 <% @campaign.questions.each_with_index do |qn, index| %>
+				  <%_kpi_id = qn.kpi_id %> <!--KPI ID's-->
+				  <% if (qn.rt_supplier && @reviewer.reviewer_type_id == 1) || (qn.rt_business_unit && @reviewer.reviewer_type_id == 2) || (qn.rt_strategic_sourcing && @reviewer.reviewer_type_id == 3) || (qn.rt_supplier_diversity && @reviewer.reviewer_type_id == 4) || (qn.rt_governance && @reviewer.reviewer_type_id == 5) || (qn.srm && @reviewer.reviewer_type_id == 6)%>
+				   <% if qn.opt1.blank? || qn.opt2.blank? || qn.opt3.blank? || qn.opt4.blank? || qn.opt5.blank? || qn.opt6.blank? || qn.opt7.blank? %>
+				    <%= f.fields_for :questions, qn do |q| %>
+					  <tr class="answer-row row">
+				   	
+				   	  <%= q.fields_for :responses, qn.responses.where(reviewer_id: @reviewer.id) do |r| %>
+				   		<%= r.hidden_field :reviewer_id, value: @reviewer.id %>
+						<td>
+						<b><%=question_number += 1%>.</b> <%=Kpi.find(_kpi_id).kpi_measurement %>
+						</td>
+						<td> <%= r.radio_button :answer_option, "0"%></td>
+						<%if !qn.opt1.blank?%> <td> <%= r.radio_button :answer_option, "1"%></td>
+						<% else %>  <td></td><% end %>
+						<%if !qn.opt2.blank?%> <td> <%= r.radio_button :answer_option, "2"%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt3.blank?%> <td> <%= r.radio_button :answer_option, "3"%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt4.blank?%> <td> <%= r.radio_button :answer_option, "4"%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt5.blank?%> <td> <%= r.radio_button :answer_option, "5"%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt6.blank?%> <td> <%= r.radio_button :answer_option, "6"%></td>   
+						<% else %>  <td></td> <%end%>
+						<%if !qn.opt7.blank?%> <td> <%= r.radio_button :answer_option, "7"%></td>   
+						<% else %>  <td></td> <%end%>
+						<td><%= r.text_area :comment, size: "30x10" %></td>
+					 <% end %>
+					  </tr>
+				   <% end %>
+				  <% end %>
+				 <% end %>
+				<% end %>
+			   <% end %>
+			  </tbody>
+			  </table>
+			 <div class="button-row row">
+			 	<a class="form-button-2" style="float:left;" href="#first-page" aria-controls="first-page" role="tab" data-toggle="tab">Back</a>
+			 	<% unless user_signed_in? %>
+				 	<input class="form-button-2 save" type="submit" value="Save">
+				 	<input class="form-button-2 submit" type="submit" value="Submit">
+				<% else %>
+					<input class="form-button-2" type="submit" value="Save" disabled>
+				 	<input class="form-button-2" type="submit" value="Submit" disabled>
+				 	<%= link_to "Back to Landing Page", root_path, class: "form-button-2"%>
+				<% end %>
+			 </div>
+			  <br /> <br />
+			</div>
+		 <% else %>
+			 	<div class="button-row row">
+			 		<% unless user_signed_in? %>
+					 	<input class="form-button-2 save" type="submit" value="Save">
+					 	<input class="form-button-2 submit" type="submit" value="Submit">
+					<% else %>
+						<input class="form-button-2" type="submit" value="Save" disabled>
+					 	<input class="form-button-2" type="submit" value="Submit" disabled>
+					 	<%= link_to "Back to Landing Page", root_path, class: "form-button-2"%>
+					<% end %>
+			 	</div>
+		 	</div>
+		 <% end %>
+		</div>
+		
+	<% end %>
+	<br />
+ <% end %>
+<script>
+	$(document).on('page:change', function(){
+		$('.answer-row td textarea').hide();
+		$('.answer-row td input').each(function(){
+		    var comment = $(this).parent('td').parent('.answer-row').children('td').children('textarea');
+		  	if ($(this).attr('checked')){
+		  		console.log("input value: " + $(this).val());
+			  if (($(this).val() == 1) || ($(this).val() == 2)){
+			  	console.log("comment show 1 or 2");
+			  	comment.attr("placeholder", "Please explain how your expectations were not met.");
+				comment.show();
+			  }else if ($(this).val() == 7){
+			  	console.log("comment show 7");
+			  	comment.attr("placeholder", "Please explain how this exceeded your expectations.");
+			  	comment.show();
+			  }
+			}else if (($(this).val() == 7) && (comment.css('display') == 'none')){
+					console.log('nothing hide');
+					comment.hide();
+			}
+		});
+		
+		$('.form-button-2').click(function(){
+			console.log('click');
+			$('.answer-row td input').each(function(){
+				console.log("ugh");
+			    var comment = $(this).parent('td').parent('.answer-row').children('td').children('textarea');
+		  	if ($(this).attr('checked')){
+		  		console.log("input value: " + $(this).val());
+			  if (($(this).val() == 1) || ($(this).val() == 2)){
+			  	console.log("comment show 1 or 2");
+			  	comment.attr("placeholder", "Please explain how your expectations were not met.");
+				comment.show();
+			  }else if ($(this).val() == 7){
+			  	console.log("comment show 7");
+			  	comment.attr("placeholder", "Please explain how this exceeded your expectations.");
+			  	comment.show();
+			  }
+			}else if (($(this).val() == 7) && (comment.css('display') == 'none')){
+					console.log('nothing hide');
+					comment.hide();
+			}
+			});
+			var question_count = <%= @campaign.questions.count %>;
+			console.log("question_count: " + question_count);
+			var checked_count = 0;
+			$('.answer-row td input:checked').each(function(){
+				checked_count = checked_count + 1;
+				console.log("checked_count" + checked_count);
+			});
+			if (checked_count == question_count){
+				$('.submit').prop('disabled', false);
+				$('.save').prop('disabled', true);
+			}else{
+				$('.submit').prop('disabled', true);
+				$('.save').prop('disabled', false);
+			}
+		});
+		  
+		
+		$('.answer-row td input').click(function(){
+		  var comment = $(this).parent('td').parent('.answer-row').children('td').children('textarea');
+		  if (($(this).val() == 1) || ($(this).val() == 2)){
+		  	comment.attr("placeholder", "Please explain how your expectations were not met.").fadeIn();
+			comment.fadeIn();
+		  }else if ($(this).val() == 7){
+		  	comment.attr("placeholder", "Please explain how this exceeded your expectations.").fadeIn();
+		  	comment.fadeIn();
+		  }else{
+		  	comment.fadeOut();
+		  }
+		  var question_count = $('.answer-row').length;
+			console.log("question_count: " + question_count);
+			var checked_count = 0;
+			$('.answer-row td input:checked').each(function(){
+				checked_count = checked_count + 1;
+				console.log("checked_count" + checked_count);
+			});
+			if (checked_count == question_count){
+				$('.submit').prop("disabled", false);
+				$('.save').prop('disabled', true);
+			}else{
+				$('.submit').prop('disabled', true);
+				$('.save').prop("disabled", false);
+			}
+			var percent_progress = Math.round(((checked_count/question_count) * 100)) + "%";
+			$(".progress").css({"width": percent_progress })
+			$("#number").text(percent_progress);
+		});
+		
+		var question_count = $('.answer-row').length;
+		console.log("question_count: " + question_count);
+		var checked_count = 0;
+		$('.answer-row td input:checked').each(function(){
+			checked_count = checked_count + 1;
+			console.log("checked_count" + checked_count);
+		});
+		if (checked_count == question_count){
+			$('.submit').prop("disabled", false);
+			$('.save').prop('disabled', true);
+		}else{
+			$('.submit').prop('disabled', true);
+			$('.save').prop("disabled", false);
+		}
+		var percent_progress = Math.round(((checked_count/question_count) * 100)) + "%";
+		$(".progress").css({"width": percent_progress })
+		$("#number").text(percent_progress);
+		
+	});
+	
+</script>

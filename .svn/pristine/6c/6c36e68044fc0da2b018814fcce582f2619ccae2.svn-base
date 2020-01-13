@@ -1,0 +1,4 @@
+table.destroy();
+$("#customers-table").html('<%= j render(:partial => "static/customer_admin_list") %>');
+
+$('#customers-table').DataTable();

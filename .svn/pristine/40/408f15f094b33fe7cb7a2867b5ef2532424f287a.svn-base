@@ -1,0 +1,2 @@
+class Vassociation < ActiveRecord::Base
+end

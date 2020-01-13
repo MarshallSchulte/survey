@@ -1,0 +1,60 @@
+<div class="row-fluid" id="navbar">
+	<div class="col-md-3 col-sm-3 col-xs-3" id="login-logout" >
+		<% if user_signed_in? %>
+		<a href="/logout">
+			<div class="col-md-3 col-sm-3 col-xs-3 login-button" id="logout">
+				Logout
+			</div>
+		</a>
+		<% else %>
+		<a href="<%= new_user_session_path %>">
+			<div class="col-md-3 col-sm-3 col-xs-3 login-button" id="login">
+				Login
+			</div>
+		</a>
+		<!--<a href="/signup">
+			<div class="col-md-5 login-button" id="sign-up">
+				Sign Up
+			</div>
+		</a>-->
+		<% end %>
+	</div>
+	<div class="container-fluid">
+		<a href="/">
+			<div class="col-md-2 col-sm-2 col-xs-2" id="logo-holder">
+				<img src="assets/panlogo.png" id="logo">
+			</div>
+		</a>
+		<div class="col-md-1 col-sm-1 col-xs-1 nav-button" id="nav-button-1">
+			Contact
+		</div>
+		
+		<div class="col-md-1 col-sm-1 col-xs-1 nav-button" id="nav-button-2">
+			Products
+		</div>
+		
+		<a href="/about">
+			<div class="col-md-1 col-sm-1 col-xs-1 nav-button" id="nav-button-3">
+				Solutions
+			</div>
+		</a>
+		
+		<a href="/contact">
+			<div class="col-md-1 col-sm-1 col-xs-1 nav-button" id="nav-button-4">
+				Support
+			</div>
+		</a>
+		<a href="/contact">
+			<div class="col-md-1 col-sm-1 col-xs-1 nav-button" id="nav-button-4">
+				Training
+			</div>
+		</a>
+		<a href="/contact">
+			<div class="col-md-1 col-sm-1 col-xs-1 nav-button" id="nav-button-4">
+				About
+			</div>
+		</a>
+		<div id="search"><input><span class="glyphicon glyphicon-search"></input></div>
+		<div id="demo-button">Demo</div>
+	</div>
+</div>

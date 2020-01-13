@@ -1,0 +1,7 @@
+<div class="container" id="form-container">
+	<h3 id="form-header-2">New Vendor Industry Type</h3>
+
+	<%= render 'form' %>
+	
+	<%= link_to 'Back', ctypes_path %>
+</div>

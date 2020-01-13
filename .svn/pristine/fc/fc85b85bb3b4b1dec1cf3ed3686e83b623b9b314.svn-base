@@ -1,0 +1,44 @@
+	
+	<table id="vendors-table" class="display">
+	  <thead>
+	  <tr>
+		<th>Name</th>
+		<th>Address</th>
+		<th>City</th>
+		<th>State</th>
+		<th>Zipcode</th>
+		<th>Size</th>
+		<th>Complexity Weight</th>
+		<th>Industries</th>
+		<th></th>
+	  </tr>
+	  </thead>
+	  <tbody>
+		<% @vendors.each do |vendor| %>
+		<% if vendor.vtypes.blank? %>
+		  <tr class="end-date-row">
+		<% else %>
+		  <tr>
+		<% end %>
+		  	<td><%= best_in_place vendor, :name %></td>
+		  	<td><%= best_in_place vendor, :address %></td>
+		  	<td><%= best_in_place vendor, :city %></td>
+		  	<td><%= best_in_place vendor, :state %></td>
+		  	<td><%= best_in_place vendor, :zipcode %></td>
+		  	<td><%= best_in_place vendor, :size %></td>
+		  	<td><%= best_in_place vendor, :cw %></td>
+		  	<td><% vendor.vtypes.each do |v| %>
+		  		  <% unless v == vendor.vtypes.last %>
+		  			<%= v.name %>, 
+		  		  <% else %>
+		  		    <%= v.name %>
+		  		  <% end %>
+		  		<% end %>
+		  	</td>
+		  	
+		  	<td><%= link_to "Edit", edit_vendor_path(vendor), "data-toggle"=> "modal", "data-target"=> "#inside-admin", remote: true, class: "edit-btn" %></td>
+		  </tr>
+		<% end %>
+	   </tbody> 
+	</table>
+	  	

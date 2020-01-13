@@ -1,0 +1,8 @@
+class SurveyMailer < ActionMailer::Base
+  default from: "panception_mailer@gmail.com"
+  def survey_email(reviewer)
+    @reviewer = reviewer
+    #mail(to: 'pranab.khanal@gmail.com', subject: 'Sample Email')
+    mail(to: reviewer.email, subject: 'Sample Email')
+  end
+end

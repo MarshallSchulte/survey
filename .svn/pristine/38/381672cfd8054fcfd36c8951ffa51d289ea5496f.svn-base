@@ -1,0 +1,88 @@
+// Place all the styles related to the campaigns controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+#campaign-header{
+  font-weight:bold;
+  text-align:center;
+  margin-top: 4%;
+}
+
+#cv-container{
+  width:50%;
+  background-color: #CCCCCC;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+  margin-top: 5%;
+}
+
+.cv-header{
+  font-weight:bold;
+}
+
+.cv-select{
+  text-align:center;
+  select{
+    font-size:1.6em;
+  }
+}
+
+#campaign-form{
+  width: 50%;
+  background-color: #CCCCCC;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
+  margin-top: 2%;
+  padding: 20px;
+  .field{
+    float:left;
+    text-align:center;
+  }
+  .actions{
+    text-align:center;
+    input{
+      background-color: #EEEEEE;
+      padding:10px;
+      margin-top: 20px;
+      font-weight: bold;
+      border-radius: 3px;
+      border-width:0 2px 2px 0;
+      border-style:solid;
+      border-color: #AAAAAA;
+    }
+  }
+}
+
+#campaign-name{
+  width: 100%;
+  input{
+    width:100%;
+  }
+  label{
+  }
+}
+
+.cv-form-label{
+  text-align:center;
+}
+
+.cv-form-input{
+  
+}
+
+.modal-body{
+  width:70%;
+  margin-left:auto;
+  margin-right:auto;
+  background-color: white;
+  border-style: solid;
+  border-color: gray;
+  border-width: 2px 2px 2px 2px;
+  border-radius: 20px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+  #form-container{
+    margin: 0 auto 0 auto;
+    width:100%;
+    border-style:none;
+    box-shadow:0 0;
+  }
+}

@@ -1,0 +1,6 @@
+$(document).ready ->
+    $("#specialist-campaigns-table").dataTable()
+    bJQueryUI: true
+    
+    $("#survey-evaluation-table").dataTable()
+    bJQueryUI: true

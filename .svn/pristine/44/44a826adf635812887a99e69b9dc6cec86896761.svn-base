@@ -1,0 +1,39 @@
+<% if @campaigns.any? %>
+<table id="specialist-campaigns-table" class="display">
+  <thead>
+  <tr>
+	<th>Campaign Name</th>
+	<th>Tier</th>
+	<th>Supplier Name</th>
+	<th>Complexity Weight</th>
+	<th>Performance Review #</th>
+	<th>Executive Sponsor</th>
+	<th>Specialist</th>
+	<th></th>
+  </tr>
+  </thead>
+  <tbody>
+	<% @campaigns.each do |campaign| %>  
+	  <tr>
+	  	<td><%= campaign.name %></td>
+	  	<td><%= campaign.tier %></td>
+	  	<td><%= campaign.vendor.name if !campaign.vendor.blank?%></td>
+	  	<td><%= campaign.complexity_weight %></td>
+	  	<td><%= campaign.performance_review_number %></td>
+	  	<td><%= campaign.customer.name if !campaign.customer.blank?%></td>
+	  	<td><% unless campaign.specialist_id.blank? %>
+	  									<%= User.find(campaign.specialist_id).name %>
+	  								   <% end %>
+	  	</td>
+	  	<td><%= link_to "Edit", edit_campaign_path(campaign), "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+	  </tr>
+	<% end %>
+   <% else %>
+   	<h4 id="nothing-header">You have not made any campaigns yet. Click the New Campaign button to get started.</h2>
+   <% end %>
+   </tbody> 
+</table>
+
+<script>
+
+</script>

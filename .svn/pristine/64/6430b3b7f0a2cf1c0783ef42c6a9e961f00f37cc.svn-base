@@ -1,0 +1,22 @@
+<div class="row-fluid" id="internal-navbar" data-spy="affix" data-offset-top="60" data-offset-bottom="60">
+	
+	<div class="container-fluid">
+		<a href="/">
+			<div class="col-md-1 col-sm-1 col-xs-1" id="logo-holder">
+				<img src="/assets/panlogo.png" id="logo">
+			</div>
+		</a>
+		
+		<div class="col-md-2 col-sm-2 col-xs-2 nav-button">
+		  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+		    <%= current_user.name %>
+		    <span class="caret"></span>
+		  </button>
+		  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Configure User</a></li>
+		    <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= logout_path %>">Logout</a></li>
+		  </ul>
+		</div>
+
+	</div>
+</div>

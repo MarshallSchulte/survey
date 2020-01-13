@@ -1,0 +1,5 @@
+<div id='indcompare'>
+  <% if @chartper2 %>
+	<%= high_chart("my_id2", @chartper2) %>
+  <% end %>
+</div>

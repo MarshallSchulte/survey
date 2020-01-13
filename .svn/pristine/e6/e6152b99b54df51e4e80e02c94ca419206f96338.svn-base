@@ -1,0 +1,55 @@
+<%= form_for(@campaign) do |f| %>
+  <% if @campaign.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@campaign.errors.count, "error") %> prohibited this campaign from being saved:</h2>
+
+      <ul>
+      <% @campaign.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :tier %><br>
+    <%= f.number_field :tier %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :status %><br>
+    <%= f.text_field :status %>
+  </div>
+  <div class="field">
+    <%= f.label :start_date %><br>
+    <%= f.date_select :start_date %>
+  </div>
+  <div class="field">
+    <%= f.label :end_date %><br>
+    <%= f.date_select :end_date %>
+  </div>
+  <div class="field">
+    <%= f.label :supplier_name %><br>
+    <%= f.text_field :supplier_name %>
+  </div>
+  <div class="field">
+    <%= f.label :complexity_weight %><br>
+    <%= f.number_field :complexity_weight %>
+  </div>
+  <div class="field">
+    <%= f.label :performance_review_number %><br>
+    <%= f.number_field :performance_review_number %>
+  </div>
+    <div class="field">
+    <%= f.label :executive_sponsor %><br>
+    <%= f.text_field :executive_sponsor %>
+  </div>
+    <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

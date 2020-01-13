@@ -1,0 +1,5 @@
+<h1>New reviewer_type</h1>
+
+<%= render 'form' %>
+
+<%= link_to 'Back', reviewer_types_path %>

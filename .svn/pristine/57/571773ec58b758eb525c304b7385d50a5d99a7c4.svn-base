@@ -1,0 +1,113 @@
+<% if @campaigns %>
+<table id="specialist-campaigns-table" class="display">
+  <thead>
+  <tr>
+	<th>Campaign Name</th>
+	<th>Supplier Name</th>
+	<th>Performance Review #</th>
+	<th>Start Date</th>
+	<th>End Date</th>
+	<th>Tier</th>
+	<th>Complexity Weight</th>
+	<th>Executive Sponsor</th>
+	<th>Status</th>
+	<th>Progress</th>
+	<th>Specialist</th>
+	<th>Created</th>
+	<th></th>
+	<th></th>
+	<th></th>
+	<th></th>
+  </tr>
+  </thead>
+  <tbody>
+	<% @campaigns.each do |campaign| %>
+	 <% if campaign.status == "Submitted For Review"%>
+	  <tr class="review-row">
+	 <% elsif campaign.status == "Complete" %>
+	  <tr class="complete-row">
+	 <% elsif campaign.end_date && (campaign.end_date - Date.today).to_i <= 5 && campaign.status != "Complete" %>
+	  <tr class="end-date-row">
+	 <% elsif campaign.status == "In Process" %>
+	  <tr class="process-row">
+	 <% else %>
+	  <tr>
+	 <% end %>
+	 
+	  	<td><%= best_in_place_if campaign.status != "Complete", campaign, :name, :as => :input %></td>
+	  	<td><%= best_in_place_if campaign.status != "Complete", campaign, :vendor_id, :as => :select, :collection => Vendor.all.map { |i| [i.id, i.name] }, :placeholder => "Not Set" %></td>
+	  	<td><%= best_in_place_if campaign.status != "Complete", campaign, :performance_review_number, :place_holder => "--" %></td>
+	  	<td><%= best_in_place_if campaign.status != "Complete", campaign, :start_date, as: :date, :place_holder => "--" %></td>
+	    <% if campaign.end_date %>
+	  		<td><%= best_in_place_if campaign.status != "Complete", campaign, :end_date, as: :date, :place_holder => "--" %></td>
+	  	<% else %>
+	  		<td><%= best_in_place_if campaign.status != "Complete", campaign, :end_date, as: :date, :place_holder => "--" %></td>
+	  	<% end %>
+	  	<td><%= best_in_place_if campaign.status != "Complete", campaign, :tier, :place_holder => "--" %></td>
+	  	<td><%= best_in_place_if campaign.status != "Complete", campaign, :complexity_weight, :place_holder => "--" %></td>
+	  	<td><%= best_in_place_if campaign.status != "Complete", campaign, :executive_sponsor, :place_holder => "--" %></td>
+	  	<% if campaign.end_date %>
+		  	<% if (campaign.end_date < Date.today && campaign.status != "On Hold")%>
+		  		<% campaign.update(status: "Complete") %>
+		  		<% campaign.question_average %>
+		  		<td><%= campaign.status %></td>
+		  	<% else %>
+		  		<td><%= campaign.status %></td>
+		  	<% end %>
+		<% else %>
+			<td><%= campaign.status %></td>
+		<% end %>
+		 <% progress_percent = ((campaign.reviewers.where(survey_complete:true).count.to_f/(campaign.reviewers.count.to_f))*100.0).round(2)%>
+		  <% unless progress_percent.nan? %>
+		    <td class="progress-cell">
+		  		<% if progress_percent < 100 %>
+		  			<%= progress_bar(progress_percent, :color => 'orange', :rounded => true, :tiny => true) %>
+		  			<span class="number" align="center"><%= progress_percent%> %</span>
+		  		<% else %>
+		  			<%= progress_bar(progress_percent, :color => 'green', :rounded => true, :tiny => true) %>
+		  			<span class="number" align="center"><%= progress_percent%> %</span>
+		  		<% end %>
+		  	  </td>
+		  <% else %>
+		  	<td>No surveys completed</td>
+		  <% end %>
+		  	<td><%= User.find(campaign.specialist_id).name %></td>
+		<td> <%= campaign.created_at %> </td>
+	  	<% if campaign.status != "Complete"%>
+	  		<td><%= link_to "Edit", edit_campaign_path(campaign), "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+	  	<% else %>
+	  		<td></td>
+	  	<% end %>
+	  	<% if campaign.status == "Submitted For Review"%>
+			<td><%= link_to "Send to Reviewers", {controller: "campaigns", action: "send_to_reviewers", id: campaign.id }, data: { confirm: "Are you sure this campaign are ready to be sent to reviewers?" }, remote: true, class: "edit-btn" %></td>
+			<td><%= link_to "Hold", {controller: "campaigns", action: "on_hold", id: campaign.id }, method: "put", remote: true, class: "edit-btn", data: { confirm: "Are you sure you want to put this campaign on hold?" } %></td>
+			<td><%= link_to "Survey Progress", {controller: "campaigns", action: "survey_progress", id: campaign.id}, "data-toggle"=> "modal", "data-target"=> "#inside-manager", method: :get, remote: true, class: "edit-btn"%></td>
+		<% elsif campaign.status == "In Process"%>
+			<td><%= link_to "Resend to All Reviewers", {controller: "campaigns", action: "send_to_reviewers", id: campaign.id }, data: { confirm: "Are you sure this campaign are ready to be sent to reviewers?" }, remote: true, class: "edit-btn" %></td>
+			<td><%= link_to "Hold", {controller: "campaigns", action: "on_hold", id: campaign.id }, method: "put", remote: true, class: "edit-btn", data: { confirm: "Are you sure you want to put this campaign on hold?" } %></td>
+			<td><%= link_to "Survey Progress", {controller: "campaigns", action: "survey_progress", id: campaign.id}, "data-toggle"=> "modal", "data-target"=> "#inside-manager", method: :get, remote: true, class: "edit-btn"%></td>
+		<% elsif campaign.status == "On Hold" %>
+			<td><%= link_to "Send", {controller: "campaigns", action: "send_to_reviewers", id: campaign.id }, data: { confirm: "Are you sure the surveys are ready to be sent to reviewers?" }, remote: true, class: "edit-btn" %></td>
+			<td><%= link_to "Return to Draft", {controller: "campaigns", action: "drafted", id: campaign.id }, method: "put", remote: true, class: "edit-btn", data: { confirm: "Are you sure you want to make this campaign a draft?" } %></td>
+			<td><%= link_to "Survey Progress", {controller: "campaigns", action: "survey_progress", id: campaign.id}, "data-toggle"=> "modal", "data-target"=> "#inside-manager", method: :get, remote: true, class: "edit-btn"%></td>
+		<% elsif campaign.status == "Complete" %>
+			<td><%= link_to "Campaign Results", {controller: "campaigns", action: "results", id: campaign.id}, "data-toggle" => "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn"%></td>
+			<td></td>
+			<td><%= link_to "Survey Progress", {controller: "campaigns", action: "survey_progress", id: campaign.id}, "data-toggle"=> "modal", "data-target"=> "#inside-manager",  method: :get, remote: true, class: "edit-btn"%></td>
+		<% elsif campaign.status == "Draft"%>
+			<td><%= button_to "Delete", { action: "destroy", controller: "campaigns", id: campaign.id }, method: :delete, data: { confirm: "Are you sure you want to delete this campaign?" }, remote: true, class: "destroy-btn" %></td>
+			<td><%= link_to "Hold", {controller: "campaigns", action: "on_hold", id: campaign.id }, method: "put", remote: true, class: "edit-btn", data: { confirm: "Are you sure you want to put this campaign on hold?" } %></td>
+			<td><%= link_to "Survey Progress", {controller: "campaigns", action: "survey_progress", id: campaign.id}, "data-toggle"=> "modal", "data-target"=> "#inside-manager", method: :get, remote: true, class: "edit-btn"%></td>
+		<% else %>
+			<td></td>
+			<td><%= link_to "Hold", {controller: "campaigns", action: "on_hold", id: campaign.id }, method: "put", remote: true, class: "edit-btn", data: { confirm: "Are you sure you want to put this campaign on hold??" } %></td>
+			<td><%= link_to "Survey Progress", {controller: "campaigns", action: "survey_progress", id: campaign.id}, "data-toggle"=> "modal", "data-target"=> "#inside-manager", method: :get, remote: true, class: "edit-btn"%></td>
+		<% end %>
+	 </tr>
+	<% end %>
+   <% else %>
+   	<h4 id="nothing-header">You have not made any campaigns yet. Click the New Campaign button to get started.</h2>
+   <% end %>
+   </tbody> 
+</table>
+

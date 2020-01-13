@@ -1,0 +1,44 @@
+
+
+<%= form_for(@vendor) do |f| %>
+  <% if @vendor.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@vendor.errors.count, "error") %> prohibited this vendor from being saved:</h2>
+
+      <ul>
+      <% @vendor.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label :name %></div>
+    <div class="form-input col-md-6"><%= f.text_field :name %></div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label :address %></div>
+    <div class="form-input col-md-6"><%= f.text_field :address %></div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label :city %></div>
+    <div class="form-input col-md-6"><%= f.text_field :city %></div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label "Industry" %></div>
+    <div class="form-checkboxes col-md-4">
+    		
+    		<%= f.collection_check_boxes :vtype_ids, Vtype.all, :id, :name, multiple: true %>
+
+    </div>
+  </div>
+  <div class="row form-pair">
+    <div class="form-label col-md-3"><%= f.label :size %></div>
+    <div class="form-input col-md-6"><%= f.number_field :size %></div>
+  </div>
+  <div class="row" id="button-row">
+    <div class="form-button"><%= f.submit %></div>
+  </div>
+<% end %>
+

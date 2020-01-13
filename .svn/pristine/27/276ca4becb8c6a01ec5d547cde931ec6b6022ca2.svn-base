@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Metric:</strong>
+  <%= @kpi.metric_id %>
+</p>
+
+<p>
+  <strong>Kpi:</strong>
+  <%= @kpi.kpi %>
+</p>
+
+<p>
+  <strong>Kpi measurement:</strong>
+  <%= @kpi.kpi_measurement %>
+</p>
+
+<%= link_to 'Edit', edit_kpi_path(@kpi) %> |
+<%= link_to 'Back', kpis_path %>

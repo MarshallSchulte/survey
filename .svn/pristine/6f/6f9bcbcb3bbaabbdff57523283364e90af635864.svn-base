@@ -1,0 +1,40 @@
+<% if @specialist_campaigns.any? %>
+<table id="specialist-campaigns-table" class="display">
+<thead>
+  <tr>
+	<th>Campaign</th>
+	<th>Tier</th>
+	<th>Supplier Name</th>
+	<th>Complexity Wt.</th>
+	<th>Review #</th>
+	<th>Sponsor</th>
+	<th>Start Date</th>
+	<th>End Date</th>
+	<th></th>
+	<th></th>
+	<th></th>
+  </tr>
+ </thead>
+   <tbody>
+	<% @specialist_campaigns.each do |campaign| %>  
+	  <tr>
+	  	<td><%= campaign.name %></td>
+	  	<td><%= campaign.tier %></td>
+	  	<td><%= campaign.vendor.name if !campaign.vendor.blank?%></td>
+	  	<td><%= campaign.complexity_weight %></td>
+	  	<td><%= campaign.performance_review_number %></td>
+	  	<td><%= campaign.customer.name if !campaign.customer.blank?%></td>
+	  	<td><%= campaign.start_date %></td>
+	  	<td><%= campaign.end_date %></td>
+	  	<td><%= link_to "Edit", edit_campaign_path(campaign), "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+	  	<td><%= link_to "Add Reviewers", "/add_reviewers/#{campaign.id}", "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+	  	<td><%= link_to "Send", "/send_campaign/#{campaign.id}", "data-toggle"=> "modal", "data-target"=> "#inside-manager", remote: true, class: "edit-btn" %></td>
+	  	
+	  </tr>
+	<% end %>
+	
+   <% else %>
+   	<h4 id="nothing-header">You have not been assigned any campaigns yet.</h2>
+   <% end %>
+   </tbody>
+</table>

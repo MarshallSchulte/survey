@@ -1,0 +1,7 @@
+$("#slide-row").html('<%= j render "campaigns/slides" %>');
+console.log("working?");
+$('.close-slide').on('click', function() {
+	console.log("destroy");
+	$(this).parent('div').parent('form').parent('.slide').fadeOut();
+});
+

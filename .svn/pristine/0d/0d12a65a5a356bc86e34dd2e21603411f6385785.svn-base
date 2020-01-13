@@ -1,0 +1,18 @@
+<div class="row">
+	<div class="col-md-6 specialist-header" style="text-align:center; font-weight: bold;"> Specialist </div>
+	<div class="col-md-6 vendor-header" style="text-align:center; font-weight: bold;"> Vendors </div>
+</div>
+		<% @specialist_array.each do |sp|%>
+		 <% if Campaign.where(specialist_id: sp.id, customer_id: current_user.customer_id).present?%>
+		  <div class="row specialist-row assigned">
+		 <% else %>
+		  <div class="row specialist-row">
+		 <% end %>
+			<div class="col-md-6"><%= sp.name %></div>
+			<div class="col-md-6 vendor-box">
+				<% Campaign.where(specialist_id: sp.id, customer_id: current_user.customer_id).each do |c| %>
+						<div class="row vendor-row"><%= Vendor.find(c.vendor_id).name %></div>
+				 <% end %>
+			</div>
+		 </div>
+		<% end %>

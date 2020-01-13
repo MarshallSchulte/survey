@@ -1,0 +1,41 @@
+<%= form_for(@metric_score) do |f| %>
+  <% if @metric_score.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@metric_score.errors.count, "error") %> prohibited this metric_score from being saved:</h2>
+
+      <ul>
+      <% @metric_score.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :metric_id %><br>
+    <%= f.number_field :metric_id %>
+  </div>
+  <div class="field">
+    <%= f.label :campaign_id %><br>
+    <%= f.number_field :campaign_id %>
+  </div>
+  <div class="field">
+    <%= f.label :customer_id %><br>
+    <%= f.number_field :customer_id %>
+  </div>
+  <div class="field">
+    <%= f.label :vendor_id %><br>
+    <%= f.number_field :vendor_id %>
+  </div>
+  <div class="field">
+    <%= f.label :actual_score %><br>
+    <%= f.number_field :actual_score %>
+  </div>
+  <div class="field">
+    <%= f.label :total_score %><br>
+    <%= f.number_field :total_score %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

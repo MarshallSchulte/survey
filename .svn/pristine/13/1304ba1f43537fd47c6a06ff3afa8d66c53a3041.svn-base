@@ -1,0 +1,10 @@
+<div align="center">
+	Invitation sent sucessfully to:<br />
+	<div style="font-family:verdana;padding:10px;border-radius:5px;border:5px solid #EE872A;font-style:oblique;font-size:small;">
+		<%=params[:first]%> <%=params[:last]%> <br />
+		<%=params[:email]%>
+	</div>
+	<br />
+	<a href="JavaScript:window.close()">Close</a>
+	
+	</div>

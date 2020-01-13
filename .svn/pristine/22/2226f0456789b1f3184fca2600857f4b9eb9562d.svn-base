@@ -1,0 +1,10 @@
+<div class="container" id="form-container">
+	<h3 id="form-header-2">Edit Vendor</h3>
+
+<%= render 'form' %>
+
+	<div id="shared-link">
+		<%= link_to 'Show', @vendor %> |
+		<%= link_to 'Back', vendors_path %>
+	</div>
+</div>

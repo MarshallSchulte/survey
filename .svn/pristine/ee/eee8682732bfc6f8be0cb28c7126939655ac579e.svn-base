@@ -1,0 +1,18 @@
+# This file should contain all the record creation needed to seed the database with its default values.
+# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
+#
+# Examples:
+#
+#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
+#   Mayor.create(name: 'Emanuel', city: cities.first)
+#Destroy roles before repopulating, because we cant rewrite the primary key and we dont want duplicates
+Role.delete_all
+
+Role.create(id: 1, name: 'Admin')
+Role.create(id: 2, name: 'Campaign Manager')
+Role.create(id: 3, name: 'Specialist')
+
+Metric.create(metric_name: 'Application Defects')
+Metric.create(metric_name: 'Quality')
+Metric.create(metric_name: 'Software Functionality')
+Metric.create(metric_name: 'Quality Assurance')

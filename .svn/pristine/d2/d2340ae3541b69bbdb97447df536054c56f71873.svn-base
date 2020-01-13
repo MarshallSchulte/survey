@@ -1,0 +1,132 @@
+<style type="text/css">
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:11px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+</style>
+<div class="container" id="campaign-form">
+	  <div class="field" id="campaign-name" align="center">
+		<table class="gridtable" >
+			<tr>
+				<th>Campaign Name</th>
+				<th>Start Date</th>
+				<th>End Date</th>
+				<th>Tier</th>
+				<th>Status</th>
+				<th>Supplier POC</th>
+				<th>Supplier Name</th>
+				<th>Review #</th>
+			</tr>
+			<tr>
+				<td><%=@campaign.name%></td>
+				<td><%=@campaign.start_date%></td>
+				<td><%=@campaign.end_date%></td>
+				<td><%=@campaign.tier%></td>
+				<td><%=@campaign.status%></td>
+				<td><%=@vendor.poc_name%> (<%=@vendor.poc_phone%>)</td>
+				<td><%=@vendor.name%></td>
+				<td></td>
+			</tr>
+		</table>
+	  </div>
+  </div>
+<%= form_for @campaign, remote:true do |f| %>
+  
+  <table id="add-reviewers">
+  	<thead>
+  		<th>First Name</th>
+  		<th>Last Name</th>
+  		<th>Email Address</th>
+  		<th>Type</th>
+  		<th>Title</th>
+  		<th>Division</th>
+  		<th>Business Unit</th>
+  		<th>Location</th>
+  		<th>Platform</th>
+  		<th></th>
+  	</thead>
+  	<tbody>
+	  <%#= f.fields_for :reviewers, :controller => 'reviewers' do |reviewer| %>
+		<%#= render '/reviewers/reviewer_fields', :f => reviewer, :controller => 'reviewers' %>
+ 	  <% #end %>
+ 	   <%#= link_to_add_fields "Add Answer", f, :answers %>
+ 	  <%#= link_to_add_fields "Add Reviewers", f, :reviewers %>
+ 	  <%= f.nested_fields_for :reviewers, wrapper_tag: :tr do |reviewer|%>
+ 	   
+ 	  	<%= render '/reviewers/reviewers_fields', :f => reviewer%>
+
+ 	  <%end%>
+ 	  <%= f.add_nested_fields_link :reviewers%>
+ 	</tbody>
+   </table>
+ 	  
+ 	  <div class="actions">
+		    <div class="form-button"><%= f.submit "Save" %></div>
+	  </div>
+
+  
+  
+<% end %>
+<script>
+var reviewers = <%= @campaign.reviewers.count %>;
+ console.log(reviewers);
+ if (reviewers === 0){
+  $('.remove_nested_fields_link').hide();
+ }
+ 
+ $(document).on('fields_added.nested_form_fields', function(){
+ 	$(".remove_nested_fields_link").click(function(){
+		console.log("remove");
+		reviewers = $(".nested_campaign_reviewers:visible").length - 1;
+		console.log("Reviewers " + reviewers);
+		if (reviewers <= 1){
+			$('.remove_nested_fields_link').hide();
+			$('.form-button input').show();
+		}
+    });
+ });
+ 
+  $(".add_nested_fields_link").click(function(){
+	console.log("add");
+	reviewers = $(".nested_campaign_reviewers:visible").length + 1;
+	console.log("Reviewers " + reviewers);
+	$('.remove_nested_fields_link').show();
+	$(".remove_nested_fields_link").click(function(){
+		console.log("remove");
+		reviewers = $(".nested_campaign_reviewers:visible").length - 1;
+		console.log("Reviewers " + reviewers);
+		if (reviewers <= 1){
+			$('.remove_nested_fields_link').hide();
+		}
+    });
+  });
+  
+  $(".remove_nested_fields_link").click(function(){
+	console.log("remove");
+	reviewers = $(".nested_campaign_reviewers:visible").length -1;
+	console.log("Reviewers " + reviewers);
+	if (reviewers <= 1){
+		$('.remove_nested_fields_link').hide();
+	}
+  });
+  
+</script>

@@ -1,0 +1,2 @@
+$("#chartdiv-ma").html('<%= j render(:partial => "metric_scores/analytics") %>');
+$("#indcompare").html('<%= j render(:partial => "metric_scores/compare_analytics") %>');

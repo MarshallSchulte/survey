@@ -1,0 +1,77 @@
+
+<div class="container" id="form-container">
+	<h3 id="form-header-2">New Vendor</h3>
+	<%= form_for @vendor, remote:true, authenticity_token: true do |f| %>
+	  <% if @vendor.errors.any? %>
+	    <div id="error_explanation">
+	      <h2><%= pluralize(@vendor.errors.count, "error") %> prohibited this vendor from being saved:</h2>
+	
+	      <ul>
+	      <% @vendor.errors.full_messages.each do |message| %>
+	        <li><%= message %></li>
+	      <% end %>
+	      </ul>
+	    </div>
+	  <% end %>
+	
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :name %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :name %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :address %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :address %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :city %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :city %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :state %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :state %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label :zipcode %></div>
+	    <div class="form-input col-md-6"><%= f.text_field :zipcode %></div>
+	  </div>
+	  <% if current_user.roles.first.id == 1%>
+		  <div class="row form-pair">
+		    <h2 style="font-weight:bold; text-align:center;">Industries</h2>
+		    <div class="form-checkboxes row">
+		    		
+		    		<%= f.collection_check_boxes :vtype_ids, Vtype.all, :id, :name, multiple: true do |c| %>
+		    			
+		    			<%= c.check_box(class: "col-md-1 col-sm-1 col-xs-2") %>
+		    			<%= c.label(class: "col-md-3 col-sm-3 col-xs-4") %>
+		    			
+		    		<% end %>
+		
+		    </div>
+		    <h2 style="font-weight:bold; text-align:center;">Customers</h2>
+		    <div class="form-checkboxes row">
+		    		<%= f.collection_check_boxes :customer_ids, Customer.all, :id, :name, multiple: true do |c| %>
+		    			<%= c.check_box(class: "col-md-1 col-sm-1 col-xs-2") %>
+		    			<%= c.label(class: "col-md-3 col-sm-3 col-xs-4") %>
+		    		<% end %>
+		    </div>
+		  </div>
+	    <% end %>
+	  
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label "Complexity Weight" %></div>
+	    <div class="form-input col-md-6"><%= f.number_field :cw %></div>
+	  </div>
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label "Number of Employees" %></div>
+	    <div class="form-input col-md-6"><%= f.number_field :size %></div>
+	  </div>
+	  
+	  <div class="row form-pair">
+	    <div class="form-label col-md-3"><%= f.label "Gross Revenue" %></div>
+	    <div class="form-input col-md-6"><%= f.number_field :revenue %></div>
+	  </div>
+	  <div class="row" id="button-row">
+	    <div class="form-button"><%= f.submit "Add Vendor" %></div>
+	  </div>
+	<% end %>
+</div>
